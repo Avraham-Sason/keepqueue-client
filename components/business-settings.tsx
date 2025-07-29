@@ -347,4 +347,41 @@ export function BusinessSettings() {
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label className="text-base">\
+                  <Label className="text-base">התראות WhatsApp</Label>
+                  <p className="text-sm text-muted-foreground">קבל התראות ב-WhatsApp על תורים והודעות</p>
+                </div>
+                <Switch
+                  checked={notifications.whatsappNotifications}
+                  onCheckedChange={(checked) => setNotifications({ ...notifications, whatsappNotifications: checked })}
+                />
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label className="text-base">מיילים שיווקיים</Label>
+                  <p className="text-sm text-muted-foreground">קבל מיילים עם מבצעים ועדכונים</p>
+                </div>
+                <Switch
+                  checked={notifications.marketingEmails}
+                  onCheckedChange={(checked) => setNotifications({ ...notifications, marketingEmails: checked })}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="billing" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>חיוב</CardTitle>
+              <CardDescription>ניהול פרטי החיוב והמנוי שלך</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">הפיצ'ר יתווסף בקרוב.</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}

@@ -1,5 +1,7 @@
-import { CustomerSignUpForm } from "@/components/customer/auth/signup-form"
-
 export default function CustomerSignUpPage() {
-  return <CustomerSignUpForm />
+    return <CustomerSignUpForm />;
+}
+
+function CustomerSignUpForm() {
+    return <div>CustomerSignUpForm</div>;
 }

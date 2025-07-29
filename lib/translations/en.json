@@ -1,0 +1,76 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "appointments": "Appointments",
+    "calendar": "Calendar",
+    "customers": "Customers",
+    "services": "Services",
+    "analytics": "Analytics",
+    "reviews": "Reviews",
+    "whatsapp": "WhatsApp",
+    "billing": "Billing",
+    "settings": "Settings",
+    "signOut": "Sign Out",
+    "search": "Search...",
+    "notifications": "Notifications",
+    "newAppointment": "New Appointment",
+    "viewAll": "View All",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "close": "Close"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome",
+    "todayAppointments": "Today's Appointments",
+    "totalCustomers": "Total Customers",
+    "monthlyRevenue": "Monthly Revenue",
+    "completionRate": "Completion Rate",
+    "recentAppointments": "Recent Appointments",
+    "upcomingAppointments": "Upcoming Appointments",
+    "quickActions": "Quick Actions"
+  },
+  "appointments": {
+    "title": "Appointments Management",
+    "newAppointment": "New Appointment",
+    "todayAppointments": "Today's Appointments",
+    "upcomingAppointments": "Upcoming Appointments",
+    "pastAppointments": "Past Appointments",
+    "customerName": "Customer Name",
+    "service": "Service",
+    "date": "Date",
+    "time": "Time",
+    "status": "Status",
+    "actions": "Actions",
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "cancelled": "Cancelled",
+    "completed": "Completed"
+  },
+  "customers": {
+    "title": "Customer Management",
+    "addCustomer": "Add Customer",
+    "customerName": "Customer Name",
+    "phone": "Phone",
+    "email": "Email",
+    "lastVisit": "Last Visit",
+    "totalAppointments": "Total Appointments",
+    "customerDetails": "Customer Details"
+  },
+  "services": {
+    "title": "Services Management",
+    "addService": "Add Service",
+    "serviceName": "Service Name",
+    "duration": "Duration",
+    "price": "Price",
+    "description": "Description"
+  },
+  "header": {
+    "searchPlaceholder": "Search appointments, customers...",
+    "newAppointmentBooked": "New appointment booked",
+    "viewAllNotifications": "View all notifications"
+  }
+}

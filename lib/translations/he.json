@@ -1,0 +1,76 @@
+{
+  "common": {
+    "dashboard": "דשבורד",
+    "appointments": "תורים",
+    "calendar": "לוח שנה",
+    "customers": "לקוחות",
+    "services": "שירותים",
+    "analytics": "אנליטיקה",
+    "reviews": "ביקורות",
+    "whatsapp": "וואטסאפ",
+    "billing": "חיוב",
+    "settings": "הגדרות",
+    "signOut": "התנתק",
+    "search": "חיפוש...",
+    "notifications": "התראות",
+    "newAppointment": "תור חדש",
+    "viewAll": "צפה בהכל",
+    "save": "שמור",
+    "cancel": "בטל",
+    "edit": "ערוך",
+    "delete": "מחק",
+    "add": "הוסף",
+    "close": "סגור"
+  },
+  "dashboard": {
+    "title": "דשבורד",
+    "welcome": "ברוכים הבאים",
+    "todayAppointments": "תורים היום",
+    "totalCustomers": "סך הלקוחות",
+    "monthlyRevenue": "הכנסות חודשיות",
+    "completionRate": "אחוז השלמה",
+    "recentAppointments": "תורים אחרונים",
+    "upcomingAppointments": "תורים קרובים",
+    "quickActions": "פעולות מהירות"
+  },
+  "appointments": {
+    "title": "ניהול תורים",
+    "newAppointment": "תור חדש",
+    "todayAppointments": "תורים היום",
+    "upcomingAppointments": "תורים קרובים",
+    "pastAppointments": "תורים עבר",
+    "customerName": "שם הלקוח",
+    "service": "שירות",
+    "date": "תאריך",
+    "time": "שעה",
+    "status": "סטטוס",
+    "actions": "פעולות",
+    "confirmed": "מאושר",
+    "pending": "ממתין",
+    "cancelled": "בוטל",
+    "completed": "הושלם"
+  },
+  "customers": {
+    "title": "ניהול לקוחות",
+    "addCustomer": "הוסף לקוח",
+    "customerName": "שם הלקוח",
+    "phone": "טלפון",
+    "email": "אימייל",
+    "lastVisit": "ביקור אחרון",
+    "totalAppointments": "סך התורים",
+    "customerDetails": "פרטי לקוח"
+  },
+  "services": {
+    "title": "ניהול שירותים",
+    "addService": "הוסף שירות",
+    "serviceName": "שם השירות",
+    "duration": "משך זמן",
+    "price": "מחיר",
+    "description": "תיאור"
+  },
+  "header": {
+    "searchPlaceholder": "חפש תורים, לקוחות...",
+    "newAppointmentBooked": "תור חדש נקבע",
+    "viewAllNotifications": "צפה בכל ההתראות"
+  }
+}

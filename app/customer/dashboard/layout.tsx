@@ -8,7 +8,7 @@ export default function CustomerDashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <ProtectedRoute requireCustomer={true}>
+    <ProtectedRoute requiredUserType="customer">
       <div className="min-h-screen bg-background">
         <CustomerHeader />
         <main className="container mx-auto py-6">{children}</main>

@@ -3,7 +3,7 @@ import { ProtectedRoute } from "@/components/auth/protected-route"
 
 export default function CustomerMarketplacePage() {
   return (
-    <ProtectedRoute requireCustomer={true}>
+    <ProtectedRoute requiredUserType="customer">
       <BusinessMarketplace />
     </ProtectedRoute>
   )

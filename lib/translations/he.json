@@ -1,76 +1,139 @@
 {
-  "dashboard": "לוח בקרה",
-  "appointments": "תורים",
-  "calendar": "יומן",
-  "customers": "לקוחות",
-  "services": "שירותים",
-  "analytics": "אנליטיקה",
-  "reviews": "ביקורות",
-  "whatsapp": "וואטסאפ",
-  "settings": "הגדרות",
-  "logout": "התנתק",
-  "search": "חיפוש",
-  "notifications": "התראות",
-  "businessOwner": "בעל עסק",
-  "customer": "לקוח",
-  "marketplace": "שוק",
-  "bookAppointment": "קבע תור",
-  "viewDetails": "צפה בפרטים",
-  "totalAppointments": "סה\"כ תורים",
-  "todayAppointments": "תורים היום",
-  "totalCustomers": "סה\"כ לקוחות",
-  "monthlyRevenue": "הכנסות חודשיות",
-  "recentAppointments": "תורים אחרונים",
-  "upcomingAppointments": "תורים קרובים",
-  "pending": "ממתין",
-  "confirmed": "מאושר",
-  "completed": "הושלם",
-  "cancelled": "בוטל",
-  "approve": "אשר",
-  "cancel": "בטל",
-  "complete": "השלם",
-  "name": "שם",
-  "email": "אימייל",
-  "phone": "טלפון",
-  "service": "שירות",
-  "date": "תאריך",
-  "time": "שעה",
-  "status": "סטטוס",
-  "price": "מחיר",
-  "duration": "משך זמן",
-  "notes": "הערות",
-  "businessOwnerLogin": "כניסה לבעלי עסקים",
-  "customerLogin": "כניסה للקוחות",
-  "heroTitle": "נהל את התורים שלך בקלות",
-  "heroDescription": "פלטפורמה מתקדמת לניהול תורים ולקוחות לעסקים מכל הסוגים",
-  "newFeature": "חדש!",
-  "businesses": "עסקים",
-  "satisfaction": "שביעות רצון",
-  "featuresTitle": "למה לבחור בנו?",
-  "featuresDescription": "אנחנו מספקים את כל הכלים שאתה צריך כדי לנהל את העסק שלך ביעילות",
-  "easyScheduling": "קביעת תורים קלה",
-  "easySchedulingDesc": "ממשק פשוט ונוח לקביעת תורים עבור הלקוחות שלך",
-  "realTimeUpdates": "עדכונים בזמן אמת",
-  "realTimeUpdatesDesc": "קבל התראות מיידיות על תורים חדשים ושינויים",
-  "customerManagement": "ניהול לקוחות",
-  "customerManagementDesc": "נהל את כל המידע על הלקוחות שלך במקום אחד",
-  "ctaTitle": "מוכן להתחיל?",
-  "ctaDescription": "הצטרף לאלפי עסקים שכבר משתמשים בפלטפורמה שלנו",
-  "startFree": "התחל בחינם",
-  "findServices": "מצא שירותים",
-  "allRightsReserved": "כל הזכויות שמורות",
-  "signin": "התחבר",
-  "signup": "הירשם",
-  "password": "סיסמה",
-  "confirmPassword": "אשר סיסמה",
-  "businessName": "שם העסק",
-  "businessType": "סוג העסק",
-  "address": "כתובת",
-  "description": "תיאור",
-  "dontHaveAccount": "אין לך חשבון?",
-  "alreadyHaveAccount": "יש לך כבר חשבון?",
-  "theme": "ערכה",
-  "light": "בהיר",
-  "dark": "כהה",
-  "system": "מערכת"
+  "hero": {
+    "badge": "ניהול תורים חכם",
+    "title": "ייעל את העסק שלך עם KeepQueue",
+    "subtitle": "פלטפורמה חכמה לתיאום פגישות, ניהול תורים ומעורבות לקוחות המיועדת לעסקים מודרניים."
+  },
+  "cta": {
+    "business": "לעסקים",
+    "customer": "ללקוחות",
+    "title": "מוכן לשנות את העסק שלך?",
+    "subtitle": "הצטרף לאלפי עסקים שכבר משתמשים ב-KeepQueue כדי לשפר את חוויית הלקוח שלהם.",
+    "startFree": "התחל ניסיון חינם",
+    "learnMore": "למד עוד"
+  },
+  "demo": {
+    "placeholder": "סרטון הדגמת המוצר"
+  },
+  "features": {
+    "title": "כל מה שאתה צריך כדי לנהל את העסק שלך",
+    "subtitle": "תכונות חזקות שנועדו לעזור לך לשרת לקוחות טוב יותר ולהצמיח את העסק שלך.",
+    "scheduling": {
+      "title": "תיאום חכם",
+      "description": "הזמנת פגישות אוטומטית עם ניהול חכם של משבצות זמן ומניעת התנגשויות."
+    },
+    "whatsapp": {
+      "title": "אינטגרציה עם WhatsApp",
+      "description": "שלח תזכורות, אישורים ועדכונים אוטומטיים ישירות דרך WhatsApp."
+    },
+    "customers": {
+      "title": "ניהול לקוחות",
+      "description": "פרופילי לקוחות מלאים עם היסטוריה, העדפות ויומני תקשורת."
+    },
+    "analytics": {
+      "title": "אנליטיקה עסקית",
+      "description": "תובנות מפורטות על ביצועי העסק שלך, התנהגות לקוחות ומגמות הכנסות."
+    },
+    "security": {
+      "title": "אבטחה ארגונית",
+      "description": "אבטחה ברמת בנק עם הצפנת נתונים ועמידה בתקנות פרטיות."
+    },
+    "automation": {
+      "title": "אוטומציה חכמה",
+      "description": "אוטומציה של משימות חוזרות וזרימות עבודה כדי לחסוך זמן ולהפחית שגיאות."
+    }
+  },
+  "testimonials": {
+    "title": "מהימן על ידי עסקים ברחבי העולם",
+    "subtitle": "ראה מה הלקוחות שלנו אומרים על KeepQueue.",
+    "testimonial1": {
+      "text": "KeepQueue שינה את הדרך שבה אנחנו מנהלים פגישות. שיעור האי-הגעה שלנו ירד ב-60%!",
+      "author": "שרה ג'ונסון",
+      "role": "בעלת סלון"
+    },
+    "testimonial2": {
+      "text": "האינטגרציה עם WhatsApp היא משנה משחק. לקוחות אוהבים את התזכורות האוטומטיות.",
+      "author": "מייקל צ'ן",
+      "role": "מנהל מרפאה"
+    },
+    "testimonial3": {
+      "text": "ההשקעה הטובה ביותר שעשינו לעסק שלנו. האנליטיקה עוזרת לנו לקבל החלטות טובות יותר.",
+      "author": "אמה רודריגז",
+      "role": "בעלת מסעדה"
+    }
+  },
+  "pricing": {
+    "title": "תמחור פשוט ושקוף",
+    "subtitle": "בחר את התוכנית שמתאימה לצרכי העסק שלך. ללא עמלות נסתרות, בטל בכל עת.",
+    "popular": "הכי פופולרי",
+    "month": "חודש",
+    "getStarted": "התחל",
+    "basic": {
+      "name": "בסיסי",
+      "price": "₪99",
+      "features": ["עד 100 פגישות בחודש", "תיאום בסיסי", "התראות אימייל", "מסד נתוני לקוחות", "גישה לאפליקציה"]
+    },
+    "pro": {
+      "name": "מקצועי",
+      "price": "₪279",
+      "features": [
+        "פגישות ללא הגבלה",
+        "אינטגרציה עם WhatsApp",
+        "אנליטיקה מתקדמת",
+        "מיתוג מותאם אישית",
+        "תמיכה עדיפה",
+        "גישה ל-API"
+      ]
+    },
+    "enterprise": {
+      "name": "ארגוני",
+      "price": "₪699",
+      "features": [
+        "כל מה שיש במקצועי",
+        "תמיכה במספר מיקומים",
+        "אוטומציה מתקדמת",
+        "אינטגרציות מותאמות",
+        "מנהל חשבון ייעודי",
+        "ערבות SLA"
+      ]
+    }
+  },
+  "auth": {
+    "signin": "התחבר",
+    "signup": "הרשם",
+    "logout": "התנתק",
+    "email": "אימייל",
+    "password": "סיסמה",
+    "name": "שם מלא",
+    "businessName": "שם העסק",
+    "phone": "מספר טלפון",
+    "forgotPassword": "שכחת סיסמה?",
+    "noAccount": "אין לך חשבון?",
+    "hasAccount": "יש לך כבר חשבון?",
+    "createAccount": "צור חשבון",
+    "signInAccount": "התחבר לחשבון"
+  },
+  "dashboard": {
+    "overview": "סקירה כללית",
+    "appointments": "פגישות",
+    "customers": "לקוחות",
+    "services": "שירותים",
+    "calendar": "יומן",
+    "analytics": "אנליטיקה",
+    "reviews": "ביקורות",
+    "whatsapp": "WhatsApp",
+    "settings": "הגדרות"
+  },
+  "common": {
+    "loading": "טוען...",
+    "save": "שמור",
+    "cancel": "בטל",
+    "delete": "מחק",
+    "edit": "ערוך",
+    "add": "הוסף",
+    "search": "חפש...",
+    "filter": "סנן",
+    "export": "ייצא",
+    "import": "ייבא"
+  }
 }

@@ -1,76 +1,145 @@
 {
-  "dashboard": "Dashboard",
-  "appointments": "Appointments",
-  "calendar": "Calendar",
-  "customers": "Customers",
-  "services": "Services",
-  "analytics": "Analytics",
-  "reviews": "Reviews",
-  "whatsapp": "WhatsApp",
-  "settings": "Settings",
-  "logout": "Logout",
-  "search": "Search",
-  "notifications": "Notifications",
-  "businessOwner": "Business Owner",
-  "customer": "Customer",
-  "marketplace": "Marketplace",
-  "bookAppointment": "Book Appointment",
-  "viewDetails": "View Details",
-  "totalAppointments": "Total Appointments",
-  "todayAppointments": "Today's Appointments",
-  "totalCustomers": "Total Customers",
-  "monthlyRevenue": "Monthly Revenue",
-  "recentAppointments": "Recent Appointments",
-  "upcomingAppointments": "Upcoming Appointments",
-  "pending": "Pending",
-  "confirmed": "Confirmed",
-  "completed": "Completed",
-  "cancelled": "Cancelled",
-  "approve": "Approve",
-  "cancel": "Cancel",
-  "complete": "Complete",
-  "name": "Name",
-  "email": "Email",
-  "phone": "Phone",
-  "service": "Service",
-  "date": "Date",
-  "time": "Time",
-  "status": "Status",
-  "price": "Price",
-  "duration": "Duration",
-  "notes": "Notes",
-  "businessOwnerLogin": "Business Owner Login",
-  "customerLogin": "Customer Login",
-  "heroTitle": "Manage Your Appointments with Ease",
-  "heroDescription": "Advanced platform for appointment and customer management for all types of businesses",
-  "newFeature": "New!",
-  "businesses": "Businesses",
-  "satisfaction": "Satisfaction",
-  "featuresTitle": "Why Choose Us?",
-  "featuresDescription": "We provide all the tools you need to manage your business efficiently",
-  "easyScheduling": "Easy Scheduling",
-  "easySchedulingDesc": "Simple and convenient interface for booking appointments for your customers",
-  "realTimeUpdates": "Real-time Updates",
-  "realTimeUpdatesDesc": "Get instant notifications about new appointments and changes",
-  "customerManagement": "Customer Management",
-  "customerManagementDesc": "Manage all your customer information in one place",
-  "ctaTitle": "Ready to Get Started?",
-  "ctaDescription": "Join thousands of businesses already using our platform",
-  "startFree": "Start Free",
-  "findServices": "Find Services",
-  "allRightsReserved": "All rights reserved",
-  "signin": "Sign In",
-  "signup": "Sign Up",
-  "password": "Password",
-  "confirmPassword": "Confirm Password",
-  "businessName": "Business Name",
-  "businessType": "Business Type",
-  "address": "Address",
-  "description": "Description",
-  "dontHaveAccount": "Don't have an account?",
-  "alreadyHaveAccount": "Already have an account?",
-  "theme": "Theme",
-  "light": "Light",
-  "dark": "Dark",
-  "system": "System"
+  "hero": {
+    "badge": "Smart Queue Management",
+    "title": "Streamline Your Business with KeepQueue",
+    "subtitle": "Intelligent appointment scheduling, queue management, and customer engagement platform designed for modern businesses."
+  },
+  "cta": {
+    "business": "For Business",
+    "customer": "For Customers",
+    "title": "Ready to Transform Your Business?",
+    "subtitle": "Join thousands of businesses already using KeepQueue to improve their customer experience.",
+    "startFree": "Start Free Trial",
+    "learnMore": "Learn More"
+  },
+  "demo": {
+    "placeholder": "Product Demo Video"
+  },
+  "features": {
+    "title": "Everything You Need to Manage Your Business",
+    "subtitle": "Powerful features designed to help you serve customers better and grow your business.",
+    "scheduling": {
+      "title": "Smart Scheduling",
+      "description": "Automated appointment booking with intelligent time slot management and conflict prevention."
+    },
+    "whatsapp": {
+      "title": "WhatsApp Integration",
+      "description": "Send automated reminders, confirmations, and updates directly through WhatsApp."
+    },
+    "customers": {
+      "title": "Customer Management",
+      "description": "Complete customer profiles with history, preferences, and communication logs."
+    },
+    "analytics": {
+      "title": "Business Analytics",
+      "description": "Detailed insights into your business performance, customer behavior, and revenue trends."
+    },
+    "security": {
+      "title": "Enterprise Security",
+      "description": "Bank-level security with data encryption and compliance with privacy regulations."
+    },
+    "automation": {
+      "title": "Smart Automation",
+      "description": "Automate repetitive tasks and workflows to save time and reduce errors."
+    }
+  },
+  "testimonials": {
+    "title": "Trusted by Businesses Worldwide",
+    "subtitle": "See what our customers have to say about KeepQueue.",
+    "testimonial1": {
+      "text": "KeepQueue transformed how we manage appointments. Our no-show rate dropped by 60%!",
+      "author": "Sarah Johnson",
+      "role": "Salon Owner"
+    },
+    "testimonial2": {
+      "text": "The WhatsApp integration is a game-changer. Customers love the automated reminders.",
+      "author": "Michael Chen",
+      "role": "Clinic Manager"
+    },
+    "testimonial3": {
+      "text": "Best investment we made for our business. The analytics help us make better decisions.",
+      "author": "Emma Rodriguez",
+      "role": "Restaurant Owner"
+    }
+  },
+  "pricing": {
+    "title": "Simple, Transparent Pricing",
+    "subtitle": "Choose the plan that fits your business needs. No hidden fees, cancel anytime.",
+    "popular": "Most Popular",
+    "month": "month",
+    "getStarted": "Get Started",
+    "basic": {
+      "name": "Basic",
+      "price": "$29",
+      "features": [
+        "Up to 100 appointments/month",
+        "Basic scheduling",
+        "Email notifications",
+        "Customer database",
+        "Mobile app access"
+      ]
+    },
+    "pro": {
+      "name": "Professional",
+      "price": "$79",
+      "features": [
+        "Unlimited appointments",
+        "WhatsApp integration",
+        "Advanced analytics",
+        "Custom branding",
+        "Priority support",
+        "API access"
+      ]
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "price": "$199",
+      "features": [
+        "Everything in Pro",
+        "Multi-location support",
+        "Advanced automation",
+        "Custom integrations",
+        "Dedicated account manager",
+        "SLA guarantee"
+      ]
+    }
+  },
+  "auth": {
+    "signin": "Sign In",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full Name",
+    "businessName": "Business Name",
+    "phone": "Phone Number",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "createAccount": "Create Account",
+    "signInAccount": "Sign In to Account"
+  },
+  "dashboard": {
+    "overview": "Overview",
+    "appointments": "Appointments",
+    "customers": "Customers",
+    "services": "Services",
+    "calendar": "Calendar",
+    "analytics": "Analytics",
+    "reviews": "Reviews",
+    "whatsapp": "WhatsApp",
+    "settings": "Settings"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search...",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import"
+  }
 }

@@ -1,67 +1,52 @@
 "use client"
 
-import { Bell, Search, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageToggle } from "@/components/language-toggle"
+import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
+import Link from "next/link"
+import { LogOut, User } from "lucide-react"
 
 export function Header() {
+  const { user, logout } = useAuth()
   const { t } = useLanguage()
 
   return (
-    <header className="flex h-16 items-center gap-4 border-b bg-background px-6">
-      <div className="flex-1">
-        <form>
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder={t.search}
-              className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
-            />
-          </div>
-        </form>
-      </div>
-      <div className="flex items-center gap-4">
-        <ThemeToggle />
-        <LanguageToggle />
-        <Button variant="outline" size="icon">
-          <Bell className="h-4 w-4" />
-          <span className="sr-only">{t.notifications}</span>
-        </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src="/placeholder-user.jpg" alt="Avatar" />
-                <AvatarFallback>
-                  <User className="h-4 w-4" />
-                </AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="end" forceMount>
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">משתמש</p>
-                <p className="text-xs leading-none text-muted-foreground">user@example.com</p>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>{t.logout}</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        <Link href="/" className="font-bold text-xl">
+          KeepQueue
+        </Link>
+
+        <div className="flex items-center gap-4">
+          <LanguageToggle />
+          <ThemeToggle />
+
+          {user ? (
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm">
+                <User className="h-4 w-4 mr-2" />
+                {user.name}
+              </Button>
+              <Button variant="ghost" size="sm" onClick={logout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                {t("auth.logout")}
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link href="/auth/signin">
+                <Button variant="ghost" size="sm">
+                  {t("auth.signin")}
+                </Button>
+              </Link>
+              <Link href="/auth/signup">
+                <Button size="sm">{t("auth.signup")}</Button>
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   )

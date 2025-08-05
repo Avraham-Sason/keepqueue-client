@@ -238,6 +238,8 @@ export function LandingPage() {
                                             <Image
                                                 src={testimonial.image || "/placeholder.svg"}
                                                 alt={testimonial.name}
+                                                width={60}
+                                                height={60}
                                                 className="h-12 w-12 rounded-full mr-4"
                                             />
                                             <div>

@@ -31,7 +31,7 @@ export function CustomerSignInForm() {
       const result = await login(email, password)
 
       if (result.success) {
-        router.push("/customer/marketplace")
+        router.push("/customer/dashboard")
       } else {
         setError(result.error || "שגיאה בהתחברות")
       }

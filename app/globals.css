@@ -162,7 +162,7 @@
   background-size: 24px 24px;
 }
 
-/* Sidebar styling */
+/* Sidebar styling - Fixed for proper left-side behavior */
 [data-sidebar="sidebar"] {
   background-color: hsl(var(--sidebar-background));
   color: hsl(var(--sidebar-foreground));

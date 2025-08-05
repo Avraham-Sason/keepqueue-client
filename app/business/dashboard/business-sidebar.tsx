@@ -81,7 +81,7 @@ const menuItems = [
 
 export function BusinessSidebar() {
   return (
-    <Sidebar>
+    <Sidebar side="right">
       <SidebarHeader className="p-4">
         <div className="flex items-center space-x-2">
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">

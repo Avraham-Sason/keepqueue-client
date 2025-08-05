@@ -9,6 +9,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import Image from "next/image";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function LandingPage() {
     const [email, setEmail] = useState("");
@@ -88,13 +89,13 @@ export function LandingPage() {
             {/* Header */}
             <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container flex h-16 items-center justify-between">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center gap-2">
                         <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
                             <Users className="h-5 w-5 text-primary-foreground" />
                         </div>
                         <span className="text-xl font-bold">Keepqueue</span>
                     </div>
-                    <nav className="hidden md:flex items-center space-x-6">
+                    <nav className="hidden md:flex items-center gap-4">
                         <Link href="#features" className="text-sm font-medium hover:text-primary transition-colors">
                             יתרונות
                         </Link>
@@ -107,13 +108,12 @@ export function LandingPage() {
                         <Link href="/marketplace" className="text-sm font-medium hover:text-primary transition-colors">
                             חיפוש עסקים
                         </Link>
-                        <Button variant="outline" size="sm" asChild>
-                            <Link href="/auth/signin">התחברות</Link>
-                        </Button>
-                        <Button size="sm" asChild>
+
+                        <Button size="sm">
                             <Link href="/auth/signup">התחל ניסיון חינם</Link>
                         </Button>
                     </nav>
+                    <ThemeToggle />
                 </div>
             </header>
 
@@ -150,13 +150,13 @@ export function LandingPage() {
 
                                 <Card className="p-6 text-center hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary">
                                     <User className="h-12 w-12 mx-auto mb-4 text-primary" />
-                                    <h3 className="text-xl font-bold mb-2">للלקוחות</h3>
+                                    <h3 className="text-xl font-bold mb-2">לקוחות</h3>
                                     <p className="text-muted-foreground mb-4">מצא וקבע תורים בקלות</p>
                                     <Button size="lg" className="w-full" asChild>
-                                        <Link href="/customer/marketplace">חיפוש עסקים</Link>
-                                    </Button>
-                                    <Button variant="outline" size="sm" className="w-full mt-2 bg-transparent" asChild>
                                         <Link href="/customer/auth/signin">כניסה ללקוחות</Link>
+                                    </Button>
+                                    <Button variant="outline" size="sm" className="w-full bg-transparent mt-2 " asChild>
+                                        <Link href="/customer/marketplace">חיפוש עסקים</Link>
                                     </Button>
                                 </Card>
                             </div>

@@ -1,5 +1,9 @@
-import { CustomerSignInForm } from "./signin-form"
+import { CustomerSignInForm } from "./signin-form";
 
 export default function CustomerSignInPage() {
-  return <CustomerSignInForm />
+    return (
+        <div className="h-screen w-full center">
+            <CustomerSignInForm />
+        </div>
+    );
 }

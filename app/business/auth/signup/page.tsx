@@ -1,5 +1,9 @@
-import { BusinessSignUpForm } from "./signup-form"
+import { BusinessSignUpForm } from "./signup-form";
 
 export default function BusinessSignUpPage() {
-  return <BusinessSignUpForm />
+    return (
+      <div className="h-screen w-full center"> 
+            <BusinessSignUpForm />
+        </div>
+    );
 }

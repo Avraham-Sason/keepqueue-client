@@ -1,5 +1,9 @@
-import { BusinessSignInForm } from "./signin-form"
+import { BusinessSignInForm } from "./signin-form";
 
 export default function BusinessSignInPage() {
-  return <BusinessSignInForm />
+    return (
+        <div className="h-screen w-full center"> 
+            <BusinessSignInForm />
+        </div>
+    );
 }

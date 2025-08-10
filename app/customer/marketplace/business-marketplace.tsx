@@ -14,8 +14,10 @@ import { Search, MapPin, Clock, Star, Phone, Calendar, Filter, Heart, HeartOff }
 import { useAppStore } from "@/lib/store";
 import { useCustomersAuthStore } from "@/lib/store";
 import type { Customer, BusinessOwner, Service } from "@/lib/mock-data";
+import { useLanguage } from "@/lib/translations/language-context";
 
 export function BusinessMarketplace() {
+    const { t } = useLanguage();
     const user = useCustomersAuthStore.useUser();
     const businesses = useAppStore.useBusinesses();
     const addAppointment = useAppStore.useAddAppointment();
@@ -30,7 +32,7 @@ export function BusinessMarketplace() {
     const customer = user as Customer;
 
     if (!customer || customer.type !== "customer") {
-        return <div>שגיאה: משתמש לא מורשה</div>;
+        return <div>{t("errorUnauthorizedUser")}</div>;
     }
 
     const filteredBusinesses = businesses.filter(
@@ -42,7 +44,7 @@ export function BusinessMarketplace() {
 
     const handleBookAppointment = () => {
         if (!selectedBusiness || !selectedService || !appointmentDate || !appointmentTime) {
-            alert("אנא מלא את כל השדות הנדרשים");
+            alert(t("pleaseFillAllRequiredFields"));
             return;
         }
 
@@ -73,7 +75,7 @@ export function BusinessMarketplace() {
         setAppointmentNotes("");
         setIsBookingDialogOpen(false);
 
-        alert("התור נקבע בהצלחה! בעל העסק יאשר את התור בקרוב.");
+        alert(t("appointmentBookedSuccess"));
     };
 
     const openBookingDialog = (business: BusinessOwner, service?: Service) => {
@@ -87,8 +89,8 @@ export function BusinessMarketplace() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">שוק העסקים</h1>
-                    <p className="text-muted-foreground">מצא ותזמן תורים אצל העסקים הטובים ביותר</p>
+                    <h1 className="text-3xl font-bold tracking-tight">{t("marketplaceTitle")}</h1>
+                    <p className="text-muted-foreground">{t("marketplaceSubtitle")}</p>
                 </div>
             </div>
 
@@ -99,7 +101,7 @@ export function BusinessMarketplace() {
                         <div className="relative flex-1">
                             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
-                                placeholder="חפש עסקים, שירותים או מיקום..."
+                                placeholder={t("searchBusinessesPlaceholder")}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="pl-8"
@@ -107,7 +109,7 @@ export function BusinessMarketplace() {
                         </div>
                         <Button variant="outline" className="gap-2 bg-transparent">
                             <Filter className="h-4 w-4" />
-                            סנן
+                            {t("filter")}
                         </Button>
                     </div>
                 </CardContent>
@@ -157,12 +159,12 @@ export function BusinessMarketplace() {
                                     </div>
                                     <div className="flex items-center text-sm">
                                         <Star className="h-4 w-4 mr-2 fill-yellow-400 text-yellow-400" />
-                                        <span>4.8 (127 ביקורות)</span>
+                                        <span>4.8 (127 {t("reviews")})</span>
                                     </div>
                                 </div>
 
                                 <div className="space-y-3">
-                                    <h4 className="font-medium">השירותים:</h4>
+                                    <h4 className="font-medium">{t("servicesLabel")}</h4>
                                     <div className="space-y-2">
                                         {business.services.map((service) => (
                                             <div key={service.id} className="flex items-center justify-between p-3 border rounded-lg">
@@ -170,14 +172,14 @@ export function BusinessMarketplace() {
                                                     <p className="font-medium">{service.name}</p>
                                                     <p className="text-sm text-muted-foreground">{service.description}</p>
                                                     <div className="flex items-center gap-2 mt-1">
-                                                        <Badge variant="outline">{service.duration} דק'</Badge>
+                                                        <Badge variant="outline">{service.duration} {t("minutesShort")}</Badge>
                                                         <Badge variant="outline">₪{service.price}</Badge>
-                                                        {service.popular && <Badge className="bg-orange-100 text-orange-800">פופולרי</Badge>}
+                                                        {service.popular && <Badge className="bg-orange-100 text-orange-800">{t("popular")}</Badge>}
                                                     </div>
                                                 </div>
                                                 <Button size="sm" onClick={() => openBookingDialog(business, service)} className="gap-2">
                                                     <Calendar className="h-4 w-4" />
-                                                    קבע תור
+                                                    {t("bookAppointment")}
                                                 </Button>
                                             </div>
                                         ))}
@@ -189,8 +191,8 @@ export function BusinessMarketplace() {
                 ) : (
                     <div className="col-span-full text-center py-12">
                         <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                        <h3 className="text-lg font-medium mb-2">לא נמצאו עסקים</h3>
-                        <p className="text-muted-foreground">נסה לשנות את מונחי החיפוש</p>
+                        <h3 className="text-lg font-medium mb-2">{t("notFoundBusinesses")}</h3>
+                        <p className="text-muted-foreground">{t("tryChangeSearchTerms")}</p>
                     </div>
                 )}
             </div>
@@ -199,11 +201,11 @@ export function BusinessMarketplace() {
             <Dialog open={isBookingDialogOpen} onOpenChange={setIsBookingDialogOpen}>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>קביעת תור</DialogTitle>
+                        <DialogTitle>{t("scheduleAppointment")}</DialogTitle>
                         <DialogDescription>
                             {selectedBusiness && selectedService && (
                                 <>
-                                    קבע תור ל{selectedService.name} אצל {selectedBusiness.businessName}
+                                    {t("bookAppointmentFor")} {selectedService.name} {t("atBusiness")} {selectedBusiness.businessName}
                                 </>
                             )}
                         </DialogDescription>
@@ -211,7 +213,7 @@ export function BusinessMarketplace() {
                     <div className="grid gap-4 py-4">
                         {selectedBusiness && !selectedService && (
                             <div className="grid gap-2">
-                                <Label htmlFor="service">בחר שירות</Label>
+                                <Label htmlFor="service">{t("selectAService")}</Label>
                                 <Select
                                     onValueChange={(value) => {
                                         const service = selectedBusiness.services.find((s) => s.id === value);
@@ -219,12 +221,12 @@ export function BusinessMarketplace() {
                                     }}
                                 >
                                     <SelectTrigger>
-                                        <SelectValue placeholder="בחר שירות" />
+                                        <SelectValue placeholder={t("selectAService")} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {selectedBusiness.services.map((service) => (
                                             <SelectItem key={service.id} value={service.id}>
-                                                {service.name} - ₪{service.price} ({service.duration} דק')
+                                                {service.name} - ₪{service.price} ({service.duration} {t("minutesShort")})
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -244,7 +246,7 @@ export function BusinessMarketplace() {
                         )}
 
                         <div className="grid gap-2">
-                            <Label htmlFor="date">תאריך</Label>
+                            <Label htmlFor="date">{t("date")}</Label>
                             <Input
                                 id="date"
                                 type="date"
@@ -255,15 +257,15 @@ export function BusinessMarketplace() {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="time">שעה</Label>
+                            <Label htmlFor="time">{t("time")}</Label>
                             <Input id="time" type="time" value={appointmentTime} onChange={(e) => setAppointmentTime(e.target.value)} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="notes">הערות (אופציונלי)</Label>
+                            <Label htmlFor="notes">{t("optionalNotes")}</Label>
                             <Textarea
                                 id="notes"
-                                placeholder="הערות נוספות לבעל העסק..."
+                                placeholder={t("additionalNotesPlaceholder")}
                                 value={appointmentNotes}
                                 onChange={(e) => setAppointmentNotes(e.target.value)}
                             />
@@ -271,10 +273,10 @@ export function BusinessMarketplace() {
                     </div>
                     <div className="flex justify-end gap-2">
                         <Button variant="outline" onClick={() => setIsBookingDialogOpen(false)}>
-                            ביטול
+                            {t("cancel")}
                         </Button>
                         <Button onClick={handleBookAppointment} disabled={!selectedService || !appointmentDate || !appointmentTime}>
-                            קבע תור
+                            {t("bookAppointment")}
                         </Button>
                     </div>
                 </DialogContent>

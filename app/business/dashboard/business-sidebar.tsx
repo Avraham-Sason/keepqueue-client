@@ -28,42 +28,43 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useLanguage } from "@/lib/translations/language-context"
 
 const menuItems = [
   {
-    title: "דשבורד",
+    title: "dashboard",
     url: "/business/dashboard",
     icon: Home,
   },
   {
-    title: "תורים",
+    title: "appointments",
     url: "/business/dashboard/appointments",
     icon: Clock,
     badge: "12",
   },
   {
-    title: "לוח שנה",
+    title: "calendar",
     url: "/business/dashboard/calendar",
     icon: Calendar,
   },
   {
-    title: "לקוחות",
+    title: "customers",
     url: "/business/dashboard/customers",
     icon: Users,
     badge: "156",
   },
   {
-    title: "שירותים",
+    title: "services",
     url: "/business/dashboard/services",
     icon: Settings,
   },
   {
-    title: "אנליטיקה",
+    title: "analytics",
     url: "/business/dashboard/analytics",
     icon: BarChart3,
   },
   {
-    title: "ביקורות",
+    title: "reviews",
     url: "/business/dashboard/reviews",
     icon: Star,
   },
@@ -73,13 +74,14 @@ const menuItems = [
     icon: MessageSquare,
   },
   {
-    title: "חיוב",
+    title: "billing",
     url: "/business/dashboard/billing",
     icon: CreditCard,
   },
 ]
 
 export function BusinessSidebar() {
+  const { t } = useLanguage()
   return (
     <Sidebar side="right">
       <SidebarHeader className="p-4">
@@ -88,15 +90,15 @@ export function BusinessSidebar() {
             <Users className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Keepqueue</h2>
-            <p className="text-xs text-muted-foreground">פאנל ניהול עסק</p>
+            <h2 className="text-lg font-semibold">{t("brandName")}</h2>
+            <p className="text-xs text-muted-foreground">{t("businessAdminPanel")}</p>
           </div>
         </div>
       </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>ניהול העסק</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("businessManagement")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -105,7 +107,7 @@ export function BusinessSidebar() {
                     <Link href={item.url} className="flex items-center justify-between">
                       <div className="flex items-center">
                         <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
+                        <span>{t(item.title)}</span>
                       </div>
                       {item.badge && (
                         <Badge variant="secondary" className="ml-auto">
@@ -128,14 +130,14 @@ export function BusinessSidebar() {
             <AvatarFallback>SA</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">סלון יופי שרה</p>
-            <p className="text-xs text-muted-foreground truncate">ניסיון חינם • 12 ימים נותרו</p>
+            <p className="text-sm font-medium truncate">{t("brandName")}</p>
+            <p className="text-xs text-muted-foreground truncate">{t("freeTrial")} • 12 {t("daysLeft")}</p>
           </div>
         </div>
         <Button variant="outline" size="sm" className="w-full justify-start bg-transparent" asChild>
           <Link href="/">
             <LogOut className="h-4 w-4 mr-2" />
-            יציאה
+            {t("signOut")}
           </Link>
         </Button>
       </SidebarFooter>

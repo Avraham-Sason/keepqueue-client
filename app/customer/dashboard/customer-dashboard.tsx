@@ -9,15 +9,17 @@ import { motion } from "framer-motion";
 import { useAppStore } from "@/lib/store";
 import { useCustomersAuthStore } from "@/lib/store";
 import type { Customer } from "@/lib/mock-data";
+import { useLanguage } from "@/lib/translations/language-context";
 
 export function CustomerDashboard() {
+    const { t } = useLanguage();
     const user = useCustomersAuthStore.useUser();
     const getCustomerAppointments = useAppStore.useGetCustomerAppointments();
     const businesses = useAppStore.useBusinesses();
     const customer = user as Customer;
 
     if (!customer || customer.type !== "customer") {
-        return <div>שגיאה: משתמש לא מורשה</div>;
+        return <div>{t("errorUnauthorizedUser")}</div>;
     }
 
     // Get real appointments for this customer
@@ -53,13 +55,13 @@ export function CustomerDashboard() {
     const getStatusText = (status: string) => {
         switch (status) {
             case "confirmed":
-                return "מאושר";
+                return t("statusConfirmed");
             case "pending":
-                return "ממתין לאישור";
+                return t("statusPending");
             case "cancelled":
-                return "בוטל";
+                return t("statusCancelled");
             case "completed":
-                return "הושלם";
+                return t("statusCompleted");
             default:
                 return status;
         }
@@ -71,8 +73,8 @@ export function CustomerDashboard() {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">שלום, {customer.firstName}!</h1>
-                        <p className="text-muted-foreground">ברוך הבא לפאנל הלקוחות שלך</p>
+                        <h1 className="text-3xl font-bold tracking-tight">{t("hello")}, {customer.firstName}!</h1>
+                        <p className="text-muted-foreground">{t("welcomeCustomerPanel")}</p>
                     </div>
                     <div className="flex items-center space-x-4">
                         <Avatar className="h-12 w-12">
@@ -92,40 +94,40 @@ export function CustomerDashboard() {
             >
                 <Card className="hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">תורים קרובים</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("upcomingAppointmentsTitle")}</CardTitle>
                         <Calendar className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{upcomingAppointments.length}</div>
-                        <p className="text-xs text-muted-foreground">תורים מתוכננים</p>
+                        <p className="text-xs text-muted-foreground">{t("plannedAppointments")}</p>
                     </CardContent>
                 </Card>
 
                 <Card className="hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">תורים שהושלמו</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("completedAppointmentsTitle")}</CardTitle>
                         <CheckCircle className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{pastAppointments.filter((apt) => apt.status === "completed").length}</div>
-                        <p className="text-xs text-muted-foreground">סה"כ תורים</p>
+                        <p className="text-xs text-muted-foreground">{t("totalAppointments")}</p>
                     </CardContent>
                 </Card>
 
                 <Card className="hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">עסקים מועדפים</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("favoriteBusinesses")}</CardTitle>
                         <Heart className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{favoriteBusinesses.length}</div>
-                        <p className="text-xs text-muted-foreground">עסקים שמורים</p>
+                        <p className="text-xs text-muted-foreground">{t("savedBusinesses")}</p>
                     </CardContent>
                 </Card>
 
                 <Card className="hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">סה"כ הוצאות</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("totalExpenses")}</CardTitle>
                         <Star className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -147,8 +149,8 @@ export function CustomerDashboard() {
                 >
                     <Card className="hover:shadow-lg transition-all duration-300">
                         <CardHeader>
-                            <CardTitle>התורים הקרובים שלי</CardTitle>
-                            <CardDescription>התורים שלך בימים הקרובים</CardDescription>
+                            <CardTitle>{t("myUpcomingAppointments")}</CardTitle>
+                            <CardDescription>{t("yourAppointmentsNextDays")}</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
@@ -192,12 +194,12 @@ export function CustomerDashboard() {
                                 ) : (
                                     <div className="text-center py-8 text-muted-foreground">
                                         <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                                        <p className="text-lg font-medium mb-2">אין תורים קרובים</p>
-                                        <p className="text-sm">קבע תור חדש בשוק העסקים</p>
+                                        <p className="text-lg font-medium mb-2">{t("noUpcomingAppointments")}</p>
+                                        <p className="text-sm">{t("marketplaceCta")}</p>
                                         <Button className="mt-4" asChild>
                                             <a href="/customer/marketplace">
                                                 <Search className="h-4 w-4 mr-2" />
-                                                חפש עסקים
+                                                {t("searchBusinesses")}
                                             </a>
                                         </Button>
                                     </div>
@@ -216,8 +218,8 @@ export function CustomerDashboard() {
                 >
                     <Card className="hover:shadow-lg transition-all duration-300">
                         <CardHeader>
-                            <CardTitle>העסקים המועדפים שלי</CardTitle>
-                            <CardDescription>העסקים שאתה הכי אוהב</CardDescription>
+                            <CardTitle>{t("favoriteBusinessesTitle")}</CardTitle>
+                            <CardDescription>{t("youLikeMost")}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {favoriteBusinesses.length > 0 ? (
@@ -236,15 +238,15 @@ export function CustomerDashboard() {
                                             </div>
                                         </div>
                                         <Button size="sm" variant="outline">
-                                            קבע תור
+                                            {t("bookAppointment")}
                                         </Button>
                                     </div>
                                 ))
                             ) : (
                                 <div className="text-center py-8 text-muted-foreground">
                                     <Heart className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                                    <p>אין עסקים מועדפים</p>
-                                    <p className="text-sm">הוסף עסקים למועדפים בשוק</p>
+                                    <p>{t("noFavoriteBusinesses")}</p>
+                                    <p className="text-sm">{t("addFavoritesInMarketplace")}</p>
                                 </div>
                             )}
                         </CardContent>

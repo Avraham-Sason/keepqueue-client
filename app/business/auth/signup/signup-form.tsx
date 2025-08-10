@@ -11,8 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Building, Mail, Lock, Eye, EyeOff, User, Phone, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/translations/language-context"
 
 export function BusinessSignUpForm() {
+  const { t } = useLanguage()
   const [showPassword, setShowPassword] = useState(false)
   const [step, setStep] = useState(1)
 
@@ -28,7 +30,7 @@ export function BusinessSignUpForm() {
         <div className="mb-6">
           <Link href="/" className="flex items-center text-muted-foreground hover:text-foreground transition-colors">
             <ArrowRight className="h-4 w-4 mr-2" />
-            חזור לדף הבית
+            {t("backToHome")}
           </Link>
         </div>
 
@@ -39,28 +41,28 @@ export function BusinessSignUpForm() {
                 <Building className="h-7 w-7 text-primary-foreground" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold">הרשמת עסק חדש</CardTitle>
-            <CardDescription>הצטרף ל-Keepqueue ונהל את העסק שלך בקלות</CardDescription>
+            <CardTitle className="text-2xl font-bold">{t("businessSignUpTitle")}</CardTitle>
+            <CardDescription>{t("businessSignUpDescription")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {step === 1 && (
               <>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">שם פרטי</Label>
+                    <Label htmlFor="firstName">{t("firstName")}</Label>
                     <div className="relative">
                       <User className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input id="firstName" placeholder="שם פרטי" className="pr-10" />
+                      <Input id="firstName" placeholder={t("firstName")} className="pr-10" />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">שם משפחה</Label>
-                    <Input id="lastName" placeholder="שם משפחה" />
+                    <Label htmlFor="lastName">{t("lastName")}</Label>
+                    <Input id="lastName" placeholder={t("lastName")} />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">כתובת מייל עסקית</Label>
+                  <Label htmlFor="email">{t("businessEmail")}</Label>
                   <div className="relative">
                     <Mail className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input id="email" type="email" placeholder="business@example.com" className="pr-10" />
@@ -68,15 +70,15 @@ export function BusinessSignUpForm() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone">טלפון עסקי</Label>
+                  <Label htmlFor="phone">{t("businessPhone")}</Label>
                   <div className="relative">
                     <Phone className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input id="phone" placeholder="03-123-4567" className="pr-10" />
+                     <Input id="phone" placeholder="03-123-4567" className="pr-10" />
                   </div>
                 </div>
 
                 <Button className="w-full" onClick={() => setStep(2)}>
-                  המשך
+                  {t("continue")}
                 </Button>
               </>
             )}
@@ -84,18 +86,18 @@ export function BusinessSignUpForm() {
             {step === 2 && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="businessName">שם העסק</Label>
+                  <Label htmlFor="businessName">{t("businessName")}</Label>
                   <div className="relative">
                     <Building className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input id="businessName" placeholder="שם העסק שלך" className="pr-10" />
+                    <Input id="businessName" placeholder={t("businessName")} className="pr-10" />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="businessType">סוג העסק</Label>
+                  <Label htmlFor="businessType">{t("businessType")}</Label>
                   <Select>
                     <SelectTrigger>
-                      <SelectValue placeholder="בחר סוג עסק" />
+                      <SelectValue placeholder={t("selectBusinessType")} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="hair-salon">מספרה</SelectItem>
@@ -110,18 +112,18 @@ export function BusinessSignUpForm() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="address">כתובת העסק</Label>
-                  <Input id="address" placeholder="רחוב 123, עיר" />
+                  <Label htmlFor="address">{t("address")}</Label>
+                  <Input id="address" placeholder={t("address")} />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">סיסמה</Label>
+                  <Label htmlFor="password">{t("password")}</Label>
                   <div className="relative">
                     <Lock className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="בחר סיסמה חזקה"
+                      placeholder={t("chooseStrongPassword")}
                       className="pr-10 pl-10"
                     />
                     <Button
@@ -143,23 +145,23 @@ export function BusinessSignUpForm() {
                 <div className="flex items-center space-x-2">
                   <Checkbox id="terms" />
                   <Label htmlFor="terms" className="text-sm">
-                    אני מסכים ל
+                    {t("iAgreeTo")} 
                     <Link href="/terms" className="text-primary hover:underline">
-                      תנאי השימוש
+                      {t("termsOfUse")}
                     </Link>{" "}
-                    ול
+                    {t("and")} 
                     <Link href="/privacy" className="text-primary hover:underline">
-                      מדיניות הפרטיות
+                      {t("privacyPolicy")}
                     </Link>
                   </Label>
                 </div>
 
                 <div className="flex gap-2">
                   <Button variant="outline" onClick={() => setStep(1)} className="bg-transparent">
-                    חזור
+                    {t("back")}
                   </Button>
                   <Button className="flex-1" asChild>
-                    <Link href="/business/dashboard">התחל ניסיון חינם</Link>
+                    <Link href="/business/dashboard">{t("startFreeTrial")}</Link>
                   </Button>
                 </div>
               </>
@@ -172,7 +174,7 @@ export function BusinessSignUpForm() {
                     <Separator className="w-full" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">או</span>
+                     <span className="bg-background px-2 text-muted-foreground">{t("or")}</span>
                   </div>
                 </div>
 
@@ -196,28 +198,28 @@ export function BusinessSignUpForm() {
                         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                       />
                     </svg>
-                    Google
+                    {t("google")}
                   </Button>
                   <Button variant="outline" className="bg-transparent">
                     <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                     </svg>
-                    Facebook
+                    {t("facebook")}
                   </Button>
                 </div>
               </>
             )}
 
             <div className="text-center text-sm text-muted-foreground">
-              יש לך כבר עסק רשום?{" "}
+              {t("haveRegisteredBusiness")} {" "}
               <Link href="/business/auth/signin" className="text-primary hover:underline font-medium">
-                התחבר כאן
+                {t("signInHere")}
               </Link>
             </div>
 
             <div className="text-center">
               <Link href="/customer/auth/signin" className="text-sm text-muted-foreground hover:text-foreground">
-                לקוח? כניסה לאזור הלקוחות
+                {t("customerLoginCta")}
               </Link>
             </div>
           </CardContent>

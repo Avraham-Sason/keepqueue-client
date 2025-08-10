@@ -24,7 +24,7 @@ import { motion } from "framer-motion";
 import { useAppStore } from "@/lib/store/globalStore";
 import { useBusinessAuthStore } from "@/lib/store";
 import type { BusinessOwner } from "@/lib/mock-data";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/lib/translations/language-context";
 
 export function DashboardOverview() {
     const { t } = useLanguage();
@@ -33,7 +33,7 @@ export function DashboardOverview() {
     const businessOwner = user as BusinessOwner;
 
     if (!businessOwner || businessOwner.type !== "business") {
-        return <div>שגיאה: משתמש לא מורשה</div>;
+        return <div>{t("errorUnauthorizedUser")}</div>;
     }
 
     // Get real appointments for this business
@@ -69,13 +69,13 @@ export function DashboardOverview() {
     const getStatusText = (status: string) => {
         switch (status) {
             case "confirmed":
-                return "מאושר";
+                return t("statusConfirmed");
             case "pending":
-                return "ממתין לאישור";
+                return t("statusPending");
             case "cancelled":
-                return "בוטל";
+                return t("statusCancelled");
             case "completed":
-                return "הושלם";
+                return t("statusCompleted");
             default:
                 return status;
         }
@@ -87,8 +87,8 @@ export function DashboardOverview() {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">שלום, {businessOwner.firstName}!</h1>
-                        <p className="text-muted-foreground">ברוך הבא לפאנל הניהול של {businessOwner.businessName}</p>
+                        <h1 className="text-3xl font-bold tracking-tight">{t("hello")}, {businessOwner.firstName}!</h1>
+                        <p className="text-muted-foreground">{t("welcomeBusinessAdminPanelOf")} {businessOwner.businessName}</p>
                     </div>
                     <div className="flex items-center space-x-4">
                         <Avatar className="h-12 w-12">
@@ -108,45 +108,45 @@ export function DashboardOverview() {
             >
                 <Card className="hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">תורים היום</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("todayAppointments")}</CardTitle>
                         <Calendar className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{todayAppointments.length}</div>
-                        <p className="text-xs text-muted-foreground">{todayAppointments.length === 0 ? "אין תורים היום" : "תורים מתוכננים"}</p>
+                        <p className="text-xs text-muted-foreground">{todayAppointments.length === 0 ? t("noAppointmentsToday") : t("scheduledAppointments")}</p>
                     </CardContent>
                 </Card>
 
                 <Card className="hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">תורים מאושרים</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("confirmed")}</CardTitle>
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{confirmedAppointments.length}</div>
-                        <p className="text-xs text-muted-foreground">סה"כ תורים מאושרים</p>
+                        <p className="text-xs text-muted-foreground">{t("totalAppointments")}</p>
                     </CardContent>
                 </Card>
 
                 <Card className="hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">הכנסות</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("revenue")}</CardTitle>
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">₪{totalRevenue.toLocaleString()}</div>
-                        <p className="text-xs text-muted-foreground">מתורים שהושלמו</p>
+                        <p className="text-xs text-muted-foreground">{t("fromCompletedAppointments")}</p>
                     </CardContent>
                 </Card>
 
                 <Card className="hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">סה"כ תורים</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("totalAppointments")}</CardTitle>
                         <TrendingUp className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{businessAppointments.length}</div>
-                        <p className="text-xs text-muted-foreground">כל התורים במערכת</p>
+                        <p className="text-xs text-muted-foreground">{t("allAppointmentsInSystem")}</p>
                     </CardContent>
                 </Card>
             </motion.div>
@@ -161,8 +161,8 @@ export function DashboardOverview() {
                 >
                     <Card className="hover:shadow-lg transition-all duration-300">
                         <CardHeader>
-                            <CardTitle>תורים קרובים</CardTitle>
-                            <CardDescription>התורים הבאים שלך</CardDescription>
+                            <CardTitle>{t("upcomingAppointmentsTitle")}</CardTitle>
+                            <CardDescription>{t("yourUpcomingAppointments")}</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
@@ -205,8 +205,8 @@ export function DashboardOverview() {
                                 ) : (
                                     <div className="text-center py-8 text-muted-foreground">
                                         <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                                        <p className="text-lg font-medium mb-2">אין תורים קרובים</p>
-                                        <p className="text-sm">כשלקוחות יקבעו תורים, הם יופיעו כאן</p>
+                                        <p className="text-lg font-medium mb-2">{t("noUpcomingAppointments")}</p>
+                                        <p className="text-sm">{t("upcomingAppointmentsEmptyHint")}</p>
                                     </div>
                                 )}
                             </div>
@@ -222,9 +222,9 @@ export function DashboardOverview() {
                     className="col-span-3"
                 >
                     <Card className="hover:shadow-lg transition-all duration-300">
-                        <CardHeader>
-                            <CardTitle>פרטי העסק</CardTitle>
-                            <CardDescription>המידע שלך בפלטפורמה</CardDescription>
+                            <CardHeader>
+                            <CardTitle>{t("businessDetails")}</CardTitle>
+                            <CardDescription>{t("yourInfoOnPlatform")}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-3">
@@ -234,7 +234,7 @@ export function DashboardOverview() {
                                     </div>
                                     <div>
                                         <p className="text-sm font-medium">{businessOwner.address}</p>
-                                        <p className="text-xs text-muted-foreground">כתובת העסק</p>
+                                        <p className="text-xs text-muted-foreground">{t("businessAddress")}</p>
                                     </div>
                                 </div>
 
@@ -244,7 +244,7 @@ export function DashboardOverview() {
                                     </div>
                                     <div>
                                         <p className="text-sm font-medium">{businessOwner.phone}</p>
-                                        <p className="text-xs text-muted-foreground">טלפון</p>
+                                        <p className="text-xs text-muted-foreground">{t("phone")}</p>
                                     </div>
                                 </div>
 
@@ -254,7 +254,7 @@ export function DashboardOverview() {
                                     </div>
                                     <div>
                                         <p className="text-sm font-medium">{businessOwner.email}</p>
-                                        <p className="text-xs text-muted-foreground">מייל</p>
+                                        <p className="text-xs text-muted-foreground">{t("email")}</p>
                                     </div>
                                 </div>
 
@@ -264,13 +264,13 @@ export function DashboardOverview() {
                                     </div>
                                     <div>
                                         <p className="text-sm font-medium">{businessOwner.workingHours}</p>
-                                        <p className="text-xs text-muted-foreground">שעות פעילות</p>
+                                        <p className="text-xs text-muted-foreground">{t("workingHours")}</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="pt-4 border-t">
-                                <h4 className="text-sm font-medium mb-2">השירותים שלך</h4>
+                                <h4 className="text-sm font-medium mb-2">{t("yourServices")}</h4>
                                 <div className="flex flex-wrap gap-2">
                                     {businessOwner.services.map((service) => (
                                         <Badge key={service.id} variant="secondary">
@@ -287,27 +287,27 @@ export function DashboardOverview() {
             {/* Quick Actions */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}>
                 <Card className="hover:shadow-lg transition-all duration-300">
-                    <CardHeader>
-                        <CardTitle>פעולות מהירות</CardTitle>
-                        <CardDescription>גישה מהירה לפעולות נפוצות</CardDescription>
+                        <CardHeader>
+                        <CardTitle>{t("quickActions")}</CardTitle>
+                        <CardDescription>{t("viewAll")}</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                             <Button className="h-20 flex-col space-y-2 bg-transparent" variant="outline">
                                 <Plus className="h-6 w-6" />
-                                <span>הוסף תור חדש</span>
+                                <span>{t("addNewAppointment")}</span>
                             </Button>
                             <Button className="h-20 flex-col space-y-2 bg-transparent" variant="outline">
                                 <Users className="h-6 w-6" />
-                                <span>נהל לקוחות</span>
+                                <span>{t("manageCustomers")}</span>
                             </Button>
                             <Button className="h-20 flex-col space-y-2 bg-transparent" variant="outline">
                                 <TrendingUp className="h-6 w-6" />
-                                <span>צפה בדוחות</span>
+                                <span>{t("viewReports")}</span>
                             </Button>
                             <Button className="h-20 flex-col space-y-2 bg-transparent" variant="outline">
                                 <Star className="h-6 w-6" />
-                                <span>ביקורות לקוחות</span>
+                                <span>{t("customerReviews")}</span>
                             </Button>
                         </div>
                     </CardContent>

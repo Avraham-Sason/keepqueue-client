@@ -12,12 +12,14 @@ import { Separator } from "@/components/ui/separator"
 import { Clock, MapPin, Star, Phone, User, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { useLanguage } from "@/lib/translations/language-context"
 
 interface BookingInterfaceProps {
   businessId: string
 }
 
 export function BookingInterface({ businessId }: BookingInterfaceProps) {
+  const { t } = useLanguage()
   const [selectedService, setSelectedService] = useState<number | null>(null)
   const [selectedDate, setSelectedDate] = useState<string>("")
   const [selectedTime, setSelectedTime] = useState<string>("")
@@ -140,13 +142,13 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
         <div className="flex items-center justify-between">
           <Link href="/marketplace" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground">
             <ArrowRight className="h-4 w-4" />
-            <span>חזור לחיפוש</span>
+            <span>{t("bookingBackToSearch")}</span>
           </Link>
           <div className="flex items-center space-x-2">
             <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
               <User className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-medium">Keepqueue</span>
+            <span className="font-medium">{t("brandName")}</span>
           </div>
         </div>
 
@@ -169,9 +171,9 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       <span className="font-medium">{business.rating}</span>
                     </div>
-                    <span className="text-muted-foreground">({business.reviews} ביקורות)</span>
+                     <span className="text-muted-foreground">({business.reviews} {t("reviews")})</span>
                     <Badge variant="secondary" className="bg-green-100 text-green-800">
-                      פתוח עכשיו
+                      {t("openNow")}
                     </Badge>
                   </div>
                   <div className="space-y-1 text-sm text-muted-foreground">
@@ -197,10 +199,10 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
         {/* Progress Steps */}
         <div className="flex items-center justify-center space-x-4 mb-8">
           {[
-            { number: 1, title: "בחירת שירות" },
-            { number: 2, title: "תאריך ושעה" },
-            { number: 3, title: "פרטים אישיים" },
-            { number: 4, title: "אישור" },
+            { number: 1, title: t("selectService") },
+            { number: 2, title: t("selectDateTime") },
+            { number: 3, title: t("personalDetails") },
+            { number: 4, title: t("confirm") },
           ].map((stepInfo, index) => (
             <div key={stepInfo.number} className="flex items-center">
               <div className="flex flex-col items-center">
@@ -223,8 +225,8 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
             <Card>
               <CardHeader>
-                <CardTitle>בחר שירות</CardTitle>
-                <CardDescription>בחר את השירות שברצונך לקבל</CardDescription>
+                <CardTitle>{t("selectService")}</CardTitle>
+                <CardDescription>{t("selectAService")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {services.map((service) => (
@@ -235,7 +237,7 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                     }`}
                     onClick={() => setSelectedService(service.id)}
                   >
-                    {service.popular && <Badge className="absolute -top-2 right-4 bg-orange-500">פופולרי</Badge>}
+                    {service.popular && <Badge className="absolute -top-2 right-4 bg-orange-500">{t("popular")}</Badge>}
                     <div className="flex items-center justify-between">
                       <div className="space-y-2">
                         <h3 className="font-medium text-lg">{service.name}</h3>
@@ -243,7 +245,7 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                         <div className="flex items-center gap-4 text-sm">
                           <span className="flex items-center gap-1">
                             <Clock className="h-4 w-4" />
-                            {service.duration} דקות
+                            {service.duration} {t("minutes")}
                           </span>
                           <span className="font-medium text-lg">₪{service.price}</span>
                         </div>
@@ -259,7 +261,7 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                   </div>
                 ))}
                 <Button className="w-full" size="lg" disabled={!selectedService} onClick={handleNext}>
-                  המשך לבחירת תאריך
+                  {t("goToPersonalDetails")}
                   <ArrowLeft className="h-4 w-4 mr-2" />
                 </Button>
               </CardContent>
@@ -272,11 +274,11 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
             <Card>
               <CardHeader>
-                <CardTitle>בחר תאריך ושעה</CardTitle>
+                <CardTitle>{t("selectDateTime")}</CardTitle>
                 <CardDescription>
                   {selectedServiceData && (
                     <>
-                      שירות נבחר: {selectedServiceData.name} ({selectedServiceData.duration} דקות)
+                      {t("selectedService")}: {selectedServiceData.name} ({selectedServiceData.duration} {t("minutes")})
                     </>
                   )}
                 </CardDescription>
@@ -284,7 +286,7 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
               <CardContent className="space-y-6">
                 {/* Date Selection */}
                 <div className="space-y-3">
-                  <Label className="text-base font-medium">בחר תאריך</Label>
+                  <Label className="text-base font-medium">{t("selectDate")}</Label>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {availableDates.map((dateOption) => (
                       <Button
@@ -304,7 +306,7 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                 {/* Time Selection */}
                 {selectedDate && (
                   <div className="space-y-3">
-                    <Label className="text-base font-medium">בחר שעה</Label>
+                    <Label className="text-base font-medium">{t("selectTime")}</Label>
                     <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
                       {availableTimes.map((timeOption) => (
                         <Button
@@ -325,10 +327,10 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                 <div className="flex gap-3">
                   <Button variant="outline" onClick={handleBack} className="bg-transparent">
                     <ArrowRight className="h-4 w-4 mr-2" />
-                    חזור
+                    {t("back")}
                   </Button>
                   <Button className="flex-1" disabled={!selectedDate || !selectedTime} onClick={handleNext}>
-                    המשך לפרטים אישיים
+                    {t("goToPersonalDetails")}
                     <ArrowLeft className="h-4 w-4 mr-2" />
                   </Button>
                 </div>
@@ -344,32 +346,32 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
               {/* Customer Form */}
               <Card>
                 <CardHeader>
-                  <CardTitle>פרטים אישיים</CardTitle>
-                  <CardDescription>אנא מלא את הפרטים שלך</CardDescription>
+                  <CardTitle>{t("personalDetails")}</CardTitle>
+                  <CardDescription>{t("pleaseFillYourDetails")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName">שם פרטי *</Label>
+                      <Label htmlFor="firstName">{t("firstName")} *</Label>
                       <Input
                         id="firstName"
-                        placeholder="שם פרטי"
+                        placeholder={t("firstName")}
                         value={customerInfo.firstName}
                         onChange={(e) => setCustomerInfo({ ...customerInfo, firstName: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="lastName">שם משפחה *</Label>
+                      <Label htmlFor="lastName">{t("lastName")} *</Label>
                       <Input
                         id="lastName"
-                        placeholder="שם משפחה"
+                        placeholder={t("lastName")}
                         value={customerInfo.lastName}
                         onChange={(e) => setCustomerInfo({ ...customerInfo, lastName: e.target.value })}
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone">טלפון *</Label>
+                      <Label htmlFor="phone">{t("phone")} *</Label>
                     <Input
                       id="phone"
                       placeholder="050-123-4567"
@@ -378,7 +380,7 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">כתובת מייל *</Label>
+                      <Label htmlFor="email">{t("emailAddress")} *</Label>
                     <Input
                       id="email"
                       type="email"
@@ -388,10 +390,10 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="notes">הערות (אופציונלי)</Label>
+                      <Label htmlFor="notes">{t("optionalNotes")}</Label>
                     <Textarea
                       id="notes"
-                      placeholder="בקשות מיוחדות או הערות..."
+                      placeholder={t("additionalNotesPlaceholder")}
                       value={customerInfo.notes}
                       onChange={(e) => setCustomerInfo({ ...customerInfo, notes: e.target.value })}
                     />
@@ -402,48 +404,48 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
               {/* Booking Summary */}
               <Card>
                 <CardHeader>
-                  <CardTitle>סיכום הזמנה</CardTitle>
-                  <CardDescription>פרטי התור שלך</CardDescription>
+                  <CardTitle>{t("bookingSummary")}</CardTitle>
+                  <CardDescription>{t("yourAppointmentDetails")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">עסק:</span>
+                      <span className="text-muted-foreground">{t("businessLabel")}:</span>
                       <span className="font-medium">{business.name}</span>
                     </div>
                     <Separator />
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">שירות:</span>
+                      <span className="text-muted-foreground">{t("serviceLabel")}:</span>
                       <span className="font-medium">{selectedServiceData?.name}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">תאריך:</span>
+                      <span className="text-muted-foreground">{t("dateLabel")}:</span>
                       <span className="font-medium">
                         {availableDates.find((d) => d.date === selectedDate)?.day} (
                         {selectedDate?.split("-").slice(1).join("/")})
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">שעה:</span>
+                      <span className="text-muted-foreground">{t("timeLabel")}:</span>
                       <span className="font-medium">{selectedTime}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">משך:</span>
-                      <span className="font-medium">{selectedServiceData?.duration} דקות</span>
+                      <span className="text-muted-foreground">{t("durationLabel")}:</span>
+                      <span className="font-medium">{selectedServiceData?.duration} {t("minutes")}</span>
                     </div>
                     <Separator />
-                    <div className="flex justify-between text-lg font-semibold">
-                      <span>סה"כ:</span>
+                      <div className="flex justify-between text-lg font-semibold">
+                      <span>{t("totalLabel")}:</span>
                       <span>₪{totalPrice}</span>
                     </div>
                   </div>
 
                   <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
-                    <h4 className="font-medium mb-2">מה קורה הלאה?</h4>
+                    <h4 className="font-medium mb-2">{t("whatsNext")}</h4>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• תקבל אישור ב-WhatsApp</li>
-                      <li>• תזכורת 24 שעות לפני התור</li>
-                      <li>• אפשרות לבטל עד 4 שעות לפני</li>
+                      <li>{t("whatsNextLine1")}</li>
+                      <li>{t("whatsNextLine2")}</li>
+                      <li>{t("whatsNextLine3")}</li>
                     </ul>
                   </div>
                 </CardContent>
@@ -453,7 +455,7 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
             <div className="flex gap-3">
               <Button variant="outline" onClick={handleBack} className="bg-transparent">
                 <ArrowRight className="h-4 w-4 mr-2" />
-                חזור
+                {t("back")}
               </Button>
               <Button
                 className="flex-1"
@@ -463,7 +465,7 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                 }
                 onClick={handleBooking}
               >
-                אשר הזמנה
+                {t("confirmBooking")}
                 <CheckCircle className="h-4 w-4 mr-2" />
               </Button>
             </div>
@@ -484,39 +486,39 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                     <CheckCircle className="h-8 w-8 text-green-600" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-green-600 mb-2">התור נקבע בהצלחה!</h2>
-                    <p className="text-muted-foreground">התור שלך אושר ונשלח אישור ל-WhatsApp ולמייל</p>
+                    <h2 className="text-2xl font-bold text-green-600 mb-2">{t("bookingSuccessTitle")}</h2>
+                    <p className="text-muted-foreground">{t("bookingSuccessDescription")}</p>
                   </div>
 
                   <div className="bg-muted/50 p-6 rounded-lg text-right space-y-2">
-                    <h3 className="font-semibold mb-4">פרטי התור:</h3>
+                    <h3 className="font-semibold mb-4">{t("appointmentDetails")}:</h3>
                     <p>
-                      <strong>עסק:</strong> {business.name}
+                      <strong>{t("businessLabel")}:</strong> {business.name}
                     </p>
                     <p>
-                      <strong>שירות:</strong> {selectedServiceData?.name}
+                      <strong>{t("serviceLabel")}:</strong> {selectedServiceData?.name}
                     </p>
                     <p>
-                      <strong>תאריך:</strong> {availableDates.find((d) => d.date === selectedDate)?.day} (
+                      <strong>{t("dateLabel")}:</strong> {availableDates.find((d) => d.date === selectedDate)?.day} (
                       {selectedDate?.split("-").slice(1).join("/")})
                     </p>
                     <p>
-                      <strong>שעה:</strong> {selectedTime}
+                      <strong>{t("timeLabel")}:</strong> {selectedTime}
                     </p>
                     <p>
-                      <strong>כתובת:</strong> {business.address}
+                      <strong>{t("businessAddress")}:</strong> {business.address}
                     </p>
                     <p>
-                      <strong>טלפון:</strong> {business.phone}
+                      <strong>{t("phone")}:</strong> {business.phone}
                     </p>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Button variant="outline" asChild>
-                      <Link href="/marketplace">חזור לחיפוש</Link>
+                      <Link href="/marketplace">{t("bookingBackToSearch")}</Link>
                     </Button>
                     <Button asChild>
-                      <Link href="/my-appointments">התורים שלי</Link>
+                      <Link href="/my-appointments">{t("myAppointments")}</Link>
                     </Button>
                   </div>
                 </div>

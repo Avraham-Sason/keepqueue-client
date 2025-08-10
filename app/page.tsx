@@ -1,23 +1,23 @@
 import { LandingPage } from "./landing-page";
 import type { Metadata } from "next";
+import { get_server_t } from "@/lib/translations/server";
 
+const t = get_server_t("he");
 export const metadata: Metadata = {
-    title: "ניהול תורים חכם לעסקי יופי | Keepqueue",
-    description:
-        "נהל את התורים שלך מקצה לקצה עם תזכורות WhatsApp אוטומטיות, תזמון חכם ואנליטיקה מתקדמת. הפלטפורמה האידיאלית לסלונים, קליניקות ומרכזי בריאות.",
+    title: `${t("heroMain")} ${t("heroSub")} | ${t("brandName")}`,
+    description: t("heroParagraph"),
     openGraph: {
-        title: "ניהול תורים חכם לעסקי יופי | Keepqueue",
-        description:
-            "נהל את התורים שלך מקצה לקצה עם תזכורות WhatsApp אוטומטיות, תזמון חכם ואנליטיקה מתקדמת. הפלטפורמה האידיאלית לסלונים, קליניקות ומרכזי בריאות.",
+        title: `${t("heroMain")} ${t("heroSub")} | ${t("brandName")}`,
+        description: t("heroParagraph"),
         url: "https://www.keepqueue.com/",
-        siteName: "Keepqueue",
+        siteName: t("brandName"),
         locale: "he_IL",
         type: "website",
     },
     twitter: {
         card: "summary_large_image",
-        title: "ניהול תורים חכם לעסקי יופי | Keepqueue",
-        description: "נהל את התורים שלך מקצה לקצה עם תזכורות WhatsApp אוטומטיות, תזמון חכם ואנליטיקה מתקדמת.",
+        title: `${t("heroMain")} ${t("heroSub")} | ${t("brandName")}`,
+        description: t("heroParagraph"),
     },
 };
 

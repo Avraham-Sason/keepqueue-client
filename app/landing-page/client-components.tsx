@@ -7,8 +7,10 @@ import { SiteFooter, HeroSection, FeaturesSection, TestimonialsSection } from ".
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useLanguage } from "@/lib/translations/language-context";
 
 function SiteHeader() {
+    const { t } = useLanguage();
     return (
         <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-16 items-center justify-between">
@@ -16,25 +18,25 @@ function SiteHeader() {
                     <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
                         <Users className="h-5 w-5 text-primary-foreground" />
                     </div>
-                    <span className="text-xl font-bold">Keepqueue</span>
+                    <span className="text-xl font-bold">{t("brandName")}</span>
                 </div>
 
                 <nav className="hidden md:flex items-center gap-4">
                     <Link href="#features" className="text-sm font-medium hover:text-primary transition-colors">
-                        יתרונות
+                        {t("navFeatures")}
                     </Link>
                     <Link href="#pricing" className="text-sm font-medium hover:text-primary transition-colors">
-                        מחירים
+                        {t("navPricing")}
                     </Link>
                     <Link href="#testimonials" className="text-sm font-medium hover:text-primary transition-colors">
-                        המלצות
+                        {t("navTestimonials")}
                     </Link>
                     <Link href="/marketplace" className="text-sm font-medium hover:text-primary transition-colors">
-                        חיפוש עסקים
+                        {t("navMarketplace")}
                     </Link>
 
                     <Button size="sm" asChild>
-                        <Link href="/auth/signup">התחל ניסיון חינם</Link>
+                        <Link href="/auth/signup">{t("ctaStartFreeTrial")}</Link>
                     </Button>
                 </nav>
 
@@ -45,22 +47,23 @@ function SiteHeader() {
 }
 
 function NewsletterSection() {
+    const { t } = useLanguage();
     const [email, setEmail] = useState("");
     return (
         <section className="py-20 px-4 bg-primary/5">
             <div className="container max-w-4xl mx-auto text-center">
                 <div className="animate-in fade-in slide-in-from-bottom-3 duration-500">
-                    <h2 className="text-3xl md:text-4xl font-bold mb-6">מוכן להתחיל?</h2>
-                    <p className="text-xl text-muted-foreground mb-8">הצטרף לאלפי בעלי עסקים שכבר משתמשים ב-Keepqueue</p>
+                    <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("newsletterReady")}</h2>
+                    <p className="text-xl text-muted-foreground mb-8">{t("newsletterJoin")}</p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto mb-8">
                         <Input
                             type="email"
-                            placeholder="הכנס את המייל שלך"
+                            placeholder={t("newsletterEmailPlaceholder")}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="flex-1"
                         />
-                        <Button>התחל עכשיו</Button>
+                        <Button>{t("startNow")}</Button>
                     </div>
                 </div>
             </div>

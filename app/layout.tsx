@@ -3,13 +3,15 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { LanguageProvider } from "@/lib/language-context";
+import { LanguageProvider } from "@/lib/translations/language-context";
+import { get_server_t } from "@/lib/translations/server";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const t = get_server_t("he");
 export const metadata: Metadata = {
-    title: "Keepqueue - מערכת ניהול תורים",
-    description: "מערכת מתקדמת לניהול תורים ולקוחות לעסקים",
+    title: `${t("brandName")} - ${t("heroMain")} ${t("heroSub")}`,
+    description: t("heroParagraph"),
     generator: "v0.dev",
     icons: {
         icon: "/placeholder-logo.png",

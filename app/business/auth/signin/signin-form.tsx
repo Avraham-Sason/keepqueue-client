@@ -11,8 +11,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useBusinessAuthStore } from "@/lib/store";
+import { useLanguage } from "@/lib/translations/language-context";
 
 export function BusinessSignInForm() {
+    const { t } = useLanguage();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -34,10 +36,10 @@ export function BusinessSignInForm() {
             if (result.success) {
                 router.push("/business/dashboard");
             } else {
-                setError(result.error || "שגיאה בהתחברות");
+                setError(result.error || t("errorSignIn"));
             }
         } catch (err) {
-            setError("שגיאה בהתחברות");
+            setError(t("errorSignIn"));
         } finally {
             setIsLoading(false);
         }
@@ -46,8 +48,8 @@ export function BusinessSignInForm() {
     return (
         <Card className="w-full max-w-md mx-auto">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl font-bold text-center">התחברות לבעלי עסקים</CardTitle>
-                <CardDescription className="text-center">הכנס את פרטי ההתחברות שלך כדי לגשת לפאנל הניהול</CardDescription>
+                <CardTitle className="text-2xl font-bold text-center">{t("businessSignInTitle")}</CardTitle>
+                <CardDescription className="text-center">{t("businessSignInDescription")}</CardDescription>
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -58,7 +60,7 @@ export function BusinessSignInForm() {
                     )}
 
                     <div className="space-y-2">
-                        <Label htmlFor="email">כתובת מייל</Label>
+                        <Label htmlFor="email">{t("emailAddress")}</Label>
                         <Input
                             id="email"
                             type="email"
@@ -71,12 +73,12 @@ export function BusinessSignInForm() {
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="password">סיסמה</Label>
+                        <Label htmlFor="password">{t("password")}</Label>
                         <div className="relative">
                             <Input
                                 id="password"
                                 type={showPassword ? "text" : "password"}
-                                placeholder="הכנס סיסמה"
+                                placeholder={t("enterPassword")}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
@@ -99,25 +101,25 @@ export function BusinessSignInForm() {
                         {isLoading ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                מתחבר...
+                                {t("signingIn")}
                             </>
                         ) : (
-                            "התחבר"
+                            t("signIn")
                         )}
                     </Button>
                 </form>
 
                 <div className="mt-4 text-center text-sm">
                     <p className="text-muted-foreground">
-                        אין לך חשבון?{" "}
+                        {t("noAccount")} {" "}
                         <a href="/business/auth/signup" className="text-primary hover:underline">
-                            הירשם כאן
+                            {t("signUpHere")}
                         </a>
                     </p>
                 </div>
 
                 <div className="mt-6 p-4 bg-muted rounded-lg">
-                    <h4 className="font-medium mb-2">חשבונות לבדיקה:</h4>
+                    <h4 className="font-medium mb-2">{t("testAccounts")}:</h4>
                     <div className="space-y-1 text-sm">
                         <p>sarah@sarahbeauty.com / 123456</p>
                         <p>david@davidclinic.com / 123456</p>

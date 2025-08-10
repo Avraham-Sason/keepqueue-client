@@ -11,13 +11,18 @@ export const metadata: Metadata = {
     title: "Keepqueue - מערכת ניהול תורים",
     description: "מערכת מתקדמת לניהול תורים ולקוחות לעסקים",
     generator: "v0.dev",
+    icons: {
+        icon: "/placeholder-logo.png",
+        shortcut: "/placeholder-logo.png",
+        apple: "/placeholder-logo.png",
+    },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="he" dir="rtl">
-            <body className={inter.className}>
-                <ThemeProvider attribute="class" defaultTheme="system">
+        <html lang="he" dir="rtl" suppressHydrationWarning>
+            <body className={inter.className} suppressHydrationWarning>
+                <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                     <LanguageProvider>{children}</LanguageProvider>
                 </ThemeProvider>
             </body>

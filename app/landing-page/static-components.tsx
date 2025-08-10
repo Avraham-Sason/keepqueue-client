@@ -182,10 +182,6 @@ export function HeroSection() {
             <div className="absolute inset-0 queue-pattern opacity-30" />
             <div className="container max-w-6xl mx-auto text-center relative">
                 <div className="animate-in fade-in slide-in-from-bottom-3 duration-500">
-                    <Badge variant="secondary" className="mb-4 bg-primary/10 text-primary border-primary/20">
-                        <Smartphone className="h-3 w-3 mr-1" />
-                        ניסיון חינם 14 יום • ללא כרטיס אשראי
-                    </Badge>
                     <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
                         ניהול תורים חכם
                         <span className="text-primary block">לעסקי יופי</span>

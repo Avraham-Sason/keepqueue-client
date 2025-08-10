@@ -62,10 +62,6 @@ function NewsletterSection() {
                         />
                         <Button>התחל עכשיו</Button>
                     </div>
-                    <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
-                        <Shield className="h-4 w-4" />
-                        ניסיון חינם 14 יום • ביטול בכל עת • ללא עמלות הקמה
-                    </p>
                 </div>
             </div>
         </section>

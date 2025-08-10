@@ -1,4 +1,4 @@
-import { BookingInterface } from "@/components/booking-interface"
+import { BookingInterface } from "./booking-interface"
 
 interface BookingPageProps {
   params: Promise<{

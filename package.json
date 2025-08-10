@@ -6,7 +6,7 @@
         "build": "next build",
         "dev": "next dev --turbopack",
         "lint": "next lint",
-        "start": "next start"
+        "start": "next dev --turbopack"
     },
     "dependencies": {
         "@emotion/is-prop-valid": "latest",

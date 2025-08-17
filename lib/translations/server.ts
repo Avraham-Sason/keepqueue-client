@@ -14,7 +14,6 @@ const translations: Record<Language, Translations> = {
 };
 
 export function get_server_t(language: Language = "he") {
-  // returns a t() compatible with client hook
   const current = translations[language] as Record<string, string>;
   const fallbackEn = enTranslations as Record<string, string>;
   return (key: TranslationsKey): string => {

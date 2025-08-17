@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Users, Shield } from "lucide-react";
 import { SiteFooter, HeroSection, FeaturesSection, TestimonialsSection } from "./static-components";
@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useLanguage } from "@/lib/translations/language-context";
+import { db } from "@/lib/firebase";
 
-function SiteHeader() {
+export function SiteHeader() {
     const { t } = useLanguage();
     return (
         <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -31,13 +32,9 @@ function SiteHeader() {
                     <Link href="#testimonials" className="text-sm font-medium hover:text-primary transition-colors">
                         {t("navTestimonials")}
                     </Link>
-                    <Link href="/marketplace" className="text-sm font-medium hover:text-primary transition-colors">
+                    <Link href="/customer/marketplace" className="text-sm font-medium hover:text-primary transition-colors">
                         {t("navMarketplace")}
                     </Link>
-
-                    <Button size="sm" asChild>
-                        <Link href="/auth/signup">{t("ctaStartFreeTrial")}</Link>
-                    </Button>
                 </nav>
 
                 <ThemeToggle />
@@ -46,7 +43,7 @@ function SiteHeader() {
     );
 }
 
-function NewsletterSection() {
+export function NewsletterSection() {
     const { t } = useLanguage();
     const [email, setEmail] = useState("");
     return (
@@ -68,18 +65,5 @@ function NewsletterSection() {
                 </div>
             </div>
         </section>
-    );
-}
-
-export default function LandingClient() {
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-            <SiteHeader />
-            <HeroSection />
-            <FeaturesSection />
-            <TestimonialsSection />
-            <NewsletterSection />
-            <SiteFooter />
-        </div>
     );
 }

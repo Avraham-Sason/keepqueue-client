@@ -1,6 +1,6 @@
-import { LandingPage } from "./landing-page";
 import type { Metadata } from "next";
 import { get_server_t } from "@/lib/translations/server";
+import LandingPage from "./landing-page";
 
 const t = get_server_t("he");
 export const metadata: Metadata = {

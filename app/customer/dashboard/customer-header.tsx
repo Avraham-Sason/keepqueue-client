@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Bell, Search, User, LogOut, Calendar, MapPin } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { A11yToggle } from "@/components/a11y-toggle"
 import Link from "next/link"
 import { useLanguage } from "@/lib/translations/language-context"
 
@@ -43,6 +44,7 @@ export function CustomerHeader() {
             <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">2</Badge>
           </Button>
 
+          <A11yToggle />
           <ThemeToggle />
 
           <div className="flex items-center gap-2">

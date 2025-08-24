@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Bell, Search, Settings } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { A11yToggle } from "@/components/a11y-toggle";
 import { useLanguage } from "@/lib/translations/language-context";
 
 export function BusinessHeader() {
@@ -23,6 +24,7 @@ export function BusinessHeader() {
                     <Bell className="h-4 w-4" />
                     <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">3</Badge>
                 </Button>
+                <A11yToggle />
                 <ThemeToggle />
                 <Button variant="ghost" size="icon">
                     <Settings className="h-4 w-4" />

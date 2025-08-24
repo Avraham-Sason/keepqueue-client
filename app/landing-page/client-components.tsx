@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useLanguage } from "@/lib/translations/language-context";
 import { db } from "@/lib/firebase";
+import { A11yToggle } from "@/components/a11y-toggle";
 
 export function SiteHeader() {
     const { t } = useLanguage();
@@ -38,6 +39,7 @@ export function SiteHeader() {
                 </nav>
 
                 <ThemeToggle />
+                <A11yToggle />
             </div>
         </header>
     );

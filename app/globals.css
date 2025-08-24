@@ -77,6 +77,63 @@
         --sidebar-primary: 195 100% 50%;
         --sidebar-primary-foreground: 240 5.9% 10%;
     }
+
+    /* Accessibility mode overrides */
+    .a11y {
+        --ring: 210 100% 45%;
+    }
+    .a11y body {
+        font-size: 1.125rem; /* 18px */
+        line-height: 1.8;
+        letter-spacing: 0.01em;
+    }
+    .a11y :focus-visible {
+        outline: 3px solid hsl(var(--ring));
+        outline-offset: 3px;
+        border-radius: 6px;
+    }
+    .a11y button,
+    .a11y [role="button"],
+    .a11y a,
+    .a11y input,
+    .a11y select,
+    .a11y textarea {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    .a11y p,
+    .a11y .prose p {
+        max-width: 70ch;
+        text-wrap: pretty;
+    }
+    .a11y a {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    .a11y h1,
+    .a11y h2,
+    .a11y h3 {
+        letter-spacing: 0.005em;
+    }
+    .a11y .card { /* increase inner spacing */
+        padding: 0.75rem;
+    }
+    .a11y .btn-primary {
+        font-weight: 700;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .a11y * {
+            animation: none !important;
+            transition: none !important;
+            scroll-behavior: auto !important;
+        }
+    }
+    .a11y .text-muted-foreground {
+        color: hsl(240 3.8% 36%) !important;
+    }
+    .a11y .opacity-50 {
+        opacity: 0.75 !important;
+    }
 }
 
 @layer base {

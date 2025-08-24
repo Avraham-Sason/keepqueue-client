@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { A11yProvider } from "@/components/a11y-provider";
 import { LanguageProvider } from "@/lib/translations/language-context";
 import { get_server_t } from "@/lib/translations/server";
 
@@ -25,7 +26,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="he" dir="rtl" suppressHydrationWarning>
             <body className={inter.className} suppressHydrationWarning>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                    <LanguageProvider>{children}</LanguageProvider>
+                    <A11yProvider>
+                        <LanguageProvider>{children}</LanguageProvider>
+                    </A11yProvider>
                 </ThemeProvider>
             </body>
         </html>

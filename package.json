@@ -6,7 +6,9 @@
         "build": "next build",
         "dev": "next dev --turbopack",
         "lint": "next lint",
-        "start": "next dev --turbopack"
+        "start": "next dev --turbopack",
+        "git": "powershell -ExecutionPolicy Bypass -File ./ps/create_branch.ps1",
+        "git2": "powershell -ExecutionPolicy Bypass -File ./ps/move_to_develop.ps1"
     },
     "dependencies": {
         "@emotion/is-prop-valid": "latest",

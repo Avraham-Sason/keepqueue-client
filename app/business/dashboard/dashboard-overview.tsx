@@ -28,8 +28,8 @@ import { useLanguage } from "@/lib/translations/language-context";
 
 export function DashboardOverview() {
     const { t } = useLanguage();
-    const user = useBusinessAuthStore.useUser();
-    const getBusinessAppointments = useAppStore.useGetBusinessAppointments();
+    const user = useBusinessAuthStore.user();
+    const getBusinessAppointments = useAppStore.getBusinessAppointments();
     const businessOwner = user as BusinessOwner;
 
     if (!businessOwner || businessOwner.type !== "business") {

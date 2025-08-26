@@ -18,9 +18,9 @@ import { useLanguage } from "@/lib/translations/language-context";
 
 export function BusinessMarketplace() {
     const { t } = useLanguage();
-    const user = useCustomersAuthStore.useUser();
-    const businesses = useAppStore.useBusinesses();
-    const addAppointment = useAppStore.useAddAppointment();
+    const user = useCustomersAuthStore.user();
+    const businesses = useAppStore.businesses();
+    const addAppointment = useAppStore.addAppointment();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedBusiness, setSelectedBusiness] = useState<BusinessOwner | null>(null);
     const [selectedService, setSelectedService] = useState<Service | null>(null);

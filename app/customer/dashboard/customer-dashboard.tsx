@@ -13,9 +13,9 @@ import { useLanguage } from "@/lib/translations/language-context";
 
 export function CustomerDashboard() {
     const { t } = useLanguage();
-    const user = useCustomersAuthStore.useUser();
-    const getCustomerAppointments = useAppStore.useGetCustomerAppointments();
-    const businesses = useAppStore.useBusinesses();
+    const user = useCustomersAuthStore.user();
+    const getCustomerAppointments = useAppStore.getCustomerAppointments();
+    const businesses = useAppStore.businesses();
     const customer = user as Customer;
 
     if (!customer || customer.type !== "customer") {

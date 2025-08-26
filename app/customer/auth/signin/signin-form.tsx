@@ -21,7 +21,7 @@ export function CustomerSignInForm() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const login = useCustomersAuthStore.useLogin();
+    const login = useCustomersAuthStore.login();
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {

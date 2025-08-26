@@ -6,8 +6,8 @@ import { useLanguage } from "@/lib/translations/language-context";
 import { Accessibility ,LucideAccessibility,SlashSquare} from "lucide-react";
 
 export function A11yToggle() {
-    const a11yEnabled = useA11yStore.useA11yEnabled();
-    const toggleA11y = useA11yStore.useToggleA11y();
+    const a11yEnabled = useA11yStore.a11yEnabled();
+    const toggleA11y = useA11yStore.toggleA11y();
     const { t } = useLanguage();
 
     return (

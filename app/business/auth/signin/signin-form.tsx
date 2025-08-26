@@ -21,7 +21,7 @@ export function BusinessSignInForm() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const login = useBusinessAuthStore.useLogin();
+    const login = useBusinessAuthStore.login();
 
     const router = useRouter();
 

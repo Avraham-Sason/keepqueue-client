@@ -8,7 +8,7 @@ interface A11yProviderProps {
 }
 
 export function A11yProvider({ children }: A11yProviderProps) {
-    const a11yEnabled = useA11yStore.useA11yEnabled();
+    const a11yEnabled = useA11yStore.a11yEnabled();
 
     useEffect(() => {
         const root = document.documentElement;

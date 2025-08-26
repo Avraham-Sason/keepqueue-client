@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { createUseSelectors } from "./utils";
+import { createSelectors } from "./utils";
 
 interface A11yState {
     a11yEnabled: boolean;
@@ -21,6 +21,4 @@ export const useA11yStoreBase = create<A11yState>()(
     )
 );
 
-export const useA11yStore = createUseSelectors(useA11yStoreBase);
-
-
+export const useA11yStore = createSelectors<A11yState>(useA11yStoreBase);

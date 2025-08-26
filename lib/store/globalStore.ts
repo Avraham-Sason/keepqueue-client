@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { type Appointment, type BusinessOwner, type Customer, mockBusinessOwners, mockCustomers } from "../mock-data";
-import { createUseSelectors } from "./utils";
+import { createSelectors } from "./utils";
 
 interface AppState {
     // Data
@@ -77,4 +77,4 @@ export const useAppStoreBase = create<AppState>()(
     )
 );
 
-export const useAppStore = createUseSelectors(useAppStoreBase);
+export const useAppStore = createSelectors<AppState>(useAppStoreBase);

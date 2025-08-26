@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { type Customer, mockCustomers } from "../mock-data";
-import { createUseSelectors } from "./utils";
+import { createSelectors } from "./utils";
 
 interface CustomersAuthState {
   user: Customer | null;
@@ -36,6 +36,6 @@ export const useCustomersAuthStoreBase = create<CustomersAuthState>()(
   )
 );
 
-export const useCustomersAuthStore = createUseSelectors(useCustomersAuthStoreBase);
+export const useCustomersAuthStore = createSelectors<CustomersAuthState>(useCustomersAuthStoreBase);
 
 

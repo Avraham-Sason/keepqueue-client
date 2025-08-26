@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { type BusinessOwner, mockBusinessOwners } from "../mock-data";
-import { createUseSelectors } from "./utils";
+import { createSelectors } from "./utils";
 
 interface BusinessAuthState {
   user: BusinessOwner | null;
@@ -36,6 +36,6 @@ export const useBusinessAuthStoreBase = create<BusinessAuthState>()(
   )
 );
 
-export const useBusinessAuthStore = createUseSelectors(useBusinessAuthStoreBase);
+export const useBusinessAuthStore = createSelectors<BusinessAuthState>(useBusinessAuthStoreBase);
 
 

@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useCustomersAuthStore } from "@/lib/store";
-import { useLanguage } from "@/lib/translations/language-context";
+import { useLanguage } from "@/hooks";
 
 export function CustomerSignInForm() {
     const { t } = useLanguage();

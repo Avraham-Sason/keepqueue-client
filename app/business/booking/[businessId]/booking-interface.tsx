@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { Clock, MapPin, Star, Phone, User, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { useLanguage } from "@/lib/translations/language-context"
+import { useLanguage } from "@/hooks"
 
 interface BookingInterfaceProps {
   businessId: string

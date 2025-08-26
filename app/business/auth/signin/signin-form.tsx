@@ -11,10 +11,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useBusinessAuthStore } from "@/lib/store";
-import { useLanguage } from "@/lib/translations/language-context";
+import { useLanguage } from "@/hooks";
 
 export function BusinessSignInForm() {
-    const { t } = useLanguage();
+    const { t, isRtl } = useLanguage();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -88,7 +88,7 @@ export function BusinessSignInForm() {
                                 type="button"
                                 variant="ghost"
                                 size="sm"
-                                className="absolute left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                className={`absolute ${isRtl ? "left-0" : "right-0"} top-0 h-full px-3 py-2 hover:bg-transparent`}
                                 onClick={() => setShowPassword(!showPassword)}
                                 disabled={isLoading}
                             >

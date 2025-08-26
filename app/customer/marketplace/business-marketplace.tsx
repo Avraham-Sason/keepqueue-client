@@ -14,7 +14,7 @@ import { Search, MapPin, Clock, Star, Phone, Calendar, Filter, Heart, HeartOff }
 import { useAppStore } from "@/lib/store";
 import { useCustomersAuthStore } from "@/lib/store";
 import type { Customer, BusinessOwner, Service } from "@/lib/mock-data";
-import { useLanguage } from "@/lib/translations/language-context";
+import { useLanguage } from "@/hooks";
 
 export function BusinessMarketplace() {
     const { t } = useLanguage();

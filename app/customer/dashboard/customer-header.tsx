@@ -6,9 +6,9 @@ import { Badge } from "@/components/ui/badge"
 import { Bell, Search, User, LogOut, Calendar, MapPin } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme"
-import { A11yToggle } from "@/components/a11y"
+import { A11yToggle } from "@/components/config/a11y"
 import Link from "next/link"
-import { useLanguage } from "@/lib/translations/language-context"
+import { useLanguage } from "@/hooks"
 
 export function CustomerHeader() {
   const { t } = useLanguage()

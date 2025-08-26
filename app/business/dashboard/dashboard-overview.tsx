@@ -24,7 +24,7 @@ import { motion } from "framer-motion";
 import { useAppStore } from "@/lib/store/globalStore";
 import { useBusinessAuthStore } from "@/lib/store";
 import type { BusinessOwner } from "@/lib/mock-data";
-import { useLanguage } from "@/lib/translations/language-context";
+import { useLanguage } from "@/hooks";
 
 export function DashboardOverview() {
     const { t } = useLanguage();

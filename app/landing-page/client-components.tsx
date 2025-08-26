@@ -7,9 +7,10 @@ import { SiteFooter, HeroSection, FeaturesSection, TestimonialsSection } from ".
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme";
-import { useLanguage } from "@/lib/translations/language-context";
+import { useLanguage } from "@/hooks";
 import { db } from "@/lib/firebase";
-import { A11yToggle } from "@/components/a11y";
+import { A11yToggle } from "@/components/config/a11y";
+import { LanguageToggle } from "@/components/config";
 
 export function SiteHeader() {
     const { t } = useLanguage();
@@ -37,9 +38,11 @@ export function SiteHeader() {
                         {t("navMarketplace")}
                     </Link>
                 </nav>
-
-                <ThemeToggle />
-                <A11yToggle />
+                <div className="flex items-center gap-1">
+                    <ThemeToggle />
+                    <A11yToggle />
+                    <LanguageToggle />
+                </div>
             </div>
         </header>
     );

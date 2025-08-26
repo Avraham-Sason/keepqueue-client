@@ -3,9 +3,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme";
-import { A11yProvider } from "@/components/a11y";
-import { LanguageProvider } from "@/lib/translations/language-context";
 import { get_server_t } from "@/lib/translations/server";
+import { LanguageInitializer, A11yInitializer } from "@/components/config";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,10 +24,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang="he" dir="rtl" suppressHydrationWarning>
             <body className={inter.className} suppressHydrationWarning>
+                <A11yInitializer />
+                <LanguageInitializer />
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                    <A11yProvider>
-                        <LanguageProvider>{children}</LanguageProvider>
-                    </A11yProvider>
+                    {children}
                 </ThemeProvider>
             </body>
         </html>

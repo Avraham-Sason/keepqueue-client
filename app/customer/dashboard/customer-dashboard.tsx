@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { useAppStore } from "@/lib/store";
 import { useCustomersAuthStore } from "@/lib/store";
 import type { Customer } from "@/lib/mock-data";
-import { useLanguage } from "@/lib/translations/language-context";
+import { useLanguage } from "@/hooks";
 
 export function CustomerDashboard() {
     const { t } = useLanguage();

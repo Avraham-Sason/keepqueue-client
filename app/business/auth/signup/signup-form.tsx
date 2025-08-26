@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Building, Mail, Lock, Eye, EyeOff, User, Phone, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { useLanguage } from "@/lib/translations/language-context"
+import { useLanguage } from "@/hooks"
 
 export function BusinessSignUpForm() {
   const { t } = useLanguage()

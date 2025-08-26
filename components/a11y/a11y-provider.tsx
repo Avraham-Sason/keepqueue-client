@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { JSX, useEffect } from "react";
 import { useA11yStore } from "@/lib/store/a11yStore";
 
 interface A11yProviderProps {
@@ -19,5 +19,5 @@ export function A11yProvider({ children }: A11yProviderProps) {
         }
     }, [a11yEnabled]);
 
-    return children;
+    return children as JSX.Element;
 }

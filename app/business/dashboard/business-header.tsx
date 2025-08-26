@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bell, Search, Settings } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { A11yToggle } from "@/components/a11y-toggle";
+import { ThemeToggle } from "@/components/theme";
+import { A11yToggle } from "@/components/a11y";
 import { useLanguage } from "@/lib/translations/language-context";
 
 export function BusinessHeader() {

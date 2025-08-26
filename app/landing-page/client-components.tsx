@@ -6,10 +6,10 @@ import { Users, Shield } from "lucide-react";
 import { SiteFooter, HeroSection, FeaturesSection, TestimonialsSection } from "./static-components";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/components/theme";
 import { useLanguage } from "@/lib/translations/language-context";
 import { db } from "@/lib/firebase";
-import { A11yToggle } from "@/components/a11y-toggle";
+import { A11yToggle } from "@/components/a11y";
 
 export function SiteHeader() {
     const { t } = useLanguage();

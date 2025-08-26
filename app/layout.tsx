@@ -2,8 +2,8 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { A11yProvider } from "@/components/a11y-provider";
+import { ThemeProvider } from "@/components/theme";
+import { A11yProvider } from "@/components/a11y";
 import { LanguageProvider } from "@/lib/translations/language-context";
 import { get_server_t } from "@/lib/translations/server";
 

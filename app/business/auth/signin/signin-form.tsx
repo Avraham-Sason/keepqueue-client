@@ -111,22 +111,17 @@ export function BusinessSignInForm() {
 
                 <div className="mt-4 text-center text-sm">
                     <p className="text-muted-foreground">
-                        {t("noAccount")} {" "}
+                        {t("noAccount")}{" "}
                         <a href="/business/auth/signup" className="text-primary hover:underline">
                             {t("signUpHere")}
                         </a>
                     </p>
                 </div>
-
-                <div className="mt-6 p-4 bg-muted rounded-lg">
-                    <h4 className="font-medium mb-2">{t("testAccounts")}:</h4>
-                    <div className="space-y-1 text-sm">
-                        <p>sarah@sarahbeauty.com / 123456</p>
-                        <p>david@davidclinic.com / 123456</p>
-                        <p>maya@mayanails.com / 123456</p>
-                    </div>
-                </div>
             </CardContent>
         </Card>
     );
 }
+
+// sarah@sarahbeauty.com / 123456
+// david@davidclinic.com / 123456
+// maya@mayanails.com / 123456

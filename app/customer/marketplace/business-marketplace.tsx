@@ -12,13 +12,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, MapPin, Clock, Star, Phone, Calendar, Filter, Heart, HeartOff } from "lucide-react";
 import { useAppStore } from "@/lib/store";
-import { useCustomersAuthStore } from "@/lib/store";
+import { useAuthStore } from "@/lib/store";
 import type { Customer, BusinessOwner, Service } from "@/lib/mock-data";
 import { useLanguage } from "@/hooks";
 
 export function BusinessMarketplace() {
     const { t } = useLanguage();
-    const user = useCustomersAuthStore.user();
+    const user = useAuthStore.user();
     const businesses = useAppStore.businesses();
     const addAppointment = useAppStore.addAppointment();
     const [searchTerm, setSearchTerm] = useState("");
@@ -65,7 +65,7 @@ export function BusinessMarketplace() {
             createdAt: new Date().toISOString(),
         };
 
-        addAppointment(newAppointment);
+        // addAppointment(newAppointment);
 
         // Reset form
         setSelectedBusiness(null);
@@ -124,7 +124,7 @@ export function BusinessMarketplace() {
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-center space-x-3">
                                         <Avatar className="h-12 w-12">
-                                            <AvatarImage src={business.avatar || "/placeholder.svg"} />
+                                            <AvatarImage src={business.avatarUrl || "/placeholder.svg"} />
                                             <AvatarFallback>{business.businessName.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div>

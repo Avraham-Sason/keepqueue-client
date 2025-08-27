@@ -10,8 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { useCustomersAuthStore } from "@/lib/store";
 import { useLanguage } from "@/hooks";
+import { useAuthStore } from "@/lib/store";
 
 export function CustomerSignInForm() {
     const { t } = useLanguage();
@@ -21,7 +21,7 @@ export function CustomerSignInForm() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const login = useCustomersAuthStore.login();
+    const login = useAuthStore.login();
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -110,7 +110,7 @@ export function CustomerSignInForm() {
 
                 <div className="mt-4 text-center text-sm">
                     <p className="text-muted-foreground">
-                        {t("noAccount")} {" "}
+                        {t("noAccount")}{" "}
                         <a href="/customer/auth/signup" className="text-primary hover:underline">
                             {t("signUpHere")}
                         </a>

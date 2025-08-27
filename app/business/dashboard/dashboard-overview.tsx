@@ -22,13 +22,13 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAppStore } from "@/lib/store/globalStore";
-import { useBusinessAuthStore } from "@/lib/store";
+import { useAuthStore } from "@/lib/store";
 import type { BusinessOwner } from "@/lib/mock-data";
 import { useLanguage } from "@/hooks";
 
 export function DashboardOverview() {
     const { t } = useLanguage();
-    const user = useBusinessAuthStore.user();
+    const user = useAuthStore.user();
     const getBusinessAppointments = useAppStore.getBusinessAppointments();
     const businessOwner = user as BusinessOwner;
 
@@ -92,7 +92,7 @@ export function DashboardOverview() {
                     </div>
                     <div className="flex items-center space-x-4">
                         <Avatar className="h-12 w-12">
-                            <AvatarImage src={businessOwner.avatar || "/placeholder.svg"} alt={businessOwner.firstName} />
+                            <AvatarImage src={businessOwner.avatarUrl || "/placeholder.svg"} alt={businessOwner.firstName} />
                             <AvatarFallback>{businessOwner.firstName.charAt(0)}</AvatarFallback>
                         </Avatar>
                     </div>

@@ -12,13 +12,14 @@ interface FirebaseInitResult {
 }
 const initApp = (): FirebaseInitResult => {
     const isNodeEnv = typeof process !== "undefined" && process.env;
+    const sanitizeEnv = (value?: string) => value?.trim().replace(/[\s,]+$/g, "");
     const firebaseConfig = {
-        apiKey: process.env.NEXT_PUBLIC_API_KEY,
-        authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
-        projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
-        storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
-        messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID,
-        appId: process.env.NEXT_PUBLIC_APP_ID,
+        apiKey: sanitizeEnv(process.env.NEXT_PUBLIC_API_KEY),
+        authDomain: sanitizeEnv(process.env.NEXT_PUBLIC_AUTH_DOMAIN),
+        projectId: sanitizeEnv(process.env.NEXT_PUBLIC_PROJECT_ID),
+        storageBucket: sanitizeEnv(process.env.NEXT_PUBLIC_STORAGE_BUCKET),
+        messagingSenderId: sanitizeEnv(process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID),
+        appId: sanitizeEnv(process.env.NEXT_PUBLIC_APP_ID),
     };
 
     const app: FirebaseApp = initializeApp(firebaseConfig);

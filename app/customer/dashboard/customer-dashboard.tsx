@@ -7,13 +7,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, Clock, MapPin, Star, CheckCircle, XCircle, AlertCircle, Heart, Search } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAppStore } from "@/lib/store";
-import { useCustomersAuthStore } from "@/lib/store";
+import { useAuthStore } from "@/lib/store";
 import type { Customer } from "@/lib/mock-data";
 import { useLanguage } from "@/hooks";
 
 export function CustomerDashboard() {
     const { t } = useLanguage();
-    const user = useCustomersAuthStore.user();
+    const user = useAuthStore.user();
     const getCustomerAppointments = useAppStore.getCustomerAppointments();
     const businesses = useAppStore.businesses();
     const customer = user as Customer;
@@ -78,7 +78,7 @@ export function CustomerDashboard() {
                     </div>
                     <div className="flex items-center space-x-4">
                         <Avatar className="h-12 w-12">
-                            <AvatarImage src={customer.avatar || "/placeholder.svg"} alt={customer.firstName} />
+                            <AvatarImage src={customer.avatarUrl || "/placeholder.svg"} alt={customer.firstName} />
                             <AvatarFallback>{customer.firstName.charAt(0)}</AvatarFallback>
                         </Avatar>
                     </div>
@@ -164,7 +164,7 @@ export function CustomerDashboard() {
                                             >
                                                 <div className="flex items-center space-x-4">
                                                     <Avatar className="h-10 w-10">
-                                                        <AvatarImage src={business?.avatar || "/placeholder.svg"} />
+                                                        <AvatarImage src={business?.avatarUrl || "/placeholder.svg"} />
                                                         <AvatarFallback>{business?.businessName.charAt(0)}</AvatarFallback>
                                                     </Avatar>
                                                     <div className="space-y-1">
@@ -226,7 +226,7 @@ export function CustomerDashboard() {
                                 favoriteBusinesses.map((business) => (
                                     <div key={business.id} className="flex items-center space-x-3 p-3 border rounded-lg">
                                         <Avatar className="h-10 w-10">
-                                            <AvatarImage src={business.avatar || "/placeholder.svg"} />
+                                            <AvatarImage src={business.avatarUrl || "/placeholder.svg"} />
                                             <AvatarFallback>{business.businessName.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div className="flex-1">

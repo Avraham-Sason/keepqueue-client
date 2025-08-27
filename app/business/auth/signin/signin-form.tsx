@@ -10,18 +10,18 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { useBusinessAuthStore } from "@/lib/store";
+import { useAuthStore } from "@/lib/store";
 import { useLanguage } from "@/hooks";
 
 export function BusinessSignInForm() {
     const { t, isRtl } = useLanguage();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("avi@avi.com");
+    const [password, setPassword] = useState("123456");
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const login = useBusinessAuthStore.login();
+    const login = useAuthStore.login();
 
     const router = useRouter();
 

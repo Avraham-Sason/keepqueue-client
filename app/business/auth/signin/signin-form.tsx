@@ -12,8 +12,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuthStore } from "@/lib/store";
 import { useLanguage } from "@/hooks";
-
-export function BusinessSignInForm() {
+interface SignInFormProps {
+    type: "business" | "customer";
+}
+export function SignInForm({ type }: SignInFormProps) {
     const { t, isRtl } = useLanguage();
     const [email, setEmail] = useState("avi@avi.com");
     const [password, setPassword] = useState("123456");
@@ -31,12 +33,13 @@ export function BusinessSignInForm() {
         setError("");
 
         try {
-            const result = await login(email, password);
+            const result = await login(email, password, type);
 
             if (result.success) {
-                router.push("/business/dashboard");
+                router.push(type === "business" ? "/business/dashboard" : "/customer/dashboard");
             } else {
-                setError(result.error || t("errorSignIn"));
+                const key = result.error || "errorSignIn";
+                setError(t(key));
             }
         } catch (err) {
             setError(t("errorSignIn"));

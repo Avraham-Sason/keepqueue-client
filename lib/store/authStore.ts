@@ -9,7 +9,7 @@ import { getAllDocuments, queryDocument } from "../firebase";
 interface BusinessAuthState {
     user: User | null;
     isAuthenticated: boolean;
-    login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+    login: (email: string, password: string, type: "business" | "customer") => Promise<{ success: boolean; error?: string }>;
     logout: () => Promise<void>;
 }
 
@@ -19,23 +19,21 @@ export const useAuthStoreBase = create<BusinessAuthState>()(
             user: null,
             isAuthenticated: false,
 
-            login: async (email: string, password: string) => {
+            login: async (email: string, password: string, type: "business" | "customer") => {
                 try {
                     const credential = await signInWithEmailAndPassword(auth, email, password);
                     const firebaseUser = credential.user;
                     const foundUser = await queryDocument("users", "email", "==", email);
-                    if (foundUser) {
-                        set({ user: foundUser as User, isAuthenticated: true });
-                        return { success: true };
+                    if (!foundUser || type != foundUser?.type) {
+                        await signOut(auth);
+                        return { success: false, error: "authErrorTypeMismatch" };
                     }
-                    await signOut(auth);
-                    return { success: false, error: "המשתמש אינו בעל עסק במערכת" };
+                    set({ user: foundUser as User, isAuthenticated: true });
+                    return { success: true };
                 } catch (error: any) {
-                    const message =
-                        error?.code === "auth/invalid-credential" || error?.code === "auth/invalid-email" || error?.code === "auth/wrong-password"
-                            ? "כתובת מייל או סיסמה שגויים"
-                            : "שגיאה בהתחברות. נסו שוב.";
-                    return { success: false, error: message };
+                    const isInvalidCredentials = ["auth/invalid-credential", "auth/invalid-email", "auth/wrong-password"].includes(error?.code);
+                    const error_key = isInvalidCredentials ? "authErrorInvalidCredentials" : "authErrorGeneric";
+                    return { success: false, error: error_key };
                 }
             },
 

@@ -144,6 +144,9 @@
   "statusCompleted": "הושלם",
 
   "errorSignIn": "שגיאה בהתחברות",
+  "authErrorTypeMismatch": "המשתמש אינו מורשה לאזור זה",
+  "authErrorInvalidCredentials": "כתובת מייל או סיסמה שגויים",
+  "authErrorGeneric": "שגיאה בהתחברות. נסו שוב.",
   "enterPassword": "הכנס סיסמה",
   "signIn": "התחבר",
   "signingIn": "מתחבר...",

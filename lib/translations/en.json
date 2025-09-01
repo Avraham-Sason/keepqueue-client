@@ -144,6 +144,9 @@
   "statusCompleted": "Completed",
 
   "errorSignIn": "Sign in error",
+  "authErrorTypeMismatch": "This user cannot sign in to this area",
+  "authErrorInvalidCredentials": "Invalid email or password",
+  "authErrorGeneric": "Sign in failed. Please try again",
   "enterPassword": "Enter password",
   "signIn": "Sign in",
   "signingIn": "Signing in...",

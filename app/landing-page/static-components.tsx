@@ -4,7 +4,7 @@ import { Calendar, Clock, MessageSquare, Users, Star, BarChart3, Building, User,
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getJsonTranslation, TranslationsKey } from "@translations/server";
+import { getServerTranslation, TranslationsKey } from "@translations/server";
 
 // -----------------------
 // Shared static types
@@ -105,8 +105,8 @@ export const STATS: StatItem[] = [
 /************************************************
  * HeroCards – two main CTA cards               *
  ************************************************/
-export function HeroCards() {
-    const t = getJsonTranslation();
+export async function HeroCards() {
+    const t = await getServerTranslation();
     return (
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
@@ -145,8 +145,8 @@ export function HeroCards() {
 /****************************************
  * FeatureCard – single feature tile    *
  ****************************************/
-export function FeatureCard({ feature }: { feature: FeatureStatic }) {
-    const t = getJsonTranslation();
+export async function FeatureCard({ feature }: { feature: FeatureStatic }) {
+    const t = await getServerTranslation();
     const { icon: Icon, titleKey, descriptionKey, color } = feature;
     return (
         <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
@@ -166,8 +166,8 @@ export function FeatureCard({ feature }: { feature: FeatureStatic }) {
 /*********************************
  * StatsGrid – animated counters *
  *********************************/
-export function StatsGrid() {
-    const t = getJsonTranslation();
+export async function StatsGrid() {
+    const t = await getServerTranslation();
     return (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
             {STATS.map((stat, index) => (
@@ -187,8 +187,8 @@ export function StatsGrid() {
 /********************************
  * HeroSection – top of page    *
  ********************************/
-export function HeroSection() {
-    const t = getJsonTranslation();
+export async function HeroSection() {
+    const t = await getServerTranslation();
     return (
         <section className="py-20 px-4 relative overflow-hidden">
             <div className="absolute inset-0 queue-pattern opacity-30" />
@@ -210,8 +210,8 @@ export function HeroSection() {
 /****************************************
  * FeaturesSection – list of features   *
  ****************************************/
-export function FeaturesSection() {
-    const t = getJsonTranslation();
+export async function FeaturesSection() {
+    const t = await getServerTranslation();
     return (
         <section id="features" className="py-20 px-4 bg-muted/30">
             <div className="container max-w-6xl mx-auto">
@@ -238,8 +238,8 @@ export function FeaturesSection() {
 /*******************************************
  * TestimonialsSection – user reviews      *
  *******************************************/
-export function TestimonialsSection() {
-    const t = getJsonTranslation();
+export async function TestimonialsSection() {
+    const t = await getServerTranslation();
     return (
         <section id="testimonials" className="py-20 px-4">
             <div className="container max-w-6xl mx-auto">
@@ -266,8 +266,8 @@ export function TestimonialsSection() {
 /*****************************************
  * TestimonialCard – customer feedback   *
  *****************************************/
-export function TestimonialCard({ testimonial }: { testimonial: TestimonialStatic }) {
-    const t = getJsonTranslation();
+export async function TestimonialCard({ testimonial }: { testimonial: TestimonialStatic }) {
+    const t = await getServerTranslation();
     const { nameKey, businessKey, image, rating, textKey } = testimonial;
     return (
         <Card className="h-full">
@@ -298,8 +298,8 @@ export interface FooterLinkStatic {
     label: TranslationsKey;
 }
 
-export function FooterColumn({ title, links }: { title: TranslationsKey; links: FooterLinkStatic[] }) {
-    const t = getJsonTranslation();
+export async function FooterColumn({ title, links }: { title: TranslationsKey; links: FooterLinkStatic[] }) {
+    const t = await getServerTranslation();
     return (
         <div>
             <h3 className="font-semibold mb-4">{t(title)}</h3>
@@ -316,8 +316,8 @@ export function FooterColumn({ title, links }: { title: TranslationsKey; links: 
     );
 }
 
-export function SiteFooter() {
-    const t = getJsonTranslation();
+export async function SiteFooter() {
+    const t = await getServerTranslation();
     return (
         <footer className="border-t py-12 px-4 bg-background">
             <div className="container max-w-6xl mx-auto">

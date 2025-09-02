@@ -1,7 +1,7 @@
 "use client";
 
 import { useSettingsStore } from "@/lib/store";
-import { Language } from "@/lib/translations/server";
+import { Language } from "@translations/server";
 import { useEffect } from "react";
 import { Button } from "../ui/button";
 import { useLanguage } from "@/hooks";
@@ -25,6 +25,9 @@ export function LanguageInitializer() {
         localStorage.setItem("language", language);
         document.documentElement.lang = language;
         document.documentElement.dir = language === "he" ? "rtl" : "ltr";
+        try {
+            document.cookie = `language=${language}; path=/; max-age=31536000; samesite=lax`;
+        } catch {}
     }, [language]);
 
     return null;

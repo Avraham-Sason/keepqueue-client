@@ -4,24 +4,24 @@ import { Calendar, Clock, MessageSquare, Users, Star, BarChart3, Building, User,
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { get_server_t } from "@/lib/translations/server";
+import { getJsonTranslation, TranslationsKey } from "@translations/server";
 
 // -----------------------
 // Shared static types
 // -----------------------
 export interface FeatureStatic {
     icon: LucideIcon;
-    titleKey: string;
-    descriptionKey: string;
+    titleKey: TranslationsKey;
+    descriptionKey: TranslationsKey;
     color: string;
 }
 
 export interface TestimonialStatic {
-    nameKey: string;
-    businessKey: string;
+    nameKey: TranslationsKey;
+    businessKey: TranslationsKey;
     image: string;
     rating: number;
-    textKey: string;
+    textKey: TranslationsKey;
 }
 
 /***************************
@@ -90,7 +90,12 @@ export const TESTIMONIALS: TestimonialStatic[] = [
     },
 ];
 
-export const STATS = [
+export interface StatItem {
+    number: string;
+    label: TranslationsKey;
+}
+
+export const STATS: StatItem[] = [
     { number: "10,000+", label: "statBusinessesActive" },
     { number: "500K+", label: "statMonthlyAppointments" },
     { number: "98%", label: "statSatisfaction" },
@@ -101,7 +106,7 @@ export const STATS = [
  * HeroCards – two main CTA cards               *
  ************************************************/
 export function HeroCards() {
-    const t = get_server_t("he");
+    const t = getJsonTranslation();
     return (
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
@@ -114,7 +119,8 @@ export function HeroCards() {
                         <Link href="/business/auth/signin">{t("businessLogin")}</Link>
                     </Button>
                     <Button variant="outline" size="sm" className="w-full mt-2 bg-transparent" asChild>
-                        <Link href="/business/auth/signup">{t("registerNewBusiness")}</Link>
+                        {/* <Link href="/business/auth/signup">{t("registerNewBusiness")}</Link> */}
+                        <div>{t("registerNewBusiness")}</div>
                     </Button>
                 </Card>
 
@@ -127,7 +133,8 @@ export function HeroCards() {
                         <Link href="/customer/auth/signin">{t("customerLogin")}</Link>
                     </Button>
                     <Button variant="outline" size="sm" className="w-full bg-transparent mt-2 " asChild>
-                        <Link href="/customer/marketplace">{t("searchBusinesses")}</Link>
+                        {/* <Link href="/customer/marketplace">{t("searchBusinesses")}</Link> */}
+                        <div>{t("searchBusinesses")}</div>
                     </Button>
                 </Card>
             </div>
@@ -139,7 +146,7 @@ export function HeroCards() {
  * FeatureCard – single feature tile    *
  ****************************************/
 export function FeatureCard({ feature }: { feature: FeatureStatic }) {
-    const t = get_server_t("he");
+    const t = getJsonTranslation();
     const { icon: Icon, titleKey, descriptionKey, color } = feature;
     return (
         <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
@@ -160,7 +167,7 @@ export function FeatureCard({ feature }: { feature: FeatureStatic }) {
  * StatsGrid – animated counters *
  *********************************/
 export function StatsGrid() {
-    const t = get_server_t("he");
+    const t = getJsonTranslation();
     return (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
             {STATS.map((stat, index) => (
@@ -181,7 +188,7 @@ export function StatsGrid() {
  * HeroSection – top of page    *
  ********************************/
 export function HeroSection() {
-    const t = get_server_t("he");
+    const t = getJsonTranslation();
     return (
         <section className="py-20 px-4 relative overflow-hidden">
             <div className="absolute inset-0 queue-pattern opacity-30" />
@@ -204,7 +211,7 @@ export function HeroSection() {
  * FeaturesSection – list of features   *
  ****************************************/
 export function FeaturesSection() {
-    const t = get_server_t("he");
+    const t = getJsonTranslation();
     return (
         <section id="features" className="py-20 px-4 bg-muted/30">
             <div className="container max-w-6xl mx-auto">
@@ -232,7 +239,7 @@ export function FeaturesSection() {
  * TestimonialsSection – user reviews      *
  *******************************************/
 export function TestimonialsSection() {
-    const t = get_server_t("he");
+    const t = getJsonTranslation();
     return (
         <section id="testimonials" className="py-20 px-4">
             <div className="container max-w-6xl mx-auto">
@@ -260,7 +267,7 @@ export function TestimonialsSection() {
  * TestimonialCard – customer feedback   *
  *****************************************/
 export function TestimonialCard({ testimonial }: { testimonial: TestimonialStatic }) {
-    const t = get_server_t("he");
+    const t = getJsonTranslation();
     const { nameKey, businessKey, image, rating, textKey } = testimonial;
     return (
         <Card className="h-full">
@@ -288,11 +295,11 @@ export function TestimonialCard({ testimonial }: { testimonial: TestimonialStati
  ***************************/
 export interface FooterLinkStatic {
     href: string;
-    label: string;
+    label: TranslationsKey;
 }
 
-export function FooterColumn({ title, links }: { title: string; links: FooterLinkStatic[] }) {
-    const t = get_server_t("he");
+export function FooterColumn({ title, links }: { title: TranslationsKey; links: FooterLinkStatic[] }) {
+    const t = getJsonTranslation();
     return (
         <div>
             <h3 className="font-semibold mb-4">{t(title)}</h3>
@@ -310,7 +317,7 @@ export function FooterColumn({ title, links }: { title: string; links: FooterLin
 }
 
 export function SiteFooter() {
-    const t = get_server_t("he");
+    const t = getJsonTranslation();
     return (
         <footer className="border-t py-12 px-4 bg-background">
             <div className="container max-w-6xl mx-auto">
@@ -358,7 +365,9 @@ export function SiteFooter() {
                             {t("termsOfUse")}
                         </Link>
                     </div>
-                    <div className="text-sm text-muted-foreground">© 2024 {t("brandName")}. {t("rightsReserved")}</div>
+                    <div className="text-sm text-muted-foreground">
+                        © 2024 {t("brandName")}. {t("rightsReserved")}
+                    </div>
                 </div>
             </div>
         </footer>

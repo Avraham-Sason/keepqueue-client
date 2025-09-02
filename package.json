@@ -7,6 +7,7 @@
         "dev": "next dev --turbopack",
         "lint": "next lint",
         "start": "next dev --turbopack",
+        "test": "next start",
         "git": "powershell -ExecutionPolicy Bypass -File ./ps/create_branch.ps1",
         "git2": "powershell -ExecutionPolicy Bypass -File ./ps/move_to_develop.ps1"
     },

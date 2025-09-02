@@ -2,13 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Users, Shield } from "lucide-react";
-import { SiteFooter, HeroSection, FeaturesSection, TestimonialsSection } from "./static-components";
+import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme";
 import { useLanguage } from "@/hooks";
-import { db } from "@/lib/firebase";
 import { A11yToggle } from "@/components/config/a11y";
 import { LanguageToggle } from "@/components/config";
 

@@ -3,8 +3,8 @@ import { persist } from "zustand/middleware";
 import { createSelectors } from "./utils";
 import heTranslations from "../translations/he.json";
 import enTranslations from "../translations/en.json";
+import { Language } from "../types/global";
 
-type Language = "he" | "en";
 type Translations = typeof heTranslations;
 type TranslationsKey = keyof typeof heTranslations | keyof typeof enTranslations | (string & {});
 

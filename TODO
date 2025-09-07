@@ -1,0 +1,73 @@
+TODO – Keepqueue
+
+Authentication
+3. Link Google Sign-In to role and Firestore profile
+4. Add route guards/middleware for Business/Customer dashboards with role-based redirects
+5. Add password reset and email verification flows
+6. Persist and sync user profile from Firestore on login in useAuthStore
+
+Data & Firestore
+1. Define collections and indexes: users, businesses, services, appointments, reviews   
+2. Replace useAppStore and mock data with Firestore CRUD across all flows
+3. Write Firestore Security Rules enforcing roles and resource ownership
+4. Implement Cloud Storage uploads for business logos/media and store URLs on profiles
+5. Create firestore.indexes.json and deploy required composite indexes
+
+Booking
+1. Wire app/business/booking/[businessId]/booking-interface.tsx to create appointments in Firestore
+2. Implement reschedule and cancel flows with validation and status updates
+3. Connect marketplace booking action to create appointments (replace placeholder/addAppointment)
+
+Calendar
+1. Build business calendar view with working hours, breaks, and holidays
+2. Validate slot availability based on service duration and conflict detection
+3. Add staff assignment (MVP: single staff) and per-staff availability rules
+
+Marketplace & Business Profile
+1. Back marketplace with Firestore search/filters (location, service, price, availability)
+2. Create page app/business/[businessId] showing profile, services, reviews, and booking CTA
+3. Add pagination or infinite scroll to marketplace results
+
+WhatsApp
+1. Integrate WhatsApp Business API via Cloud Functions
+2. Schedule reminders via Cloud Scheduler prior to appointments and on status changes
+3. Implement opt-in/out management and localized templates (HE/EN)
+
+Waitlist
+1. Implement waitlist enrollment per service and preferred time window
+2. Auto-notify and auto-book when a matching slot opens
+
+Reviews & Ratings
+1. Implement review creation and storage; restrict to completed appointments
+2. Compute and cache average rating on the business profile (denormalization)
+
+Reports & Analytics
+1. Drive DashboardOverview cards/charts from Firestore data in real time
+2. KPIs: booking counts, no-show rate, revenue, demand by service/day
+
+Business Admin Dashboard
+1. Implement pages: appointments, calendar, customers, services, analytics, reviews, WhatsApp, billing
+2. Services CRUD: pricing, duration, visibility
+3. Customer list with search and problematic-flagging (frequent no-shows)
+
+Customer App
+1. Customer dashboard: cancel/reschedule and submit reviews for completed appointments
+2. Favorites management and quick booking from favorites
+
+i18n & Accessibility
+1. Cover all new strings in lib/translations/en.json and lib/translations/he.json
+2. Add ARIA labels, focus management, and keyboard navigation in forms/dialogs
+
+Performance & SEO
+1. Achieve Lighthouse ≥ 90: image optimization, code-splitting, preload, structured data
+2. Add metadata/OG/Twitter tags for all dashboard and marketplace pages
+
+Testing
+1. Set up React Testing Library for core components (forms, validation)
+2. Playwright E2E: sign up/in, booking, reschedule/cancel, review submission
+3. Provide Firebase/WhatsApp mocks/stubs for tests
+
+DevOps & Security
+1. Add Dockerfile and docker-compose; set up CI/CD to GCP (Cloud Run or GKE)
+2. Configure environment secrets for Firebase and WhatsApp in cloud
+3. Enforce RBAC in API routes and Firestore; add audit logging for admin actions

@@ -1,10 +1,10 @@
 import { cookies, headers } from "next/headers";
 import heTranslations from "./he.json";
 import enTranslations from "./en.json";
+import { Language } from "../types/global";
 
 type Translations = typeof heTranslations;
 export type TranslationsKey = keyof typeof heTranslations | keyof typeof enTranslations | (string & {});
-export type Language = "he" | "en";
 
 export async function getServerLanguage(): Promise<Language> {
     const cookieStore = await cookies();

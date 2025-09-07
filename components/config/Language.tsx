@@ -1,11 +1,11 @@
 "use client";
 
 import { useSettingsStore } from "@/lib/store";
-import { Language } from "@translations/server";
 import { useEffect } from "react";
 import { Button } from "../ui/button";
 import { useLanguage } from "@/hooks";
 import Image from "next/image";
+import { Language } from "@/lib/types/global";
 
 export function LanguageInitializer() {
     const language = useSettingsStore.language();

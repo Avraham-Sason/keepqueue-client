@@ -10,15 +10,24 @@ export async function generateMetadata(): Promise<Metadata> {
         openGraph: {
             title: `${t("heroMain")} ${t("heroSub")} | ${t("brandName")}`,
             description: t("heroParagraph"),
-            url: "https://www.keepqueue.com/",
+            url: "https://keepqueue-v0.vercel.app/",
             siteName: t("brandName"),
             locale: "he_IL",
             type: "website",
+            images: [
+                {
+                    url: "https://keepqueue-v0.vercel.app/placeholder.jpg",
+                    width: 1200,
+                    height: 630,
+                    alt: t("brandName"),
+                },
+            ],
         },
         twitter: {
             card: "summary_large_image",
             title: `${t("heroMain")} ${t("heroSub")} | ${t("brandName")}`,
             description: t("heroParagraph"),
+            images: ["https://keepqueue-v0.vercel.app/placeholder.jpg"],
         },
     };
 }

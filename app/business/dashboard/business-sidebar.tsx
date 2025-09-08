@@ -18,6 +18,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useLanguage } from "@/hooks";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/lib/store";
 
 const menuItems = [
     {
@@ -71,6 +74,11 @@ const menuItems = [
 
 export function BusinessSidebar() {
     const { t } = useLanguage();
+    const [activeTab, setActiveTab] = useState(menuItems[0].title);
+    const user = useAuthStore.user();
+    if (!user) {
+        return null;
+    }
     return (
         <Sidebar side="right">
             <SidebarHeader className="p-4">
@@ -92,9 +100,9 @@ export function BusinessSidebar() {
                         <SidebarMenu>
                             {menuItems.map((item) => (
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild>
-                                        <Link href={item.url} className="flex items-center justify-between">
-                                            <div className="flex items-center gap-2">
+                                    <SidebarMenuButton asChild isActive={activeTab === item.title} onClick={() => setActiveTab(item.title)}>
+                                        <Link href={item.url} className={cn("flex items-center justify-between")}>
+                                            <div className={"flex items-center gap-2 "}>
                                                 <item.icon className="h-4 w-4" />
                                                 <span>{t(item.title)}</span>
                                             </div>
@@ -115,7 +123,7 @@ export function BusinessSidebar() {
             <SidebarFooter className="p-4 space-y-4">
                 <div className="flex items-center space-x-3">
                     <Avatar className="h-8 w-8">
-                        <AvatarImage src="/placeholder.svg?height=32&width=32" />
+                        <AvatarImage src={user.photoURL ?? "/placeholder.svg?height=32&width=32"} />
                         <AvatarFallback>SA</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">

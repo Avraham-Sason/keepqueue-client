@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme";
 import { A11yToggle } from "@/components/config/a11y";
 import { useLanguage } from "@/hooks";
+import { LanguageToggle } from "@/components/config";
 
 export function BusinessHeader() {
     const { t } = useLanguage();
@@ -30,6 +31,7 @@ export function BusinessHeader() {
                     <Settings className="h-4 w-4" />
                 </Button>
                 <SidebarTrigger className="-ml-1" />
+                <LanguageToggle />
             </div>
         </header>
     );

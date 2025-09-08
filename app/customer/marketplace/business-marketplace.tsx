@@ -13,17 +13,30 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, MapPin, Clock, Star, Phone, Calendar, Filter, Heart, HeartOff } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { useAuthStore } from "@/lib/store";
-import type { Customer, BusinessOwner, Service } from "@/lib/mock-data";
+import type { Business, Customer, Service } from "@/lib/types";
+import { Timestamp } from "firebase/firestore";
+import { timestampToMillis } from "@/lib/helpers";
 import { useLanguage } from "@/hooks";
+
+type ServiceView = Service & { description?: string; duration?: number; popular?: boolean };
+type BusinessView = Business & {
+    services?: ServiceView[];
+    address?: string;
+    workingHours?: string;
+    description?: string;
+    avatarUrl?: string;
+    businessName?: string;
+    businessType?: string;
+};
 
 export function BusinessMarketplace() {
     const { t } = useLanguage();
     const user = useAuthStore.user();
-    const businesses = useAppStore.businesses();
+    const businesses = useAppStore.businesses() as BusinessView[];
     const addAppointment = useAppStore.addAppointment();
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedBusiness, setSelectedBusiness] = useState<BusinessOwner | null>(null);
-    const [selectedService, setSelectedService] = useState<Service | null>(null);
+    const [selectedBusiness, setSelectedBusiness] = useState<BusinessView | null>(null);
+    const [selectedService, setSelectedService] = useState<ServiceView | null>(null);
     const [appointmentDate, setAppointmentDate] = useState("");
     const [appointmentTime, setAppointmentTime] = useState("");
     const [appointmentNotes, setAppointmentNotes] = useState("");
@@ -37,9 +50,9 @@ export function BusinessMarketplace() {
 
     const filteredBusinesses = businesses.filter(
         (business) =>
-            business.businessName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            business.businessType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            business.description.toLowerCase().includes(searchTerm.toLowerCase())
+            (business.businessName ?? business.name).toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (business.businessType ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (business.description ?? "").toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleBookAppointment = () => {
@@ -48,24 +61,24 @@ export function BusinessMarketplace() {
             return;
         }
 
-        const newAppointment = {
-            customerId: customer.id,
-            businessId: selectedBusiness.id,
-            serviceId: selectedService.id,
-            date: appointmentDate,
-            time: appointmentTime,
-            status: "pending" as const,
+        const startDate = new Date(`${appointmentDate}T${appointmentTime}:00Z`);
+        const endDate = new Date(timestampToMillis(startDate) + (selectedService.durationMin ?? selectedService.duration ?? 0) * 60000);
+
+        const newEvent = {
+            business: selectedBusiness.id as string,
+            user: customer.id as string,
+            type: "APPOINTMENT" as const,
+            status: "BOOKED" as const,
+            title: selectedService.name,
+            start: Timestamp.fromDate(startDate),
+            end: Timestamp.fromDate(endDate),
+            allDay: false,
+            service: selectedService.id as string,
+            source: "web" as const,
             notes: appointmentNotes,
-            customerName: `${customer.firstName} ${customer.lastName}`,
-            customerPhone: customer.phone,
-            customerEmail: customer.email,
-            serviceName: selectedService.name,
-            servicePrice: selectedService.price,
-            serviceDuration: selectedService.duration,
-            createdAt: new Date().toISOString(),
         };
 
-        // addAppointment(newAppointment);
+        addAppointment(newEvent);
 
         // Reset form
         setSelectedBusiness(null);
@@ -78,7 +91,7 @@ export function BusinessMarketplace() {
         alert(t("appointmentBookedSuccess"));
     };
 
-    const openBookingDialog = (business: BusinessOwner, service?: Service) => {
+    const openBookingDialog = (business: BusinessView, service?: ServiceView) => {
         setSelectedBusiness(business);
         setSelectedService(service || null);
         setIsBookingDialogOpen(true);
@@ -124,16 +137,16 @@ export function BusinessMarketplace() {
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-center space-x-3">
                                         <Avatar className="h-12 w-12">
-                                            <AvatarImage src={business.avatarUrl || "/placeholder.svg"} />
-                                            <AvatarFallback>{business.businessName.charAt(0)}</AvatarFallback>
+                                            <AvatarImage src={business.avatarUrl || business.logoUrl || "/placeholder.svg"} />
+                                            <AvatarFallback>{(business.businessName ?? business.name).charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <CardTitle className="text-lg">{business.businessName}</CardTitle>
-                                            <CardDescription>{business.businessType}</CardDescription>
+                                            <CardTitle className="text-lg">{business.businessName ?? business.name}</CardTitle>
+                                            <CardDescription>{business.businessType ?? ""}</CardDescription>
                                         </div>
                                     </div>
                                     <Button variant="ghost" size="sm">
-                                        {customer.favoriteBusinesses.includes(business.id) ? (
+                                        {(customer.business ?? []).includes(business.id as string) ? (
                                             <Heart className="h-4 w-4 fill-red-500 text-red-500" />
                                         ) : (
                                             <HeartOff className="h-4 w-4" />
@@ -142,20 +155,20 @@ export function BusinessMarketplace() {
                                 </div>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <p className="text-sm text-muted-foreground">{business.description}</p>
+                                <p className="text-sm text-muted-foreground">{business.description ?? ""}</p>
 
                                 <div className="space-y-2">
                                     <div className="flex items-center text-sm text-muted-foreground">
                                         <MapPin className="h-4 w-4 mr-2" />
-                                        {business.address}
+                                        {business.address ?? ""}
                                     </div>
                                     <div className="flex items-center text-sm text-muted-foreground">
                                         <Clock className="h-4 w-4 mr-2" />
-                                        {business.workingHours}
+                                        {business.workingHours ?? ""}
                                     </div>
                                     <div className="flex items-center text-sm text-muted-foreground">
                                         <Phone className="h-4 w-4 mr-2" />
-                                        {business.phone}
+                                        {business.phone ?? ""}
                                     </div>
                                     <div className="flex items-center text-sm">
                                         <Star className="h-4 w-4 mr-2 fill-yellow-400 text-yellow-400" />
@@ -166,13 +179,13 @@ export function BusinessMarketplace() {
                                 <div className="space-y-3">
                                     <h4 className="font-medium">{t("servicesLabel")}</h4>
                                     <div className="space-y-2">
-                                        {business.services.map((service) => (
+                                        {(business.services ?? []).map((service) => (
                                             <div key={service.id} className="flex items-center justify-between p-3 border rounded-lg">
                                                 <div>
                                                     <p className="font-medium">{service.name}</p>
-                                                    <p className="text-sm text-muted-foreground">{service.description}</p>
+                                                    <p className="text-sm text-muted-foreground">{service.description ?? ""}</p>
                                                     <div className="flex items-center gap-2 mt-1">
-                                                        <Badge variant="outline">{service.duration} {t("minutesShort")}</Badge>
+                                                        <Badge variant="outline">{service.duration ?? service.durationMin} {t("minutesShort")}</Badge>
                                                         <Badge variant="outline">₪{service.price}</Badge>
                                                         {service.popular && <Badge className="bg-orange-100 text-orange-800">{t("popular")}</Badge>}
                                                     </div>
@@ -216,7 +229,7 @@ export function BusinessMarketplace() {
                                 <Label htmlFor="service">{t("selectAService")}</Label>
                                 <Select
                                     onValueChange={(value) => {
-                                        const service = selectedBusiness.services.find((s) => s.id === value);
+                                        const service = (selectedBusiness?.services ?? []).find((s) => (s.id as string) === value);
                                         setSelectedService(service || null);
                                     }}
                                 >
@@ -224,9 +237,9 @@ export function BusinessMarketplace() {
                                         <SelectValue placeholder={t("selectAService")} />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {selectedBusiness.services.map((service) => (
-                                            <SelectItem key={service.id} value={service.id}>
-                                                {service.name} - ₪{service.price} ({service.duration} {t("minutesShort")})
+                                        {(selectedBusiness?.services ?? []).map((service) => (
+                                            <SelectItem key={service.id as string} value={service.id as string}>
+                                                {service.name} - ₪{service.price} ({service.duration ?? service.durationMin} {t("minutesShort")})
                                             </SelectItem>
                                         ))}
                                     </SelectContent>

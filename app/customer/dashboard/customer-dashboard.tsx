@@ -8,7 +8,8 @@ import { Calendar, Clock, MapPin, Star, CheckCircle, XCircle, AlertCircle, Heart
 import { motion } from "framer-motion";
 import { useAppStore } from "@/lib/store";
 import { useAuthStore } from "@/lib/store";
-import type { Customer } from "@/lib/mock-data";
+import type { Customer, CalendarEvent } from "@/lib/types";
+import { timestampToMillis, timestampToString } from "@/lib/helpers";
 import { useLanguage } from "@/hooks";
 
 export function CustomerDashboard() {
@@ -23,30 +24,32 @@ export function CustomerDashboard() {
     }
 
     // Get real appointments for this customer
-    const customerAppointments = getCustomerAppointments(customer.id);
+    const customerAppointments: CalendarEvent[] = getCustomerAppointments(customer.id as string);
 
     // Get favorite businesses
-    const favoriteBusinesses = businesses.filter((business) => customer.favoriteBusinesses.includes(business.id));
+    const favoriteBusinesses = businesses.filter((business) => (customer.business ?? []).includes(business.id as string));
 
     // Sort appointments by date
     const sortedAppointments = customerAppointments.sort(
-        (a, b) => new Date(a.date + " " + a.time).getTime() - new Date(b.date + " " + b.time).getTime()
+        (a, b) => timestampToMillis(a.start) - timestampToMillis(b.start)
     );
 
-    const upcomingAppointments = sortedAppointments.filter((apt) => new Date(apt.date) >= new Date(new Date().toISOString().split("T")[0]));
+    const upcomingAppointments = sortedAppointments.filter((apt) => timestampToMillis(apt.start) >= timestampToMillis(new Date()));
 
-    const pastAppointments = sortedAppointments.filter((apt) => new Date(apt.date) < new Date(new Date().toISOString().split("T")[0]));
+    const pastAppointments = sortedAppointments.filter((apt) => timestampToMillis(apt.start) < timestampToMillis(new Date()));
 
     const getStatusIcon = (status: string) => {
         switch (status) {
-            case "confirmed":
+            case "CONFIRMED":
                 return <CheckCircle className="h-4 w-4 text-green-500" />;
-            case "pending":
+            case "BOOKED":
                 return <AlertCircle className="h-4 w-4 text-yellow-500" />;
-            case "cancelled":
+            case "CANCELLED":
                 return <XCircle className="h-4 w-4 text-red-500" />;
-            case "completed":
+            case "DONE":
                 return <CheckCircle className="h-4 w-4 text-blue-500" />;
+            case "NO_SHOW":
+                return <XCircle className="h-4 w-4 text-red-500" />;
             default:
                 return <Clock className="h-4 w-4 text-gray-500" />;
         }
@@ -54,14 +57,16 @@ export function CustomerDashboard() {
 
     const getStatusText = (status: string) => {
         switch (status) {
-            case "confirmed":
+            case "CONFIRMED":
                 return t("statusConfirmed");
-            case "pending":
+            case "BOOKED":
                 return t("statusPending");
-            case "cancelled":
+            case "CANCELLED":
                 return t("statusCancelled");
-            case "completed":
+            case "DONE":
                 return t("statusCompleted");
+            case "NO_SHOW":
+                return t("statusCancelled");
             default:
                 return status;
         }
@@ -78,7 +83,7 @@ export function CustomerDashboard() {
                     </div>
                     <div className="flex items-center space-x-4">
                         <Avatar className="h-12 w-12">
-                            <AvatarImage src={customer.avatarUrl || "/placeholder.svg"} alt={customer.firstName} />
+                            <AvatarImage src={customer.photoURL || "/placeholder.svg"} alt={customer.firstName} />
                             <AvatarFallback>{customer.firstName.charAt(0)}</AvatarFallback>
                         </Avatar>
                     </div>
@@ -109,7 +114,7 @@ export function CustomerDashboard() {
                         <CheckCircle className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{pastAppointments.filter((apt) => apt.status === "completed").length}</div>
+                        <div className="text-2xl font-bold">{pastAppointments.filter((apt) => apt.status === "DONE").length}</div>
                         <p className="text-xs text-muted-foreground">{t("totalAppointments")}</p>
                     </CardContent>
                 </Card>
@@ -131,9 +136,7 @@ export function CustomerDashboard() {
                         <Star className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
-                            ₪{pastAppointments.filter((apt) => apt.status === "completed").reduce((sum, apt) => sum + apt.servicePrice, 0)}
-                        </div>
+                        <div className="text-2xl font-bold">₪0</div>
                         <p className="text-xs text-muted-foreground">מתורים שהושלמו</p>
                     </CardContent>
                 </Card>
@@ -156,7 +159,7 @@ export function CustomerDashboard() {
                             <div className="space-y-4">
                                 {upcomingAppointments.length > 0 ? (
                                     upcomingAppointments.slice(0, 5).map((appointment) => {
-                                        const business = businesses.find((b) => b.id === appointment.businessId);
+                                        const business = businesses.find((b) => b.id === appointment.business);
                                         return (
                                             <div
                                                 key={appointment.id}
@@ -164,17 +167,17 @@ export function CustomerDashboard() {
                                             >
                                                 <div className="flex items-center space-x-4">
                                                     <Avatar className="h-10 w-10">
-                                                        <AvatarImage src={business?.avatarUrl || "/placeholder.svg"} />
-                                                        <AvatarFallback>{business?.businessName.charAt(0)}</AvatarFallback>
+                                                        <AvatarImage src={business?.logoUrl || "/placeholder.svg"} />
+                                                        <AvatarFallback>{(business?.name ?? "").charAt(0)}</AvatarFallback>
                                                     </Avatar>
                                                     <div className="space-y-1">
-                                                        <p className="text-sm font-medium leading-none">{business?.businessName}</p>
-                                                        <p className="text-sm text-muted-foreground">{appointment.serviceName}</p>
+                                                        <p className="text-sm font-medium leading-none">{business?.name}</p>
+                                                        <p className="text-sm text-muted-foreground">{t("appointment")}</p>
                                                         <div className="flex items-center space-x-2 text-xs text-muted-foreground">
                                                             <Calendar className="h-3 w-3" />
-                                                            <span>{appointment.date}</span>
+                                                            <span>{timestampToString(appointment.start, { format: "YYYY-MM-DD" })}</span>
                                                             <Clock className="h-3 w-3" />
-                                                            <span>{appointment.time}</span>
+                                                            <span>{timestampToString(appointment.start, { format: "HH:mm" })}</span>
                                                         </div>
                                                         {appointment.notes && (
                                                             <p className="text-xs text-muted-foreground italic">"{appointment.notes}"</p>
@@ -186,7 +189,7 @@ export function CustomerDashboard() {
                                                         {getStatusIcon(appointment.status)}
                                                         <span>{getStatusText(appointment.status)}</span>
                                                     </Badge>
-                                                    <div className="text-sm font-medium">₪{appointment.servicePrice}</div>
+                                                    {/* price not available on CalendarEvent in this view */}
                                                 </div>
                                             </div>
                                         );
@@ -226,15 +229,15 @@ export function CustomerDashboard() {
                                 favoriteBusinesses.map((business) => (
                                     <div key={business.id} className="flex items-center space-x-3 p-3 border rounded-lg">
                                         <Avatar className="h-10 w-10">
-                                            <AvatarImage src={business.avatarUrl || "/placeholder.svg"} />
-                                            <AvatarFallback>{business.businessName.charAt(0)}</AvatarFallback>
+                                            <AvatarImage src={business.logoUrl || "/placeholder.svg"} />
+                                            <AvatarFallback>{business.name.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div className="flex-1">
-                                            <p className="font-medium">{business.businessName}</p>
-                                            <p className="text-sm text-muted-foreground">{business.businessType}</p>
+                                            <p className="font-medium">{business.name}</p>
+                                            <p className="text-sm text-muted-foreground">{(business as any).businessType ?? ""}</p>
                                             <div className="flex items-center text-xs text-muted-foreground mt-1">
                                                 <MapPin className="h-3 w-3 mr-1" />
-                                                <span>{business.address}</span>
+                                                <span>{(business as any).address ?? ""}</span>
                                             </div>
                                         </div>
                                         <Button size="sm" variant="outline">

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { type User } from "../mock-data";
+import { type User } from "../types";
 import { createSelectors } from "./utils";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../firebase/connect";

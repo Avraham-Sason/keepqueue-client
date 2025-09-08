@@ -22,23 +22,30 @@ export interface DocBase {
     timestamp: TS;
 }
 
-export interface User extends DocBase {
+export interface UserBase extends DocBase {
     uid?: ID;
     email: string;
     phone: string;
     firstName: string;
     lastName: string;
-    type: UserType;
-    business: ID[];
     isActive: boolean;
     contacts: Record<NotificationType, boolean>;
     roles?: string[];
-    ownedBusinessIds?: ID[];
     notes?: string;
     photoURL?: string;
     lastLoginAt?: TS;
     lastEventAt?: TS;
 }
+export interface BusinessOwner extends UserBase {
+    ownedBusinessIds?: ID[];
+    type: "business";
+}
+
+export interface Customer extends UserBase {
+    type: "customer";
+    business: ID[];
+}
+export type User = BusinessOwner | Customer;
 
 export interface Business extends DocBase {
     name: string;

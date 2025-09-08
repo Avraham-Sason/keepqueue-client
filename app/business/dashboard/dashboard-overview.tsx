@@ -23,44 +23,57 @@ import {
 import { motion } from "framer-motion";
 import { useAppStore } from "@/lib/store/globalStore";
 import { useAuthStore } from "@/lib/store";
-import type { BusinessOwner } from "@/lib/mock-data";
+import type { User, Business, CalendarEvent } from "@/lib/types";
+import { timestampToString, timestampToMillis } from "@/lib/helpers";
 import { useLanguage } from "@/hooks";
 
 export function DashboardOverview() {
     const { t } = useLanguage();
     const user = useAuthStore.user();
     const getBusinessAppointments = useAppStore.getBusinessAppointments();
-    const businessOwner = user as BusinessOwner;
+    const getBusinessById = useAppStore.getBusinessById();
+    const businesses = useAppStore.businesses();
+    const businessOwner = user as User;
 
     if (!businessOwner || businessOwner.type !== "business") {
         return <div>{t("errorUnauthorizedUser")}</div>;
     }
 
+    // Resolve the business entity for this owner
+    let ownerBusiness: Business | undefined = businessOwner.ownedBusinessIds?.[0]
+        ? getBusinessById(businessOwner.ownedBusinessIds[0])
+        : undefined;
+    if (!ownerBusiness) {
+        ownerBusiness = businesses.find((b) => b.ownerId === (businessOwner.uid ?? ""));
+    }
+
     // Get real appointments for this business
-    const businessAppointments = getBusinessAppointments(businessOwner.id);
+    const businessAppointments: CalendarEvent[] = ownerBusiness ? getBusinessAppointments(ownerBusiness.id as string) : [];
 
     // Calculate real stats
-    const today = new Date().toISOString().split("T")[0];
-    const todayAppointments = businessAppointments.filter((apt) => apt.date === today);
-    const confirmedAppointments = businessAppointments.filter((apt) => apt.status === "confirmed");
-    const totalRevenue = businessAppointments.filter((apt) => apt.status === "completed").reduce((sum, apt) => sum + apt.servicePrice, 0);
+    const todayIso = new Date().toISOString().split("T")[0];
+    const todayAppointments = businessAppointments.filter((apt) => timestampToString(apt.start, { format: "YYYY-MM-DD" }) === todayIso);
+    const confirmedAppointments = businessAppointments.filter((apt) => apt.status === "CONFIRMED");
+    const totalRevenue = 0;
 
     const upcomingAppointments = businessAppointments
-        .filter((apt) => apt.status === "confirmed" || apt.status === "pending")
-        .filter((apt) => new Date(apt.date) >= new Date(today))
-        .sort((a, b) => new Date(a.date + " " + a.time).getTime() - new Date(b.date + " " + b.time).getTime())
+        .filter((apt) => apt.status === "CONFIRMED" || apt.status === "BOOKED")
+        .filter((apt) => timestampToMillis(apt.start) >= timestampToMillis(new Date()))
+        .sort((a, b) => timestampToMillis(a.start) - timestampToMillis(b.start))
         .slice(0, 5);
 
     const getStatusIcon = (status: string) => {
         switch (status) {
-            case "confirmed":
+            case "CONFIRMED":
                 return <CheckCircle className="h-4 w-4 text-green-500" />;
-            case "pending":
+            case "BOOKED":
                 return <AlertCircle className="h-4 w-4 text-yellow-500" />;
-            case "cancelled":
+            case "CANCELLED":
                 return <XCircle className="h-4 w-4 text-red-500" />;
-            case "completed":
+            case "DONE":
                 return <CheckCircle className="h-4 w-4 text-blue-500" />;
+            case "NO_SHOW":
+                return <XCircle className="h-4 w-4 text-red-500" />;
             default:
                 return <Clock className="h-4 w-4 text-gray-500" />;
         }
@@ -68,14 +81,16 @@ export function DashboardOverview() {
 
     const getStatusText = (status: string) => {
         switch (status) {
-            case "confirmed":
+            case "CONFIRMED":
                 return t("statusConfirmed");
-            case "pending":
+            case "BOOKED":
                 return t("statusPending");
-            case "cancelled":
+            case "CANCELLED":
                 return t("statusCancelled");
-            case "completed":
+            case "DONE":
                 return t("statusCompleted");
+            case "NO_SHOW":
+                return t("statusCancelled");
             default:
                 return status;
         }
@@ -88,11 +103,11 @@ export function DashboardOverview() {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">{t("hello")}, {businessOwner.firstName}!</h1>
-                        <p className="text-muted-foreground">{t("welcomeBusinessAdminPanelOf")} {businessOwner.businessName}</p>
+                        <p className="text-muted-foreground">{t("welcomeBusinessAdminPanelOf")} {ownerBusiness?.name ?? ""}</p>
                     </div>
                     <div className="flex items-center space-x-4">
                         <Avatar className="h-12 w-12">
-                            <AvatarImage src={businessOwner.avatarUrl || "/placeholder.svg"} alt={businessOwner.firstName} />
+                            <AvatarImage src={businessOwner.photoURL || "/placeholder.svg"} alt={businessOwner.firstName} />
                             <AvatarFallback>{businessOwner.firstName.charAt(0)}</AvatarFallback>
                         </Avatar>
                     </div>
@@ -174,16 +189,16 @@ export function DashboardOverview() {
                                         >
                                             <div className="flex items-center space-x-4">
                                                 <Avatar className="h-10 w-10">
-                                                    <AvatarFallback>{appointment.customerName.charAt(0)}</AvatarFallback>
+                                                    <AvatarFallback>A</AvatarFallback>
                                                 </Avatar>
                                                 <div className="space-y-1">
-                                                    <p className="text-sm font-medium leading-none">{appointment.customerName}</p>
-                                                    <p className="text-sm text-muted-foreground">{appointment.serviceName}</p>
+                                                    <p className="text-sm font-medium leading-none">{appointment.title}</p>
+                                                    <p className="text-sm text-muted-foreground">{t("appointment")}</p>
                                                     <div className="flex items-center space-x-2 text-xs text-muted-foreground">
                                                         <Calendar className="h-3 w-3" />
-                                                        <span>{appointment.date}</span>
+                                                        <span>{timestampToString(appointment.start, { format: "YYYY-MM-DD" })}</span>
                                                         <Clock className="h-3 w-3" />
-                                                        <span>{appointment.time}</span>
+                                                        <span>{timestampToString(appointment.start, { format: "HH:mm" })}</span>
                                                     </div>
                                                     {appointment.notes && (
                                                         <p className="text-xs text-muted-foreground italic">"{appointment.notes}"</p>
@@ -195,7 +210,6 @@ export function DashboardOverview() {
                                                     {getStatusIcon(appointment.status)}
                                                     <span>{getStatusText(appointment.status)}</span>
                                                 </Badge>
-                                                <div className="text-sm font-medium">₪{appointment.servicePrice}</div>
                                                 <Button variant="ghost" size="sm">
                                                     <MoreHorizontal className="h-4 w-4" />
                                                 </Button>
@@ -233,7 +247,7 @@ export function DashboardOverview() {
                                         <MapPin className="h-5 w-5 text-primary" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-medium">{businessOwner.address}</p>
+                                        <p className="text-sm font-medium">-</p>
                                         <p className="text-xs text-muted-foreground">{t("businessAddress")}</p>
                                     </div>
                                 </div>
@@ -243,7 +257,7 @@ export function DashboardOverview() {
                                         <Phone className="h-5 w-5 text-primary" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-medium">{businessOwner.phone}</p>
+                                        <p className="text-sm font-medium">{ownerBusiness?.phone ?? businessOwner.phone}</p>
                                         <p className="text-xs text-muted-foreground">{t("phone")}</p>
                                     </div>
                                 </div>
@@ -263,7 +277,7 @@ export function DashboardOverview() {
                                         <Clock className="h-5 w-5 text-primary" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-medium">{businessOwner.workingHours}</p>
+                                        <p className="text-sm font-medium">-</p>
                                         <p className="text-xs text-muted-foreground">{t("workingHours")}</p>
                                     </div>
                                 </div>
@@ -272,11 +286,7 @@ export function DashboardOverview() {
                             <div className="pt-4 border-t">
                                 <h4 className="text-sm font-medium mb-2">{t("yourServices")}</h4>
                                 <div className="flex flex-wrap gap-2">
-                                    {businessOwner.services.map((service) => (
-                                        <Badge key={service.id} variant="secondary">
-                                            {service.name} - ₪{service.price}
-                                        </Badge>
-                                    ))}
+                                    {/* Services listing not available on core Business type in this view */}
                                 </div>
                             </div>
                         </CardContent>

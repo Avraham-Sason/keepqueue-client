@@ -13,6 +13,7 @@ interface SettingsState {
     toggleA11y: () => void;
     setA11y: (enabled: boolean) => void;
     language: Language;
+    isRtl: boolean;
     setLanguage: (lang: Language) => void;
     t: (key: TranslationsKey) => string;
 }
@@ -28,9 +29,9 @@ export const useSettingsStoreBase = create<SettingsState>()(
             a11yEnabled: false,
             toggleA11y: () => set({ a11yEnabled: !get().a11yEnabled }),
             setA11y: (enabled) => set({ a11yEnabled: enabled }),
-
             language: "he",
-            setLanguage: (lang) => set({ language: lang }),
+            isRtl: true,
+            setLanguage: (lang) => set({ language: lang, isRtl: lang === "he" }),
             t: (key) => {
                 const current = translations[get().language] as Record<string, string>;
                 const fallbackEn = enTranslations as Record<string, string>;

@@ -20,7 +20,7 @@ import Link from "next/link";
 import { useLanguage } from "@/hooks";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/lib/store";
+import { useAuthStore, useSettingsStore } from "@/lib/store";
 
 const menuItems = [
     {
@@ -76,11 +76,12 @@ export function BusinessSidebar() {
     const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState(menuItems[0].title);
     const user = useAuthStore.user();
+    const isRtl = useSettingsStore.isRtl();
     if (!user) {
         return null;
     }
     return (
-        <Sidebar side="right">
+        <Sidebar side={isRtl ? "right" : "left"} variant="sidebar">
             <SidebarHeader className="p-4">
                 <div className="flex items-center space-x-2">
                     <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">

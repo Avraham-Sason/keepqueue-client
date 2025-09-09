@@ -10,6 +10,7 @@ export type NotificationType = "whatsapp" | "sms" | "email";
 export type NotificationStatus = "QUEUED" | "SENT" | "FAILED" | "DELIVERED";
 export type UserType = "business" | "customer";
 export type CalendarEventSource = "web" | "admin" | "import";
+
 export interface Availability {
     start: TS;
     end: TS;
@@ -60,6 +61,14 @@ export interface Business extends DocBase {
     currency?: string;
     locale?: string;
     logoUrl?: string;
+    policy?: Policy;
+}
+
+export interface Policy {
+    cancellationWindowMin: number;
+    lateThresholdMin: number;
+    noShowAutoBlock: boolean;
+    noShowLimit?: number;
 }
 
 export interface Service extends DocBase {
@@ -67,13 +76,24 @@ export interface Service extends DocBase {
     name: string;
     durationMin: number;
     price: number;
+    pricing?: Pricing;
     availability: Availability[];
     paddingBefore?: number;
     paddingAfter?: number;
     active: boolean;
     order?: number;
 }
-
+export interface Pricing {
+    vatPercent?: number;
+    coupons?: {
+        code: string;
+        discountType: "PERCENT" | "AMOUNT";
+        amount: number;
+        validFrom: TS;
+        validTo: TS;
+        active: boolean;
+    }[];
+}
 export interface CalendarEvent extends DocBase {
     business: ID;
     user: ID;
@@ -82,7 +102,6 @@ export interface CalendarEvent extends DocBase {
     title: string;
     start: TS;
     end: TS;
-    allDay?: boolean;
     service?: ID;
     source?: CalendarEventSource;
     notes?: string;
@@ -98,10 +117,9 @@ export interface WaitItem extends DocBase {
 }
 
 export interface Review extends DocBase {
-    reviewId: ID;
     business: ID;
-    customerId: ID;
-    appointmentId?: ID;
+    user: ID;
+    calendarEventId?: ID;
     rating: 1 | 2 | 3 | 4 | 5;
     text?: string;
     flagged: boolean;
@@ -111,11 +129,11 @@ export interface NotificationLog extends DocBase {
     business: ID;
     type: NotificationType;
     to: string;
-    template: ID;
+    messageTemplate: ID;
     content: string;
     status: NotificationStatus;
-    error?: string;
     sentAt: TS;
+    error?: string;
 }
 
 export interface MessageTemplate extends DocBase {
@@ -125,55 +143,6 @@ export interface MessageTemplate extends DocBase {
     content: string;
     name: string;
     description?: string;
-}
-
-export interface Policy extends DocBase {
-    policyId: ID;
-    business: ID;
-    cancellationWindowMin: number; // >= 0
-    lateThresholdMin: number; // >= 0
-    noShowAutoBlock: boolean;
-    noShowLimit?: number; // >= 0
-}
-
-export interface Pricing extends DocBase {
-    pricingId: ID;
-    business: ID;
-    vatPercent?: number;
-    coupons?: {
-        code: string;
-        discountType: "PERCENT" | "AMOUNT";
-        amount: number;
-        validFrom: TS;
-        validTo: TS;
-        active: boolean;
-    }[];
-}
-
-// ------------------------------------
-// Stats (אגרגציות יומיות)
-// date כ-Timestamp של יום
-// ------------------------------------
-export interface StatsDaily extends DocBase {
-    statId: ID;
-    business: ID;
-    date: TS;
-    bookings: number;
-    cancellations: number;
-    noShows: number;
-    avgLeadTimeMin: number;
-    revenueEstimate: number;
-}
-
-// ------------------------------------
-// Integrations
-// ------------------------------------
-export interface Integration extends DocBase {
-    integrationId: ID;
-    business: ID;
-    provider: string; // 'whatsapp' | ...
-    status: "connected" | "error" | "disabled";
-    meta?: Record<string, unknown>; // אל תשמרי סודות גולמיים
 }
 
 export interface Audit extends DocBase {

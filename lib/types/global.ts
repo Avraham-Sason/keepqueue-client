@@ -37,17 +37,20 @@ export interface UserBase extends DocBase {
     lastLoginAt?: TS;
     lastEventAt?: TS;
 }
+// Collection: users
 export interface BusinessOwner extends UserBase {
     ownedBusinessIds?: ID[];
     type: "business";
 }
 
+// Collection: users
 export interface Customer extends UserBase {
     type: "customer";
     business: ID[];
 }
 export type User = BusinessOwner | Customer;
 
+// Collection: businesses
 export interface Business extends DocBase {
     name: string;
     ownerId: ID;
@@ -71,6 +74,7 @@ export interface Policy {
     noShowLimit?: number;
 }
 
+// Collection: services
 export interface Service extends DocBase {
     business: ID;
     name: string;
@@ -94,6 +98,7 @@ export interface Pricing {
         active: boolean;
     }[];
 }
+// Collection: calendar
 export interface CalendarEvent extends DocBase {
     business: ID;
     user: ID;
@@ -107,6 +112,7 @@ export interface CalendarEvent extends DocBase {
     notes?: string;
 }
 
+// Collection: waitlist
 export interface WaitItem extends DocBase {
     business: ID;
     user: ID;
@@ -116,6 +122,7 @@ export interface WaitItem extends DocBase {
     expiresAt: TS;
 }
 
+// Collection: reviews
 export interface Review extends DocBase {
     business: ID;
     user: ID;
@@ -125,6 +132,7 @@ export interface Review extends DocBase {
     flagged: boolean;
 }
 
+// Collection: notification_logs
 export interface NotificationLog extends DocBase {
     business: ID;
     type: NotificationType;
@@ -136,6 +144,7 @@ export interface NotificationLog extends DocBase {
     error?: string;
 }
 
+// Collection: message_templates
 export interface MessageTemplate extends DocBase {
     business: ID;
     key: string;
@@ -145,6 +154,7 @@ export interface MessageTemplate extends DocBase {
     description?: string;
 }
 
+// Collection: audits
 export interface Audit extends DocBase {
     business: ID;
     user: ID;
@@ -152,3 +162,15 @@ export interface Audit extends DocBase {
     action: "create" | "update" | "delete";
     subEntity: string;
 }
+
+export const firestoreCollections = [
+    "users",
+    "businesses",
+    "services",
+    "calendar",
+    "waitlist",
+    "reviews",
+    "notification_logs",
+    "message_templates",
+    "audits",
+] as const;

@@ -1,0 +1,122 @@
+Keepqueue Server (Express) — TODO
+
+Conventions
+- Code style: snake_case for variables/functions; Types/Interfaces in CamelCase
+- Runtime: Node.js + Express; TypeScript preferred (strict mode)
+- Data: Firebase (Auth, Firestore, Storage) via Firebase Admin SDK
+- Messaging: WhatsApp Cloud API (outbound + webhooks)
+- Deployment: Docker, GKE; HTTPS behind Ingress; health probes
+
+1) Project Setup & Infrastructure
+- Initialize structure: src/, src/routes, src/controllers, src/services, src/repositories, src/middleware, src/jobs, src/utils, src/config
+- Add TypeScript, ts-node-dev/nodemon, ESLint, Prettier; strict tsconfig
+- Centralized env loader (src/config/env.ts) with schema validation (zod)
+- Initialize Firebase Admin SDK (src/config/firebase_admin.ts) from service account
+- Express app baseline (src/app.ts): helmet, cors, compression, morgan/pino-http, json/urlencoded parsers, trust proxy
+- Global error/404 handlers (src/middleware/error_handler.ts)
+- CORS allow-list for Next.js origins
+- Health endpoints: GET /healthz, GET /readyz
+- OpenAPI 3.1 generation with swagger-jsdoc + Swagger UI at /docs (secured in non-dev)
+
+2) AuthN/AuthZ & Roles
+- Middleware verify_auth (Firebase ID token)
+- Middleware attach_user (decoded claims, user_id)
+- Role model: Owner, Staff, Customer (custom claims for Owner/Staff)
+- Guard middleware require_role([roles])
+- Business scoping: require business_id and verify membership/ownership
+
+3) Data Modeling (Firestore)
+- Collections: businesses, services, staff, customers, appointments, availability_rules, holidays, waitlist, reviews, notifications, analytics_snapshots, audit_logs
+- Define TypeScript interfaces and DTOs per collection
+- Implement repositories with validation, transactions/batch writes
+- Plan composite indexes (indexes.json) for common queries (date ranges, status, business_id, staff_id)
+
+4) Businesses & Staff
+- Endpoints
+  - POST/GET/PATCH /businesses/:business_id (profile, branding, public settings)
+  - POST/GET/PATCH/DELETE /businesses/:business_id/services
+  - POST/GET/PATCH/DELETE /businesses/:business_id/staff
+- Staff working hours schema, breaks, slot capacity
+
+5) Availability & Calendar Logic
+- Availability rules: business hours, breaks, holidays, service durations, staff assignment
+- Service compute_open_slots() to merge rules with existing appointments
+- Endpoints
+  - GET /businesses/:business_id/availability?service_id&date=YYYY-MM-DD
+  - GET /businesses/:business_id/calendar?from=&to=&view=day|week
+
+6) Appointments
+- States: scheduled, confirmed, cancelled, completed, no_show
+- Endpoints
+  - POST /businesses/:business_id/appointments (transactional create + conflict prevention)
+  - GET /businesses/:business_id/appointments?from=&to=&status=&customer_id=&staff_id=
+  - PATCH /businesses/:business_id/appointments/:appointment_id (reschedule, notes)
+  - POST /businesses/:business_id/appointments/:appointment_id/cancel
+  - POST /businesses/:business_id/appointments/:appointment_id/confirm (owner/staff)
+  - POST /customers/appointments/:appointment_id/cancel (token-based unauthenticated)
+- Double-booking prevention (unique slot lock per staff/service)
+- Idempotency support via Idempotency-Key header
+
+7) Waitlist
+- Endpoints
+  - POST/GET/DELETE /businesses/:business_id/waitlist
+- Service: on slot free, select candidate by policy, send WhatsApp with reservation TTL
+
+8) Reviews & Ratings
+- Endpoints
+  - POST/GET /businesses/:business_id/reviews (allowed after completed appointment)
+  - GET /businesses/:business_id/ratings (averages, counts)
+- Moderation fields and visibility rules
+
+9) Problematic Customers
+- Track metrics per customer: no_show_count, cancel_rate
+- Threshold-based blocking (configurable per business)
+- Owner alert record in notifications
+
+10) Reports & Analytics
+- Aggregations: bookings_by_period, no_show_rate, revenue_by_service, top_services
+- Endpoints under /analytics; daily snapshot job + on-demand computation fallback
+
+11) WhatsApp Integration
+- Outbound client: templated messages (reminder, confirmation, waitlist)
+- Webhook: POST /webhooks/whatsapp (verify signature, parse statuses, inbound confirm/cancel)
+- Template registry + variable mapping
+- Retry with exponential backoff; persist delivery status
+
+12) Schedulers / Background Jobs
+- Reminder scheduler: query appointments N hours before start_time; send WhatsApp reminders
+- Cleanup job: expire holds and waitlist reservations
+- GKE CronJobs invoking internal safe/idempotent endpoints
+
+13) Security & Compliance
+- Input validation (zod/joi) for bodies/queries
+- Rate limiting (express-rate-limit)
+- Webhook IP allow-list + signature verification
+- Audit logging for sensitive actions
+- Align Firestore security rules to server access (minimize direct client writes)
+
+14) Observability
+- Structured logging (winston/pino) with request_id/user_id correlation
+- /metrics for Prometheus (histograms, counters)
+- Error categorization and alert hooks
+
+15) DevOps / Delivery
+- Dockerfile (multi-stage) + .dockerignore
+- K8s manifests: Deployment, Service, Ingress, ConfigMap/Secret, HPA
+- Readiness/Liveness probes
+- CI: lint, tests, build, push, deploy
+
+16) Testing
+- Unit tests for services/repositories
+- Integration tests with Firebase Emulators; HTTP tests with Supertest
+- Contract tests vs OpenAPI; webhook signature verification tests
+
+17) Performance
+- Query optimization + indexes
+- Response caching for read-heavy endpoints (in-memory; consider Redis later)
+- Load testing baseline and tuning
+
+Deliverables
+- HTTPS API with documented endpoints and guards
+- OpenAPI kept in sync with routes
+- MVP flows: booking, availability, reminders, waitlist, reviews, analytics

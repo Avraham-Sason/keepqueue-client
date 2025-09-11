@@ -115,7 +115,8 @@
     .a11y h3 {
         letter-spacing: 0.005em;
     }
-    .a11y .card { /* increase inner spacing */
+    .a11y .card {
+        /* increase inner spacing */
         padding: 0.75rem;
     }
     .a11y .btn-primary {
@@ -345,17 +346,6 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-weight: 700;
-}
-
-.full {
-    width: 100%;
-    height: 100%;
-}
-
-.center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 /* Glass effect */

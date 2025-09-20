@@ -24,7 +24,6 @@ export interface DocBase {
 }
 
 export interface UserBase extends DocBase {
-    uid?: ID;
     email: string;
     phone: string;
     firstName: string;
@@ -62,7 +61,7 @@ export interface Business extends DocBase {
     isActive: boolean;
     availability: Availability[];
     currency?: string;
-    locale?: string;
+    lang: Language;
     logoUrl?: string;
     policy?: Policy;
 }
@@ -174,3 +173,5 @@ export const firestoreCollections = [
     "message_templates",
     "audits",
 ] as const;
+
+["services", "calendar", "waitlist", "reviews", "message_templates"];

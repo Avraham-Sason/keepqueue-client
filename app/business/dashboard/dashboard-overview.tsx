@@ -44,7 +44,7 @@ export function DashboardOverview() {
         ? getBusinessById(businessOwner.ownedBusinessIds[0])
         : undefined;
     if (!ownerBusiness) {
-        ownerBusiness = businesses.find((b) => b.ownerId === (businessOwner.uid ?? ""));
+        ownerBusiness = businesses.find((b) => b.ownerId === (businessOwner.id ?? ""));
     }
 
     // Get real appointments for this business

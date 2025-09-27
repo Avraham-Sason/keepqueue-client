@@ -65,15 +65,15 @@ export function BusinessMarketplace() {
         const endDate = new Date(timestampToMillis(startDate) + (selectedService.durationMin ?? selectedService.duration ?? 0) * 60000);
 
         const newEvent = {
-            business: selectedBusiness.id as string,
-            user: customer.id as string,
+            businessId: selectedBusiness.id as string,
+            userId: customer.id as string,
             type: "APPOINTMENT" as const,
             status: "BOOKED" as const,
             title: selectedService.name,
             start: Timestamp.fromDate(startDate),
             end: Timestamp.fromDate(endDate),
             allDay: false,
-            service: selectedService.id as string,
+            serviceId: selectedService.id as string,
             source: "web" as const,
             notes: appointmentNotes,
         };
@@ -146,7 +146,7 @@ export function BusinessMarketplace() {
                                         </div>
                                     </div>
                                     <Button variant="ghost" size="sm">
-                                        {(customer.business ?? []).includes(business.id as string) ? (
+                                        {(customer.businessId ?? []).includes(business.id as string) ? (
                                             <Heart className="h-4 w-4 fill-red-500 text-red-500" />
                                         ) : (
                                             <HeartOff className="h-4 w-4" />

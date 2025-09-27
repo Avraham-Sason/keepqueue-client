@@ -27,7 +27,7 @@ export function CustomerDashboard() {
     const customerAppointments: CalendarEvent[] = getCustomerAppointments(customer.id as string);
 
     // Get favorite businesses
-    const favoriteBusinesses = businesses.filter((business) => (customer.business ?? []).includes(business.id as string));
+    const favoriteBusinesses = businesses.filter((business) => (customer.businessId ?? []).includes(business.id as string));
 
     // Sort appointments by date
     const sortedAppointments = customerAppointments.sort(
@@ -159,7 +159,7 @@ export function CustomerDashboard() {
                             <div className="space-y-4">
                                 {upcomingAppointments.length > 0 ? (
                                     upcomingAppointments.slice(0, 5).map((appointment) => {
-                                        const business = businesses.find((b) => b.id === appointment.business);
+                                        const business = businesses.find((b) => b.id === appointment.businessId);
                                         return (
                                             <div
                                                 key={appointment.id}

@@ -45,7 +45,7 @@ export interface BusinessOwner extends UserBase {
 // Collection: users
 export interface Customer extends UserBase {
     type: "customer";
-    business: ID[];
+    businessId: ID[];
 }
 export type User = BusinessOwner | Customer;
 
@@ -75,7 +75,7 @@ export interface Policy {
 
 // Collection: services
 export interface Service extends DocBase {
-    business: ID;
+    businessId: ID;
     name: string;
     durationMin: number;
     price: number;
@@ -99,23 +99,23 @@ export interface Pricing {
 }
 // Collection: calendar
 export interface CalendarEvent extends DocBase {
-    business: ID;
-    user: ID;
+    businessId: ID;
+    userId: ID;
+    serviceId: ID;
     type: CalendarEventType;
     status: CalendarEventStatus;
     title: string;
     start: TS;
     end: TS;
-    service?: ID;
     source?: CalendarEventSource;
     notes?: string;
 }
 
 // Collection: waitlist
 export interface WaitItem extends DocBase {
-    business: ID;
-    user: ID;
-    service: ID;
+    businessId: ID;
+    userId: ID;
+    serviceId: ID;
     preferredWindow: { from: TS; to: TS };
     priority?: number;
     expiresAt: TS;
@@ -123,8 +123,8 @@ export interface WaitItem extends DocBase {
 
 // Collection: reviews
 export interface Review extends DocBase {
-    business: ID;
-    user: ID;
+    businessId: ID;
+    userId: ID;
     calendarEventId?: ID;
     rating: 1 | 2 | 3 | 4 | 5;
     text?: string;
@@ -133,10 +133,10 @@ export interface Review extends DocBase {
 
 // Collection: notification_logs
 export interface NotificationLog extends DocBase {
-    business: ID;
+    businessId: ID;
     type: NotificationType;
     to: string;
-    messageTemplate: ID;
+    messageTemplateId: ID;
     content: string;
     status: NotificationStatus;
     sentAt: TS;
@@ -145,7 +145,7 @@ export interface NotificationLog extends DocBase {
 
 // Collection: message_templates
 export interface MessageTemplate extends DocBase {
-    business: ID;
+    businessId: ID;
     key: string;
     language: Language;
     content: string;
@@ -155,8 +155,8 @@ export interface MessageTemplate extends DocBase {
 
 // Collection: audits
 export interface Audit extends DocBase {
-    business: ID;
-    user: ID;
+    businessId: ID;
+    userId: ID;
     entity: "services" | "businesses" | "calendar";
     action: "create" | "update" | "delete";
     subEntity: string;
@@ -173,5 +173,3 @@ export const firestoreCollections = [
     "message_templates",
     "audits",
 ] as const;
-
-["services", "calendar", "waitlist", "reviews", "message_templates"];

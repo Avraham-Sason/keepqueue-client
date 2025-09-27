@@ -56,11 +56,11 @@ export const useAppStoreBase = create<AppState>()(
 
             // Getters
             getBusinessAppointments: (businessId) => {
-                return get().appointments.filter((apt) => apt.business === businessId);
+                return get().appointments.filter((apt) => apt.businessId === businessId);
             },
 
             getCustomerAppointments: (customerId) => {
-                return get().appointments.filter((apt) => apt.user === customerId);
+                return get().appointments.filter((apt) => apt.userId === customerId);
             },
 
             getBusinessById: (id) => {

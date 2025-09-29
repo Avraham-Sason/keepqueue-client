@@ -104,9 +104,9 @@ export const STATS: StatItem[] = [
 ];
 
 /************************************************
- * HeroCards – two main CTA cards               *
+ * SigninForms – two main CTA cards               *
  ************************************************/
-export function HeroCards() {
+export function SigninForms() {
     const t = use(getServerTranslation());
     return (
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -117,7 +117,7 @@ export function HeroCards() {
                     <h3 className="text-xl font-bold mb-2">{t("forBusinessOwners")}</h3>
                     <p className="text-muted-foreground mb-4">{t("manageYourBusinessEasily")}</p>
                     <Button size="lg" className="w-full" asChild>
-                        <Link href="/business/auth/signin">{t("businessLogin")}</Link>
+                        <Link href="/auth/signin/business">{t("businessLogin")}</Link>
                     </Button>
                     <Button variant="outline" size="sm" className="w-full mt-2 bg-transparent" asChild>
                         {/* <Link href="/business/auth/signup">{t("registerNewBusiness")}</Link> */}
@@ -131,7 +131,7 @@ export function HeroCards() {
                     <h3 className="text-xl font-bold mb-2">{t("customersPlural")}</h3>
                     <p className="text-muted-foreground mb-4">{t("findAndBookEasily")}</p>
                     <Button size="lg" className="w-full" asChild>
-                        <Link href="/customer/auth/signin">{t("customerLogin")}</Link>
+                        <Link href="/auth/signin/customer">{t("customerLogin")}</Link>
                     </Button>
                     <Button variant="outline" size="sm" className="w-full bg-transparent mt-2 " asChild>
                         {/* <Link href="/customer/marketplace">{t("searchBusinesses")}</Link> */}
@@ -200,7 +200,7 @@ export function HeroSection() {
                         <span className="text-primary block">{t("heroSub")}</span>
                     </h1>
                     <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">{t("heroParagraph")}</p>
-                    <HeroCards />
+                    <SigninForms />
                     <StatsGrid />
                 </div>
             </div>

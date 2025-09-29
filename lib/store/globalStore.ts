@@ -5,10 +5,9 @@ import { createSelectors } from "./utils";
 
 interface AppState {
     // Data
-    appointments: CalendarEvent[];
+    calendarEvents: CalendarEvent[];
     businesses: Business[];
     customers: Customer[];
-
     // Actions
     addAppointment: (appointment: Omit<CalendarEvent, "id" | "created" | "timestamp">) => void;
     updateAppointment: (id: ID, updates: Partial<CalendarEvent>) => void;
@@ -23,7 +22,7 @@ export const useAppStoreBase = create<AppState>()(
     persist(
         (set, get) => ({
             // Initial state
-            appointments: [],
+            calendarEvents: [],
             businesses: [],
             customers: [],
 
@@ -38,29 +37,29 @@ export const useAppStoreBase = create<AppState>()(
                 } as CalendarEvent;
 
                 set((state) => ({
-                    appointments: [...state.appointments, newAppointment],
+                    calendarEvents: [...state.calendarEvents, newAppointment],
                 }));
             },
 
             updateAppointment: (id, updates) => {
                 set((state) => ({
-                    appointments: state.appointments.map((apt) => (apt.id === id ? { ...apt, ...updates } : apt)),
+                    calendarEvents: state.calendarEvents.map((apt) => (apt.id === id ? { ...apt, ...updates } : apt)),
                 }));
             },
 
             deleteAppointment: (id) => {
                 set((state) => ({
-                    appointments: state.appointments.filter((apt) => apt.id !== id),
+                    calendarEvents: state.calendarEvents.filter((apt) => apt.id !== id),
                 }));
             },
 
             // Getters
             getBusinessAppointments: (businessId) => {
-                return get().appointments.filter((apt) => apt.businessId === businessId);
+                return get().calendarEvents.filter((apt) => apt.businessId === businessId);
             },
 
             getCustomerAppointments: (customerId) => {
-                return get().appointments.filter((apt) => apt.userId === customerId);
+                return get().calendarEvents.filter((apt) => apt.userId === customerId);
             },
 
             getBusinessById: (id) => {
@@ -74,7 +73,7 @@ export const useAppStoreBase = create<AppState>()(
         {
             name: "keepqueue-storage",
             partialize: (state) => ({
-                appointments: state.appointments,
+                appointments: state.calendarEvents,
             }),
         }
     )

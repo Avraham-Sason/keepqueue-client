@@ -21,6 +21,7 @@ import { useLanguage } from "@/hooks";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useAuthStore, useSettingsStore } from "@/lib/store";
+import { useBusinessesStore } from "@/lib/store/businesses";
 
 const menuItems = [
     {
@@ -30,44 +31,44 @@ const menuItems = [
     },
     {
         title: "appointments",
-        url: "/business/dashboard/appointments",
+        url: "/business/appointments",
         icon: Clock,
         badge: "12",
     },
     {
         title: "calendar",
-        url: "/business/dashboard/calendar",
+        url: "/business/calendar",
         icon: Calendar,
     },
     {
         title: "customers",
-        url: "/business/dashboard/customers",
+        url: "/business/customers",
         icon: Users,
         badge: "156",
     },
     {
         title: "services",
-        url: "/business/dashboard/services",
+        url: "/business/services",
         icon: Settings,
     },
     {
         title: "analytics",
-        url: "/business/dashboard/analytics",
+        url: "/business/analytics",
         icon: BarChart3,
     },
     {
         title: "reviews",
-        url: "/business/dashboard/reviews",
+        url: "/business/reviews",
         icon: Star,
     },
     {
         title: "WhatsApp",
-        url: "/business/dashboard/whatsapp",
+        url: "/business/whatsapp",
         icon: MessageSquare,
     },
     {
         title: "billing",
-        url: "/business/dashboard/billing",
+        url: "/business/billing",
         icon: CreditCard,
     },
 ];
@@ -77,7 +78,8 @@ export function BusinessSidebar() {
     const [activeTab, setActiveTab] = useState(menuItems[0].title);
     const user = useAuthStore.user();
     const isRtl = useSettingsStore.isRtl();
-    if (!user) {
+    const currentBusiness = useBusinessesStore.currentBusiness();
+    if (!user || !currentBusiness) {
         return null;
     }
     return (
@@ -102,7 +104,7 @@ export function BusinessSidebar() {
                             {menuItems.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild isActive={activeTab === item.title} onClick={() => setActiveTab(item.title)}>
-                                        <Link href={item.url} className={cn("flex items-center justify-between")}>
+                                        <Link href={`${item.url}/${currentBusiness.id}`} className={cn("flex items-center justify-between")}>
                                             <div className={"flex items-center gap-2 "}>
                                                 <item.icon className="h-4 w-4" />
                                                 <span>{t(item.title)}</span>

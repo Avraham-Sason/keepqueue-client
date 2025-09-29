@@ -27,9 +27,6 @@ export function BusinessHeader() {
                 </Button>
                 <A11yToggle />
                 <ThemeToggle />
-                <Button variant="ghost" size="icon">
-                    <Settings className="h-4 w-4" />
-                </Button>
                 <SidebarTrigger className="-ml-1" />
                 <LanguageToggle />
             </div>

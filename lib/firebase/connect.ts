@@ -11,7 +11,6 @@ interface FirebaseInitResult {
     googleLoginProvider: GoogleAuthProvider;
 }
 const initApp = (): FirebaseInitResult => {
-    const isNodeEnv = typeof process !== "undefined" && process.env;
     const sanitizeEnv = (value?: string) => value?.trim().replace(/[\s,]+$/g, "");
     const firebaseConfig = {
         apiKey: sanitizeEnv(process.env.NEXT_PUBLIC_API_KEY),

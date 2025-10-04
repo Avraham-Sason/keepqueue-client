@@ -26,6 +26,7 @@ import { useAuthStore } from "@/lib/store";
 import type { User, Business, CalendarEvent } from "@/lib/types";
 import { timestampToString, timestampToMillis } from "@/lib/helpers";
 import { useLanguage } from "@/hooks";
+import BusinessLoading from "../../loading";
 
 export function DashboardOverview() {
     const { t } = useLanguage();
@@ -36,13 +37,11 @@ export function DashboardOverview() {
     const businessOwner = user as User;
 
     if (!businessOwner || businessOwner.type !== "business") {
-        return <div>{t("errorUnauthorizedUser")}</div>;
+        return <BusinessLoading />;
     }
 
     // Resolve the business entity for this owner
-    let ownerBusiness: Business | undefined = businessOwner.ownedBusinessIds?.[0]
-        ? getBusinessById(businessOwner.ownedBusinessIds[0])
-        : undefined;
+    let ownerBusiness: Business | undefined = businessOwner.ownedBusinessIds?.[0] ? getBusinessById(businessOwner.ownedBusinessIds[0]) : undefined;
     if (!ownerBusiness) {
         ownerBusiness = businesses.find((b) => b.ownerId === (businessOwner.id ?? ""));
     }
@@ -102,8 +101,12 @@ export function DashboardOverview() {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">{t("hello")}, {businessOwner.firstName}!</h1>
-                        <p className="text-muted-foreground">{t("welcomeBusinessAdminPanelOf")} {ownerBusiness?.name ?? ""}</p>
+                        <h1 className="text-3xl font-bold tracking-tight">
+                            {t("hello")}, {businessOwner.firstName}!
+                        </h1>
+                        <p className="text-muted-foreground">
+                            {t("welcomeBusinessAdminPanelOf")} {ownerBusiness?.name ?? ""}
+                        </p>
                     </div>
                     <div className="flex items-center space-x-4">
                         <Avatar className="h-12 w-12">
@@ -128,7 +131,9 @@ export function DashboardOverview() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{todayAppointments.length}</div>
-                        <p className="text-xs text-muted-foreground">{todayAppointments.length === 0 ? t("noAppointmentsToday") : t("scheduledAppointments")}</p>
+                        <p className="text-xs text-muted-foreground">
+                            {todayAppointments.length === 0 ? t("noAppointmentsToday") : t("scheduledAppointments")}
+                        </p>
                     </CardContent>
                 </Card>
 
@@ -236,7 +241,7 @@ export function DashboardOverview() {
                     className="col-span-3"
                 >
                     <Card className="hover:shadow-lg transition-all duration-300">
-                            <CardHeader>
+                        <CardHeader>
                             <CardTitle>{t("businessDetails")}</CardTitle>
                             <CardDescription>{t("yourInfoOnPlatform")}</CardDescription>
                         </CardHeader>
@@ -285,9 +290,7 @@ export function DashboardOverview() {
 
                             <div className="pt-4 border-t">
                                 <h4 className="text-sm font-medium mb-2">{t("yourServices")}</h4>
-                                <div className="flex flex-wrap gap-2">
-                                    {/* Services listing not available on core Business type in this view */}
-                                </div>
+                                <div className="flex flex-wrap gap-2">{/* Services listing not available on core Business type in this view */}</div>
                             </div>
                         </CardContent>
                     </Card>
@@ -297,7 +300,7 @@ export function DashboardOverview() {
             {/* Quick Actions */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}>
                 <Card className="hover:shadow-lg transition-all duration-300">
-                        <CardHeader>
+                    <CardHeader>
                         <CardTitle>{t("quickActions")}</CardTitle>
                         <CardDescription>{t("viewAll")}</CardDescription>
                     </CardHeader>

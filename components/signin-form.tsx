@@ -36,7 +36,7 @@ export function SignInForm({ type }: SignInFormProps) {
             const result = await login(email, password, type);
 
             if (result.success) {
-                router.push(type === "business" ? `/business/dashboard/${result.businessId}` : "/customer/dashboard");
+                router.push(type === "business" ? `/business` : "/customer");
             } else {
                 const key = result.error || "errorSignIn";
                 setError(t(key));

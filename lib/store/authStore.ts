@@ -1,16 +1,18 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Business, type User } from "../types";
+import { Business, BusinessWithRelations, type User } from "../types";
 import { createSelectors } from "./utils";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../firebase/connect";
 import { getAllDocuments, queryDocument } from "../firebase";
 import { useBusinessesStoreBase } from "./businesses";
+import { getBusinessByOwnerId } from "@/app/business/helpers";
 
 interface AuthState {
     user: User | null;
     isAuthenticated: boolean;
-    login: (email: string, password: string, type: "business" | "customer") => Promise<{ success: boolean; error?: string; businessId?: string }>;
+    isBusinessOwner: boolean;
+    login: (email: string, password: string, type: "business" | "customer") => Promise<{ success: boolean; error?: string }>;
     logout: () => Promise<void>;
 }
 
@@ -19,6 +21,7 @@ export const useAuthStoreBase = create<AuthState>()(
         (set) => ({
             user: null,
             isAuthenticated: false,
+            isBusinessOwner: false,
 
             login: async (email: string, password: string, type: "business" | "customer") => {
                 try {
@@ -31,14 +34,10 @@ export const useAuthStoreBase = create<AuthState>()(
                     }
                     set({ user: foundUser as User, isAuthenticated: true });
                     if (type === "business") {
-                        const businessesStore = useBusinessesStoreBase.getState();
-                        const business = await queryDocument("businesses", "ownerId", "==", foundUser.id);
-                        console.log("business", business);
-
-                        businessesStore.setCurrentBusiness(business as Business);
-                        return { success: true, businessId: business!.id };
+                        set({ isBusinessOwner: true });
+                    } else {
+                        set({ isBusinessOwner: false });
                     }
-
                     return { success: true };
                 } catch (error: any) {
                     const isInvalidCredentials = ["auth/invalid-credential", "auth/invalid-email", "auth/wrong-password"].includes(error?.code);
@@ -51,7 +50,8 @@ export const useAuthStoreBase = create<AuthState>()(
                 try {
                     await signOut(auth);
                 } finally {
-                    set({ user: null, isAuthenticated: false });
+                    useBusinessesStoreBase.setState({ currentBusiness: null });
+                    set({ user: null, isAuthenticated: false, isBusinessOwner: false });
                 }
             },
         }),

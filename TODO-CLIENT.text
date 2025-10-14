@@ -1,31 +1,31 @@
 Keepqueue Client (Next.js 15) — TODO
 
 Conventions
-- Code style: CamelCase for variables/functions/components; Types/Interfaces in CamelCase
+- Code style: CamelCase for variables/functions/components/Types/Interfaces 
 - Tech: Next.js 15 (App Router), TypeScript strict, Tailwind CSS, shadcn/ui, Origin UI, Zustand
 - Data: Interact with Express API; Firebase Client SDK for Auth; Firestore direct reads minimized
 
 1) Project Setup & Foundations
-- Ensure Next.js 15 App Router structure: app/, components/, lib/, store/, hooks/, styles/
-- Configure Tailwind CSS with shadcn/ui + Origin UI theme; global styles and dark mode
+- Ensure Next.js 15 App Router structure: app/, components/, lib/, store/, hooks/, styles/ ✅
+- Configure Tailwind CSS with shadcn/ui + Origin UI theme; global styles and dark mode ✅
 - ESLint + Prettier configuration aligned with project conventions
 - Env loader for client (public vs server-side runtime keys)
-- Set up absolute imports and path aliases
+- Set up absolute imports and path aliases ✅
 
 2) Auth & Session
-- Integrate Firebase Auth (email/social/phone per PRD scope)
-- Persist session and user claims; fetch custom claims (Owner/Staff)
+- Integrate Firebase Auth (email/social/phone per PRD scope) ✅
+- Persist session and user claims; fetch custom claims (Owner/Staff) ✅ (session persist)
 - Route guards and server components that depend on auth
-- Sign-in/Sign-up/Reset flows; Phone verification UI if enabled
+- Sign-in/Sign-up/Reset flows; Phone verification UI if enabled ✅ (sign-in only)
 
 3) Public Booking Flow (Customer)
-- Business public page: branding, services list, ratings summary, reviews preview
-- Service selection UI (durations, price)
+- Business public page: branding, services list, ratings summary, reviews preview ✅
+- Service selection UI (durations, price) ✅
 - Date/Time picker that calls API GET /businesses/:business_id/availability
-- Customer details form (name, phone/WhatsApp, notes, consent)
+- Customer details form (name, phone/WhatsApp, notes, consent) ✅
 - Review & confirm screen; create appointment via API POST /businesses/:business_id/appointments
 - Success page with details and WhatsApp confirmation note
-- Customer portal: view upcoming/past appointments; reschedule/cancel (PATCH/POST cancel)
+- Customer portal: view upcoming/past appointments; reschedule/cancel (PATCH/POST cancel) ✅ (view only)
 - Token-based cancel page path (for unauthenticated cancel link)
 
 4) Smart Digital Calendar (Owner/Staff)
@@ -52,7 +52,7 @@ Conventions
 - Owner moderation tools (hide/report)
 
 8) Reports & Analytics
-- Dashboard with KPIs: bookings_by_period, no_show_rate, revenue_by_service, top_services
+- Dashboard with KPIs: bookings_by_period, no_show_rate, revenue_by_service, top_services ✅ (basic)
 - Charts and filters by date range/service/staff
 
 9) Problematic Customer Handling
@@ -60,7 +60,7 @@ Conventions
 - Admin controls to override/unblock when needed
 
 10) State Management & Data Layer
-- Zustand slices: auth, business, services, staff, appointments, availability, waitlist, reviews, analytics
+- Zustand slices: auth, business, services, staff, appointments, availability, waitlist, reviews, analytics ✅ (partial: auth, business, global)
 - API client module with typed methods; generate types from OpenAPI
 - Request deduplication and optimistic updates where safe
 - Error boundary components and toast notifications
@@ -68,14 +68,14 @@ Conventions
 11) Accessibility, Performance, SEO
 - WCAG 2.1 AA: focus states, labels, roles, keyboard navigation
 - Performance: code-splitting, image optimization, memoization, virtualization (lists)
-- SEO: metadata, structured data on public business page, sitemap/robots
+- SEO: metadata, structured data on public business page, sitemap/robots ✅ (metadata)
 
 12) QA & DX
 - Storybook for components (optional)
 - E2E tests (Playwright/Cypress) for booking flow and admin basics
 - Analytics events (page, CTA clicks, booking completed)
 
-Deliverables
+ Deliverables
 - Production-ready Next.js app that consumes the Express API
 - Full booking flow, calendar, waitlist, reviews, analytics UIs implemented
-- Strong UX with Tailwind + shadcn/ui and mobile-first responsiveness
+- Strong UX with Tailwind + shadcn/ui and mobile-first responsiveness ✅ (UI foundation)

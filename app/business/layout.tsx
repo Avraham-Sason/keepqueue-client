@@ -1,8 +1,7 @@
 import type React from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import { BusinessSidebar } from "./business-sidebar";
-import { BusinessHeader } from "./business-header";
-import BusinessConfig from "./Config";
+import { BusinessConfig, BusinessHeader, BusinessSidebar } from "./components";
+
 
 export default function BusinessDashboardLayout({ children }: { children: React.ReactNode }) {
     return (

@@ -1,4 +1,4 @@
-import type { Timestamp as TS } from "firebase/firestore";
+import type { Timestamp } from "firebase/firestore";
 
 export type ID = string;
 
@@ -10,11 +10,7 @@ export type NotificationType = "whatsapp" | "sms" | "email";
 export type NotificationStatus = "QUEUED" | "SENT" | "FAILED" | "DELIVERED";
 export type UserType = "business" | "customer";
 export type CalendarEventSource = "web" | "admin" | "import";
-
-export interface Availability {
-    start: TS;
-    end: TS;
-}
+export type TS = Timestamp;
 export type Language = "he" | "en";
 
 export interface DocBase {
@@ -45,11 +41,21 @@ export interface BusinessOwner extends UserBase {
 // Collection: users
 export interface Customer extends UserBase {
     type: "customer";
-    businessId: ID[];
+    businessIds: ID[];
 }
 export type User = BusinessOwner | Customer;
 
-// Collection: businesses
+export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+export interface DailyTimeRange {
+    startMin: number;
+    endMin: number;
+}
+
+export interface OperationSchedule {
+    day: Weekday;
+    intervals: DailyTimeRange[];
+}
 export interface Business extends DocBase {
     name: string;
     ownerId: ID;
@@ -59,7 +65,7 @@ export interface Business extends DocBase {
     ratingAvg?: number;
     ratingCount?: number;
     isActive: boolean;
-    availability: Availability[];
+    operationSchedule: OperationSchedule[];
     currency?: string;
     lang: Language;
     logoUrl?: string;
@@ -80,7 +86,7 @@ export interface Service extends DocBase {
     durationMin: number;
     price: number;
     pricing?: Pricing;
-    availability: Availability[];
+    operationSchedule: OperationSchedule[];
     paddingBefore?: number;
     paddingAfter?: number;
     active: boolean;
@@ -101,7 +107,7 @@ export interface Pricing {
 export interface CalendarEvent extends DocBase {
     businessId: ID;
     userId: ID;
-    serviceId: ID;
+    serviceId?: ID;
     type: CalendarEventType;
     status: CalendarEventStatus;
     title: string;

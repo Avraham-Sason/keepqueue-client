@@ -1,7 +1,7 @@
-import Proxy from "./Proxy";
+import { BusinessProxy } from "./components";
 
 function BusinessPage() {
-    return <Proxy />;
+    return <BusinessProxy />;
 }
 
 export default BusinessPage;

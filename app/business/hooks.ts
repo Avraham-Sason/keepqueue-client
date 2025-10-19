@@ -1,15 +1,15 @@
 "use client";
-import { useAuthStoreBase, useBusinessesStore } from "@/lib/store";
 import { useEffect } from "react";
-import { getBusinessByOwnerId } from "./helpers";
+import { useAuthStore, useBusinessesStore } from "@/lib/store";
+import { getBusinessById, getBusinessByOwnerId } from "./helpers";
 import { useRouter, usePathname } from "next/navigation";
 
-export const useBusiness = () => {
-    const { user } = useAuthStoreBase();
+export const useBusiness = (businessId?: string) => {
+    const user = useAuthStore.user();
     const setCurrentBusiness = useBusinessesStore.setCurrentBusiness();
     useEffect(() => {
         const userId = user?.id;
-        if (!userId) return;
+        if (!businessId && !userId) return;
 
         let interval: ReturnType<typeof setInterval> | null = null;
         let activeController: AbortController | null = null;
@@ -18,7 +18,7 @@ export const useBusiness = () => {
         const fetchAndSetBusiness = async (signal?: AbortSignal) => {
             console.log("⚡ fetching business");
             try {
-                const business = await getBusinessByOwnerId(userId, signal);
+                let business = businessId ? await getBusinessById(businessId, signal) : await getBusinessByOwnerId(userId as string, signal);
                 console.log("🔥 fetched business", business);
 
                 if (isMounted && business) {
@@ -50,7 +50,7 @@ export const useBusiness = () => {
             if (interval) clearInterval(interval);
             if (activeController) activeController.abort();
         };
-    }, [user?.id]);
+    }, [user?.id, businessId]);
 };
 
 export const useBusinessProxy = () => {

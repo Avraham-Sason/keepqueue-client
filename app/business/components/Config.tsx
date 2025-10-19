@@ -1,5 +1,5 @@
 "use client";
-import { useBusiness } from "./hooks";
+import { useBusiness } from "../hooks";
 
 function BusinessConfig() {
     useBusiness();

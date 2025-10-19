@@ -12,12 +12,13 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuthStore } from "@/lib/store";
 import { useLanguage } from "@/hooks";
+import { Customer } from "@/lib/types";
 interface SignInFormProps {
     type: "business" | "customer";
 }
 export function SignInForm({ type }: SignInFormProps) {
     const { t, isRtl } = useLanguage();
-    const [email, setEmail] = useState("avi@biz.com");
+    const [email, setEmail] = useState(type === "customer" ? "noa@customer.com" : "avi@biz.com");
     const [password, setPassword] = useState("123456");
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +37,7 @@ export function SignInForm({ type }: SignInFormProps) {
             const result = await login(email, password, type);
 
             if (result.success) {
-                router.push(type === "business" ? `/business` : "/customer");
+                router.push(type === "business" ? `/business` : `/home/${(result.user as Customer)?.businessIds?.[0]}`);
             } else {
                 const key = result.error || "errorSignIn";
                 setError(t(key));

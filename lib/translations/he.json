@@ -192,6 +192,7 @@
   "selectDate": "בחר תאריך",
   "selectTime": "בחר שעה",
   "goToPersonalDetails": "המשך לפרטים אישיים",
+  "goToSelectDateTime": "המשך לבחירת תאריך ושעה",
   "personalDetails": "פרטים אישיים",
   "pleaseFillYourDetails": "אנא מלא את הפרטים שלך",
   "optionalNotes": "הערות (אופציונלי)",
@@ -262,5 +263,14 @@
   "appointmentBookedSuccess": "התור נקבע בהצלחה! בעל העסק יאשר את התור בקרוב.",
   "minutes": "דקות",
   "minutesShort": "דק'",
-  "confirm": "אישור"
+  "confirm": "אישור",
+  "today": "היום",
+  "tomorrow": "מחר",
+  "weekday0": "ראשון",
+  "weekday1": "שני",
+  "weekday2": "שלישי",
+  "weekday3": "רביעי",
+  "weekday4": "חמישי",
+  "weekday5": "שישי",
+  "weekday6": "שבת"
 }

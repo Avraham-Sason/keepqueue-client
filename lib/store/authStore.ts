@@ -12,7 +12,7 @@ interface AuthState {
     user: User | null;
     isAuthenticated: boolean;
     isBusinessOwner: boolean;
-    login: (email: string, password: string, type: "business" | "customer") => Promise<{ success: boolean; error?: string }>;
+    login: (email: string, password: string, type: "business" | "customer") => Promise<{ success: boolean; error?: string; user?: User }>;
     logout: () => Promise<void>;
 }
 
@@ -38,7 +38,7 @@ export const useAuthStoreBase = create<AuthState>()(
                     } else {
                         set({ isBusinessOwner: false });
                     }
-                    return { success: true };
+                    return { success: true, user: foundUser as User };
                 } catch (error: any) {
                     const isInvalidCredentials = ["auth/invalid-credential", "auth/invalid-email", "auth/wrong-password"].includes(error?.code);
                     const error_key = isInvalidCredentials ? "authErrorInvalidCredentials" : "authErrorGeneric";

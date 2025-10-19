@@ -16,6 +16,7 @@ import { useLanguage } from "@/hooks";
 import moment from "moment-timezone";
 import { useBookingState, type BusinessDisplay } from "./hooks";
 import type { Service } from "@/lib/types";
+import Image from "next/image";
 
 interface BookingInterfaceProps {
     businessId: string;
@@ -41,7 +42,7 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
         handleBooking,
         customerInfo,
         setCustomerInfo,
-    } = useBookingState(businessId);;
+    } = useBookingState(businessId);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4">
@@ -128,11 +129,7 @@ function BusinessHeader({ business }: { business: BusinessDisplay }) {
             <Card>
                 <CardContent className="pt-6">
                     <div className="flex flex-col md:flex-row gap-6">
-                        <Avatar className="h-24 w-24 rounded-lg">
-                            <AvatarImage src={business.image || "/placeholder.svg"} alt={business.name} />
-                            <AvatarFallback className="rounded-lg text-lg">{business.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div className="space-y-3 flex-1">
+                        <div className="space-y-3 ">
                             <div>
                                 <h1 className="text-2xl font-bold">{business.name}</h1>
                                 <p className="text-muted-foreground">{business.description}</p>
@@ -164,6 +161,11 @@ function BusinessHeader({ business }: { business: BusinessDisplay }) {
                                 </div>
                             </div>
                         </div>
+                        {business.image && (
+                            <div className="flex items-center gap-2 flex-1">
+                                <img src={business.image} alt={business.name} className="size-full" />
+                            </div>
+                        )}
                     </div>
                 </CardContent>
             </Card>

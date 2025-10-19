@@ -18,11 +18,8 @@ export const apiCall = async <T = any>(
 ): Promise<T | null> => {
     try {
         const token = await auth.currentUser?.getIdToken();
-        if (!token) {
-            throw new Error("user not authenticated");
-        }
         const headers = {
-            authorization: "bearer " + token,
+            authorization: token ? "bearer " + token : undefined,
         };
         const response = await axios({
             headers,

@@ -25,7 +25,7 @@ export interface BusinessDisplay {
     address: string;
     phone: string;
     email: string;
-    image: string;
+    image?: string;
     description: string;
     workingHours: string;
 }
@@ -85,7 +85,7 @@ export function useBookingState(businessId: string) {
             address: "-",
             phone: b?.phone ?? fallbackMeta?.phone ?? "-",
             email: "",
-            image: b?.logoUrl ?? fallbackMeta?.logoUrl ?? "/placeholder.svg?height=80&width=80",
+            image: b?.logoUrl ?? fallbackMeta?.logoUrl ,
             description: "",
             workingHours: "",
         };

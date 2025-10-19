@@ -165,6 +165,7 @@ function BusinessHeader({ business }: { business: BusinessDisplay }) {
                         </div>
                         {business.image && (
                             <div className="flex items-center gap-2 flex-1">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src={business.image} alt={business.name} className="size-full" />
                             </div>
                         )}

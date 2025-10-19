@@ -1,4 +1,4 @@
-export type SetState<T> = (updater: ((prev: T) => T) | T) => void;
+export type SetState<T = any> = (updater: ((prev: T) => T) | T) => void;
 
 export const setState = <T>(updater: T | ((state: T) => T), set: (fn: (state: any) => any) => void, stateName: string) => {
     return set((state: any) => ({

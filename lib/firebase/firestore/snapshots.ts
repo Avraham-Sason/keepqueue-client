@@ -1,10 +1,11 @@
-import { SetState, StringObject } from "@/lib/types";
+import { StringObject } from "@/lib/types";
 import { OnSnapshotParsers, Snapshot, SnapshotDocument, WhereCondition } from "./types";
 import { collection, doc, DocumentData, DocumentSnapshot, onSnapshot, orderBy, query, Query, QuerySnapshot, where } from "firebase/firestore";
 import { db } from "../connect";
 import { simpleExtractData } from "./global";
+import { SetState } from "@/lib/store/utils";
 
-export const parseSnapshotAsObject = (setState: SetState<any>, filterCondition?: (v: any) => boolean): OnSnapshotParsers => {
+export const parseSnapshotAsObject = (setState: SetState, filterCondition?: (v: any) => boolean): OnSnapshotParsers => {
     return {
         onFirstTime: (docs) => {
             if (filterCondition) {
@@ -52,7 +53,7 @@ export const parseSnapshotAsObject = (setState: SetState<any>, filterCondition?:
     };
 };
 
-export const parseSnapshotAsArray = (setState: SetState<any>, filterCondition?: (v: any) => boolean): OnSnapshotParsers => {
+export const parseSnapshotAsArray = (setState: SetState, filterCondition?: (v: any) => boolean): OnSnapshotParsers => {
     return {
         onFirstTime: (docs: any[]) => {
             if (filterCondition) {

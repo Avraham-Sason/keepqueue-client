@@ -18,7 +18,7 @@ export const useBusiness = (businessId?: string) => {
         const fetchAndSetBusiness = async (signal?: AbortSignal) => {
             console.log("⚡ fetching business");
             try {
-                let business = businessId ? await getBusinessById(businessId, signal) : await getBusinessByOwnerId(userId as string, signal);
+                const business = businessId ? await getBusinessById(businessId, signal) : await getBusinessByOwnerId(userId as string, signal);
                 console.log("🔥 fetched business", business);
 
                 if (isMounted && business) {

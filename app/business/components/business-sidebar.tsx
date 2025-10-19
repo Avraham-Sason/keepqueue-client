@@ -22,6 +22,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useAuthStore, useSettingsStore } from "@/lib/store";
 import { useBusinessesStore } from "@/lib/store/businesses";
+import Image from "next/image";
 
 const menuItems = [
     {
@@ -86,8 +87,8 @@ export function BusinessSidebar() {
         <Sidebar side={isRtl ? "right" : "left"} variant="sidebar">
             <SidebarHeader className="p-4">
                 <div className="flex items-center space-x-2">
-                    <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                        <Users className="h-5 w-5 text-primary-foreground" />
+                    <div className="h-8 w-8 rounded-lg flex items-center justify-center">
+                        <Image src="/logo.png" alt="logo" width={32} height={32} />
                     </div>
                     <div>
                         <h2 className="text-lg font-semibold">{t("brandName")}</h2>

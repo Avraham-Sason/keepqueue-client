@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme";
 import { useLanguage } from "@/hooks";
 import { A11yToggle } from "@/components/config/a11y";
 import { LanguageToggle } from "@/components/config";
+import Image from "next/image";
 
 export function SiteHeader() {
     const { t } = useLanguage();
@@ -16,8 +16,8 @@ export function SiteHeader() {
         <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-16 items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                        <Users className="h-5 w-5 text-primary-foreground" />
+                    <div className="h-8 w-8 rounded-lg flex items-center justify-center">
+                        <Image src="/logo.png" alt="logo" width={32} height={32} />
                     </div>
                     <span className="text-xl font-bold">{t("brandName")}</span>
                 </div>

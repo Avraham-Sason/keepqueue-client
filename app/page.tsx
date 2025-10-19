@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
             type: "website",
             images: [
                 {
-                    url: "https://keepqueue-v0.vercel.app/placeholder.jpg",
+                    url: "https://keepqueue-v0.vercel.app/logo.png",
                     width: 1200,
                     height: 630,
                     alt: t("brandName"),
@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
             card: "summary_large_image",
             title: `${t("heroMain")} ${t("heroSub")} | ${t("brandName")}`,
             description: t("heroParagraph"),
-            images: ["https://keepqueue-v0.vercel.app/placeholder.jpg"],
+            images: ["https://keepqueue-v0.vercel.app/logo.png"],
         },
     };
 }

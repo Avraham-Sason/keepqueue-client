@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
             type: "website",
             images: [
                 {
-                    url: "/placeholder.jpg",
+                    url: "/logo.png",
                     width: 1200,
                     height: 630,
                     alt: t("brandName"),
@@ -29,9 +29,9 @@ export async function generateMetadata(): Promise<Metadata> {
             ],
         },
         icons: {
-            icon: "/placeholder-logo.png",
-            shortcut: "/placeholder-logo.png",
-            apple: "/placeholder-logo.png",
+            icon: "/logo.png",
+            shortcut: "/logo.png",
+            apple: "/logo.png",
         },
     };
 }

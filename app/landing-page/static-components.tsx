@@ -325,8 +325,8 @@ export function SiteFooter() {
                 <div className="grid md:grid-cols-4 gap-8 mb-8">
                     <div>
                         <div className="flex items-center space-x-2 mb-4">
-                            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                <Users className="h-5 w-5 text-primary-foreground" />
+                            <div className="h-8 w-8 rounded-lg flex items-center justify-center">
+                                <Image src="/logo.png" alt="logo" width={32} height={32} />
                             </div>
                             <span className="text-xl font-bold">{t("brandName")}</span>
                         </div>

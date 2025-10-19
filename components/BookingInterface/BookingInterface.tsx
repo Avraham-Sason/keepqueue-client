@@ -17,6 +17,7 @@ import moment from "moment-timezone";
 import { useBookingState, type BusinessDisplay } from "./hooks";
 import type { Service } from "@/lib/types";
 import Image from "next/image";
+import { CustomerHeader } from "@/app/customer/dashboard/customer-header";
 
 interface BookingInterfaceProps {
     businessId: string;
@@ -47,7 +48,8 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
     return (
         <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4">
             <div className="max-w-4xl mx-auto space-y-6">
-                <TopBar />
+                {/* <TopBar /> */}
+                <CustomerHeader />
 
                 <BusinessHeader business={business} />
 
@@ -113,8 +115,8 @@ function TopBar() {
                 <span>{t("bookingBackToSearch")}</span>
             </Link>
             <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                    <User className="h-5 w-5 text-primary-foreground" />
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center">
+                    <Image src="/logo.png" alt="logo" width={32} height={32} />
                 </div>
                 <span className="font-medium">{t("brandName")}</span>
             </div>

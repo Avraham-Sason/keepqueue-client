@@ -27,7 +27,7 @@ export function CustomerDashboard() {
     const customerAppointments: CalendarEvent[] = getCustomerAppointments(customer.id as string);
 
     // Get favorite businesses
-    const favoriteBusinesses = businesses.filter((business) => (customer.businessId ?? []).includes(business.id as string));
+    const favoriteBusinesses = businesses.filter((business) => (customer.businessIds ?? []).includes(business.id as string));
 
     // Sort appointments by date
     const sortedAppointments = customerAppointments.sort(

@@ -85,7 +85,7 @@ export function useBookingState(businessId: string) {
             address: "-",
             phone: b?.phone ?? fallbackMeta?.phone ?? "-",
             email: "",
-            image: b?.logoUrl ?? fallbackMeta?.logoUrl ,
+            image: b?.logoUrl ?? fallbackMeta?.logoUrl,
             description: "",
             workingHours: "",
         };
@@ -196,6 +196,10 @@ export function useBookingState(businessId: string) {
 
     const handleNext = () => {
         if (step < 4) setStep(step + 1);
+        setTimeout(() => {
+            const scrollHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+            window.scrollTo({ top: scrollHeight, behavior: "smooth" });
+        }, 100);
     };
 
     const handleBack = () => {

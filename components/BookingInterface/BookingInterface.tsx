@@ -46,10 +46,10 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
     } = useBookingState(businessId);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4">
+        <div className="size-full p-4">
             <div className="max-w-4xl mx-auto space-y-6">
                 {/* <TopBar /> */}
-                <CustomerHeader />
+                {/* <CustomerHeader /> */}
 
                 <BusinessHeader business={business} />
 
@@ -128,8 +128,8 @@ function BusinessHeader({ business }: { business: BusinessDisplay }) {
     const { t } = useLanguage();
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <Card>
-                <CardContent className="pt-6">
+            <Card className="">
+                <CardContent>
                     <div className="flex flex-col md:flex-row gap-6">
                         <div className="space-y-3 ">
                             <div>
@@ -164,9 +164,9 @@ function BusinessHeader({ business }: { business: BusinessDisplay }) {
                             </div>
                         </div>
                         {business.image && (
-                            <div className="flex items-center gap-2 flex-1">
+                            <div className="flex-1">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={business.image} alt={business.name} className="size-full" />
+                                <img src={business.image} alt={business.name} className="w-full h-40 md:h-full object-cover rounded-lg" />
                             </div>
                         )}
                     </div>
@@ -185,20 +185,22 @@ function ProgressSteps({ step }: { step: number }) {
         { number: 4, title: t("confirm") },
     ];
     return (
-        <div className="flex items-center justify-center space-x-4 mb-8">
+        <div className="flex items-center justify-center w-full overflow-x-auto px-2 mb-4 space-x-2 sm:space-x-4">
             {steps.map((stepInfo, index) => (
-                <div key={stepInfo.number} className="flex items-center">
+                <div key={stepInfo.number} className="flex items-center shrink-0">
                     <div className="flex flex-col items-center">
                         <div
-                            className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                            className={`xl:w-10 xl:h-10 lg:w-8 lg:h-8 w-6 h-6 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
                                 step >= stepInfo.number ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                             }`}
                         >
                             {step > stepInfo.number ? <CheckCircle className="h-5 w-5" /> : stepInfo.number}
                         </div>
-                        <span className="text-xs mt-1 text-center">{stepInfo.title}</span>
+                        <span className="hidden sm:block text-xs mt-1 text-center">{stepInfo.title}</span>
                     </div>
-                    {index < 3 && <div className={`w-12 h-0.5 mx-2 ${step > stepInfo.number ? "bg-primary" : "bg-muted"}`} />}
+                    {index < 3 && (
+                        <div className={`w-6 sm:w-12 md:w-16 lg:w-24 h-0.5 mx-1 sm:mx-2 ${step > stepInfo.number ? "bg-primary" : "bg-muted"}`} />
+                    )}
                 </div>
             ))}
         </div>
@@ -225,20 +227,20 @@ function ServicesStep({ services, selectedService, setSelectedService, onNext }:
                     {services.map((service) => (
                         <div
                             key={service.id ?? service.name}
-                            className={`relative p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md ${
+                            className={`relative p-3 sm:p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md ${
                                 selectedService === service.id ? "border-primary bg-primary/5 shadow-md" : "hover:bg-muted/50"
                             }`}
                             onClick={() => setSelectedService(service.id ?? null)}
                         >
                             <div className="flex items-center justify-between">
                                 <div className="space-y-2">
-                                    <h3 className="font-medium text-lg">{service.name}</h3>
+                                    <h3 className="font-medium text-base sm:text-lg">{service.name}</h3>
                                     <div className="flex items-center gap-4 text-sm">
                                         <span className="flex items-center gap-1">
                                             <Clock className="h-4 w-4" />
                                             {service.durationMin} {t("minutes")}
                                         </span>
-                                        <span className="font-medium text-lg">₪{service.price}</span>
+                                        <span className="font-medium text-base sm:text-lg">₪{service.price}</span>
                                     </div>
                                 </div>
                                 {selectedService === service.id && (
@@ -292,6 +294,16 @@ function DateTimeStep({
     onNext,
 }: DateTimeStepProps) {
     const { t } = useLanguage();
+    const onDateClick = (dateOption: DateOption) => {
+        if (!dateOption.available) {
+            return;
+        }
+        setSelectedDate(dateOption.date);
+        setTimeout(() => {
+            const scrollHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+            window.scrollTo({ top: scrollHeight, behavior: "smooth" });
+        }, 100);
+    };
     return (
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
             <Card>
@@ -302,14 +314,14 @@ function DateTimeStep({
                 <CardContent className="space-y-6 ">
                     <div className="space-y-3 ">
                         <Label className="text-base font-medium">{t("selectDate")}</Label>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                             {availableDates.map((dateOption) => (
                                 <Button
                                     key={dateOption.date}
                                     variant={selectedDate === dateOption.date ? "default" : "outline"}
-                                    className={`h-16 flex flex-col ${!dateOption.available ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    className={`h-14 sm:h-16 flex flex-col ${!dateOption.available ? "opacity-50 cursor-not-allowed" : ""}`}
                                     disabled={!dateOption.available}
-                                    onClick={() => dateOption.available && setSelectedDate(dateOption.date)}
+                                    onClick={() => onDateClick(dateOption)}
                                 >
                                     <span className="font-medium">{dateOption.day}</span>
                                     <span className="text-xs">{moment.utc(dateOption.date, "YYYY-MM-DD").format("DD/MM")}</span>
@@ -321,13 +333,13 @@ function DateTimeStep({
                     {selectedDate && (
                         <div className="space-y-3">
                             <Label className="text-base font-medium">{t("selectTime")}</Label>
-                            <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                                 {availableTimes.map((timeOption) => (
                                     <Button
                                         key={timeOption.time}
                                         variant={selectedTime === timeOption.time ? "default" : "outline"}
                                         size="sm"
-                                        className={!timeOption.available ? "opacity-50 cursor-not-allowed" : ""}
+                                        className={`${!timeOption.available ? "opacity-50 cursor-not-allowed" : ""} min-h-10 sm:min-h-0`}
                                         disabled={!timeOption.available}
                                         onClick={() => timeOption.available && setSelectedTime(timeOption.time)}
                                     >
@@ -338,12 +350,12 @@ function DateTimeStep({
                         </div>
                     )}
 
-                    <div className="flex gap-3">
-                        <Button variant="outline" onClick={onBack} className="bg-transparent">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                        <Button variant="outline" size="lg" onClick={onBack} className="bg-transparent w-full sm:w-auto">
                             <ArrowRight className="h-4 w-4 mr-2" />
                             {t("back")}
                         </Button>
-                        <Button className="flex-1" disabled={!selectedDate || !selectedTime} onClick={onNext}>
+                        <Button className="w-full sm:flex-1" size="lg" disabled={!selectedDate || !selectedTime} onClick={onNext}>
                             {t("goToPersonalDetails")}
                             <ArrowLeft className="h-4 w-4 mr-2" />
                         </Button>
@@ -399,7 +411,7 @@ function CustomerDetailsStep({
                         <CardDescription>{t("pleaseFillYourDetails")}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="firstName">{t("firstName")} *</Label>
                                 <Input
@@ -502,13 +514,13 @@ function CustomerDetailsStep({
                 </Card>
             </div>
 
-            <div className="flex gap-3">
-                <Button variant="outline" onClick={onBack} className="bg-transparent">
+            <div className="flex flex-col sm:flex-row gap-3">
+                <Button variant="outline" size="lg" onClick={onBack} className="bg-transparent w-full sm:w-auto">
                     <ArrowRight className="h-4 w-4 mr-2" />
                     {t("back")}
                 </Button>
                 <Button
-                    className="flex-1"
+                    className="w-full sm:flex-1"
                     size="lg"
                     disabled={!customerInfo.firstName || !customerInfo.lastName || !customerInfo.phone || !customerInfo.email}
                     onClick={onConfirm}

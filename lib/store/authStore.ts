@@ -8,11 +8,13 @@ import { getAllDocuments, queryDocument } from "../firebase";
 import { useBusinessesStoreBase } from "./businesses";
 import { getBusinessByOwnerId } from "@/app/business/helpers";
 
+export type LoginType = "business" | "customer";
+
 interface AuthState {
     user: User | null;
     isAuthenticated: boolean;
     isBusinessOwner: boolean;
-    login: (email: string, password: string, type: "business" | "customer") => Promise<{ success: boolean; error?: string; user?: User }>;
+    login: (email: string, password: string) => Promise<{ success: boolean; error?: string; user?: User; isBusinessOwner?: boolean }>;
     logout: () => Promise<void>;
 }
 
@@ -23,22 +25,18 @@ export const useAuthStoreBase = create<AuthState>()(
             isAuthenticated: false,
             isBusinessOwner: false,
 
-            login: async (email: string, password: string, type: "business" | "customer") => {
+            login: async (email, password) => {
                 try {
                     const credential = await signInWithEmailAndPassword(auth, email, password);
                     const firebaseUser = credential.user;
-                    const foundUser = await queryDocument("users", "email", "==", email);
-                    if (!foundUser || type != foundUser?.type) {
+                    const foundUser = (await queryDocument("users", "email", "==", email)) as User | null;
+                    if (!foundUser) {
                         await signOut(auth);
                         return { success: false, error: "authErrorTypeMismatch" };
                     }
-                    set({ user: foundUser as User, isAuthenticated: true });
-                    if (type === "business") {
-                        set({ isBusinessOwner: true });
-                    } else {
-                        set({ isBusinessOwner: false });
-                    }
-                    return { success: true, user: foundUser as User };
+                    const isBusinessOwner = foundUser.type === "business";
+                    set({ user: foundUser, isAuthenticated: true, isBusinessOwner });
+                    return { success: true, user: foundUser, isBusinessOwner };
                 } catch (error: any) {
                     const isInvalidCredentials = ["auth/invalid-credential", "auth/invalid-email", "auth/wrong-password"].includes(error?.code);
                     const error_key = isInvalidCredentials ? "authErrorInvalidCredentials" : "authErrorGeneric";

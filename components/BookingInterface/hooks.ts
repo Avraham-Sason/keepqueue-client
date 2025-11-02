@@ -51,7 +51,7 @@ export function useBookingState(businessId: string) {
     const [selectedService, setSelectedService] = useState<string | null>(null);
     const [selectedDate, setSelectedDate] = useState<string>("");
     const [selectedTime, setSelectedTime] = useState<string>("");
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(3);
     const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({ firstName: "", lastName: "", phone: "", email: "", notes: "" });
 
     useEffect(() => {

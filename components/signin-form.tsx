@@ -10,13 +10,22 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { useAuthStore } from "@/lib/store";
+import { LoginType, useAuthStore } from "@/lib/store";
 import { useLanguage } from "@/hooks";
-import { Customer } from "@/lib/types";
-interface SignInFormProps {
-    type: "business" | "customer";
+import type { Customer, User } from "@/lib/types";
+
+interface SignInSuccessPayload {
+    user: User;
+    isBusinessOwner: boolean;
 }
-export function SignInForm({ type }: SignInFormProps) {
+
+interface SignInFormProps {
+    type: LoginType;
+    disableRedirect?: boolean;
+    onSuccess?: (payload: SignInSuccessPayload) => void;
+}
+
+export function SignInForm({ type, disableRedirect = false, onSuccess }: SignInFormProps) {
     const { t, isRtl } = useLanguage();
     const [email, setEmail] = useState(type === "customer" ? "noa@customer.com" : "avi@biz.com");
     const [password, setPassword] = useState("123456");
@@ -34,10 +43,24 @@ export function SignInForm({ type }: SignInFormProps) {
         setError("");
 
         try {
-            const result = await login(email, password, type);
+            const result = await login(email, password);
 
             if (result.success) {
-                router.push(type === "business" ? `/business` : `/home/${(result.user as Customer)?.businessIds?.[0]}`);
+                const authUser = result.user as User | undefined;
+                const isBusinessOwner = Boolean(result.isBusinessOwner);
+
+                if (authUser && onSuccess) {
+                    onSuccess({ user: authUser, isBusinessOwner });
+                }
+
+                if (!disableRedirect) {
+                    if (isBusinessOwner) {
+                        router.push(`/business`);
+                    } else {
+                        const customerBusinessId = (authUser as Customer | undefined)?.businessIds?.[0];
+                        router.push(customerBusinessId ? `/home/${customerBusinessId}` : `/home`);
+                    }
+                }
             } else {
                 const key = result.error || "errorSignIn";
                 setError(t(key));
@@ -52,8 +75,7 @@ export function SignInForm({ type }: SignInFormProps) {
     return (
         <Card className="w-full max-w-md mx-auto">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl font-bold text-center">{t("businessSignInTitle")}</CardTitle>
-                <CardDescription className="text-center">{t("businessSignInDescription")}</CardDescription>
+                <CardTitle className="text-2xl font-bold text-center">{t("signInTitle")}</CardTitle>
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -125,7 +147,3 @@ export function SignInForm({ type }: SignInFormProps) {
         </Card>
     );
 }
-
-// sarah@sarahbeauty.com / 123456
-// david@davidclinic.com / 123456
-// maya@mayanails.com / 123456

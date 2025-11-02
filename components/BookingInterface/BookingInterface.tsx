@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,6 +18,8 @@ import { useBookingState, type BusinessDisplay } from "./hooks";
 import type { Service } from "@/lib/types";
 import Image from "next/image";
 import { CustomerHeader } from "@/app/customer/dashboard/customer-header";
+import { useAuthStore } from "@/lib/store";
+import { SignInForm } from "@/components/signin-form";
 
 interface BookingInterfaceProps {
     businessId: string;
@@ -48,8 +50,7 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
     return (
         <div className="size-full p-4">
             <div className="max-w-4xl mx-auto space-y-6">
-                {/* <TopBar /> */}
-                {/* <CustomerHeader /> */}
+                <CustomerHeader />
 
                 <BusinessHeader business={business} />
 
@@ -105,24 +106,6 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
 }
 
 // BusinessDisplay type is imported from hooks
-
-function TopBar() {
-    const { t } = useLanguage();
-    return (
-        <div className="flex items-center justify-between">
-            <Link href="/marketplace" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground">
-                <ArrowRight className="h-4 w-4" />
-                <span>{t("bookingBackToSearch")}</span>
-            </Link>
-            <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center">
-                    <Image src="/logo.png" alt="logo" width={32} height={32} />
-                </div>
-                <span className="font-medium">{t("brandName")}</span>
-            </div>
-        </div>
-    );
-}
 
 function BusinessHeader({ business }: { business: BusinessDisplay }) {
     const { t } = useLanguage();
@@ -376,7 +359,7 @@ interface CustomerInfo {
 
 interface CustomerDetailsStepProps {
     customerInfo: CustomerInfo;
-    setCustomerInfo: (info: CustomerInfo) => void;
+    setCustomerInfo: Dispatch<SetStateAction<CustomerInfo>>;
     business: BusinessDisplay;
     selectedServiceName?: string;
     selectedServiceDurationMin?: number;
@@ -402,65 +385,91 @@ function CustomerDetailsStep({
     onConfirm,
 }: CustomerDetailsStepProps) {
     const { t } = useLanguage();
+    const user = useAuthStore.user();
+    const isAuthenticated = Boolean(user);
+
+    useEffect(() => {
+        setCustomerInfo((prev) => {
+            if (user) {
+                return {
+                    ...prev,
+                    firstName: user.firstName ?? "",
+                    lastName: user.lastName ?? "",
+                    phone: user.phone ?? "",
+                    email: user.email ?? "",
+                };
+            }
+
+            if (!prev.firstName && !prev.lastName && !prev.phone && !prev.email) {
+                return prev;
+            }
+
+            return {
+                ...prev,
+                firstName: "",
+                lastName: "",
+                phone: "",
+                email: "",
+            };
+        });
+    }, [user, setCustomerInfo]);
     return (
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
             <div className="grid gap-6 md:grid-cols-2">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>{t("personalDetails")}</CardTitle>
-                        <CardDescription>{t("pleaseFillYourDetails")}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {isAuthenticated ? (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>{t("personalDetails")}</CardTitle>
+                            <CardDescription>{t("personalDetailsAutoFilled")}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-3">
+                                <div>
+                                    <span className="text-sm text-muted-foreground">{t("firstName")} *</span>
+                                    <p className="font-medium mt-1">{customerInfo.firstName}</p>
+                                </div>
+                                <div>
+                                    <span className="text-sm text-muted-foreground">{t("lastName")} *</span>
+                                    <p className="font-medium mt-1">{customerInfo.lastName}</p>
+                                </div>
+                                <div>
+                                    <span className="text-sm text-muted-foreground">{t("phone")} *</span>
+                                    <p className="font-medium mt-1">{customerInfo.phone}</p>
+                                </div>
+                                <div>
+                                    <span className="text-sm text-muted-foreground">{t("emailAddress")} *</span>
+                                    <p className="font-medium mt-1">{customerInfo.email}</p>
+                                </div>
+                            </div>
+                            <Separator />
                             <div className="space-y-2">
-                                <Label htmlFor="firstName">{t("firstName")} *</Label>
-                                <Input
-                                    id="firstName"
-                                    placeholder={t("firstName")}
-                                    value={customerInfo.firstName}
-                                    onChange={(e) => setCustomerInfo({ ...customerInfo, firstName: e.target.value })}
+                                <Label htmlFor="notes">{t("optionalNotes")}</Label>
+                                <Textarea
+                                    id="notes"
+                                    placeholder={t("additionalNotesPlaceholder")}
+                                    value={customerInfo.notes}
+                                    onChange={(e) => setCustomerInfo({ ...customerInfo, notes: e.target.value })}
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="lastName">{t("lastName")} *</Label>
-                                <Input
-                                    id="lastName"
-                                    placeholder={t("lastName")}
-                                    value={customerInfo.lastName}
-                                    onChange={(e) => setCustomerInfo({ ...customerInfo, lastName: e.target.value })}
-                                />
-                            </div>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="phone">{t("phone")} *</Label>
-                            <Input
-                                id="phone"
-                                placeholder="050-123-4567"
-                                value={customerInfo.phone}
-                                onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="email">{t("emailAddress")} *</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="your@email.com"
-                                value={customerInfo.email}
-                                onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="notes">{t("optionalNotes")}</Label>
-                            <Textarea
-                                id="notes"
-                                placeholder={t("additionalNotesPlaceholder")}
-                                value={customerInfo.notes}
-                                onChange={(e) => setCustomerInfo({ ...customerInfo, notes: e.target.value })}
-                            />
-                        </div>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <div className="flex flex-col gap-4">
+                        <SignInForm
+                            type="customer"
+                            disableRedirect
+                            onSuccess={({ user: authenticatedUser }) =>
+                                setCustomerInfo((prev) => ({
+                                    ...prev,
+                                    firstName: authenticatedUser.firstName ?? "",
+                                    lastName: authenticatedUser.lastName ?? "",
+                                    phone: authenticatedUser.phone ?? "",
+                                    email: authenticatedUser.email ?? "",
+                                }))
+                            }
+                        />
+                    </div>
+                )}
 
                 <Card>
                     <CardHeader>
@@ -514,7 +523,7 @@ function CustomerDetailsStep({
                 </Card>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 mt-3">
                 <Button variant="outline" size="lg" onClick={onBack} className="bg-transparent w-full sm:w-auto">
                     <ArrowRight className="h-4 w-4 mr-2" />
                     {t("back")}
@@ -522,7 +531,7 @@ function CustomerDetailsStep({
                 <Button
                     className="w-full sm:flex-1"
                     size="lg"
-                    disabled={!customerInfo.firstName || !customerInfo.lastName || !customerInfo.phone || !customerInfo.email}
+                    disabled={!isAuthenticated || !customerInfo.firstName || !customerInfo.lastName || !customerInfo.phone || !customerInfo.email}
                     onClick={onConfirm}
                 >
                     {t("confirmBooking")}
@@ -589,14 +598,14 @@ function ConfirmationStep({
                             </p>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <Button variant="outline" asChild>
                                 <Link href="/marketplace">{t("bookingBackToSearch")}</Link>
                             </Button>
                             <Button asChild>
                                 <Link href="/my-appointments">{t("myAppointments")}</Link>
                             </Button>
-                        </div>
+                        </div> */}
                     </div>
                 </CardContent>
             </Card>

@@ -13,6 +13,7 @@ import Image from "next/image";
 export function CustomerHeader() {
     const { t } = useLanguage();
     const user = useAuthStore.user();
+    const logout = useAuthStore.logout();
     return (
         <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 py-2">
             <div className="flex items-center justify-between w-full">
@@ -21,7 +22,7 @@ export function CustomerHeader() {
                         <div className="h-8 w-8 rounded-lg  flex items-center justify-center">
                             <Image src="/logo.png" alt="logo" width={32} height={32} />
                         </div>
-                        <span className="text-xl font-bold">{t("brandName")}</span>
+                        <span className="text-xl hidden sm:block font-bold">{t("brandName")}</span>
                     </Link>
                     <A11yToggle />
                     <ThemeToggle />
@@ -30,8 +31,8 @@ export function CustomerHeader() {
                     <div className="flex items-center gap-2">
                         <div className="flex items-center gap-2">
                             <Avatar className="h-8 w-8">
-                                <AvatarImage src="/placeholder.svg?height=32&width=32" />
-                                <AvatarFallback>RC</AvatarFallback>
+                                <AvatarImage src={user?.photoURL ?? "/placeholder.svg?height=32&width=32"} />
+                                <AvatarFallback>UN</AvatarFallback>
                             </Avatar>
                             <div className="hidden sm:block">
                                 <p className="text-sm font-medium">
@@ -41,7 +42,7 @@ export function CustomerHeader() {
                         </div>
 
                         <Button variant="outline" size="sm" asChild>
-                            <Link href="/">
+                            <Link href="/" onClick={logout}>
                                 <LogOut className="h-4 w-4 mr-2" />
                                 {t("signOut")}
                             </Link>
@@ -52,5 +53,3 @@ export function CustomerHeader() {
         </header>
     );
 }
-
-

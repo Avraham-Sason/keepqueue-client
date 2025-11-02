@@ -1,4 +1,4 @@
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import heTranslations from "./he.json";
 import enTranslations from "./en.json";
 import { Language } from "../types/global";
@@ -11,14 +11,7 @@ export async function getServerLanguage(): Promise<Language> {
     const cookieLang = cookieStore.get("language")?.value;
     if (cookieLang === "he" || cookieLang === "en") return cookieLang;
 
-    const hdrs = await headers();
-    const accept = hdrs.get("accept-language") || "";
-    const candidates = accept.split(",").map((p: string) => p.trim().split(";")[0].toLowerCase());
-
-    for (const code of candidates) {
-        if (code.startsWith("he")) return "he";
-        if (code.startsWith("en")) return "en";
-    }
+    // Default to Hebrew if no cookie is set, regardless of Accept-Language header
     return "he";
 }
 

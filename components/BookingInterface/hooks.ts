@@ -58,6 +58,7 @@ export function useBookingState(businessId: string) {
         const run = async () => {
             if (currentBusiness || fallbackLoaded || !businessId) return;
             try {
+                // TODO: replace it with api call to get business data
                 const b: any = await getDocumentById("businesses", businessId);
                 if (b) {
                     setFallbackMeta({ name: b.name, phone: b.phone, logoUrl: b.logoUrl });

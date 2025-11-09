@@ -194,6 +194,13 @@
   "pleaseFillYourDetails": "אנא מלא את הפרטים שלך",
   "personalDetailsAutoFilled": "הפרטים שלך מולאו אוטומטית ואין אפשרות לשנות אותם כאן",
   "optionalNotes": "הערות (אופציונלי)",
+  "bookingInProgress": "קובע את התור...",
+  "bookingErrorGeneric": "לא הצלחנו לקבוע את התור. נסה שוב בעוד רגע.",
+  "bookingSlotTaken": "הזמן שנבחר כבר תפוס. אנא בחר זמן אחר.",
+  "bookingErrorServiceNotFound": "השירות שנבחר אינו זמין יותר.",
+  "bookingErrorSelectService": "בחר שירות לפני אישור ההזמנה.",
+  "bookingErrorSelectSlot": "בחר תאריך ושעה לפני אישור ההזמנה.",
+  "bookingLoginRequired": "התחבר כדי לאשר את התור.",
   "bookingSummary": "סיכום הזמנה",
   "yourAppointmentDetails": "פרטי התור שלך",
   "businessLabel": "עסק",
@@ -270,5 +277,8 @@
   "weekday3": "רביעי",
   "weekday4": "חמישי",
   "weekday5": "שישי",
-  "weekday6": "שבת"
+  "weekday6": "שבת",
+  "loadingAvailability": "טוען זמינות...",
+  "noAvailableDates": "אין תאריכים זמינים",
+  "noAvailableTimes": "אין שעות זמינות לתאריך זה"
 }

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Clock, MapPin, Star, Phone, User, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
+import { Clock, MapPin, Star, Phone, User, CheckCircle, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useLanguage } from "@/hooks";
@@ -43,8 +43,11 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
         handleNext,
         handleBack,
         handleBooking,
+        isBooking,
+        bookingError,
         customerInfo,
         setCustomerInfo,
+        isLoadingAvailability,
     } = useBookingState(businessId);
 
     return (
@@ -68,6 +71,7 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                         availableTimes={availableTimes}
                         selectedTime={selectedTime}
                         setSelectedTime={setSelectedTime}
+                        isLoadingAvailability={isLoadingAvailability}
                         onBack={handleBack}
                         onNext={handleNext}
                     />
@@ -84,6 +88,8 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                         selectedDate={selectedDate}
                         selectedTime={selectedTime}
                         totalPrice={totalPrice}
+                        isBooking={isBooking}
+                        bookingError={bookingError}
                         onBack={handleBack}
                         onConfirm={handleBooking}
                     />
@@ -197,6 +203,7 @@ interface ServicesStepProps {
     onNext: () => void;
 }
 
+// ========================= Services Step 1 =========================
 function ServicesStep({ services, selectedService, setSelectedService, onNext }: ServicesStepProps) {
     const { t } = useLanguage();
     return (
@@ -262,10 +269,12 @@ interface DateTimeStepProps {
     availableTimes: TimeOption[];
     selectedTime: string;
     setSelectedTime: (time: string) => void;
+    isLoadingAvailability: boolean;
     onBack: () => void;
     onNext: () => void;
 }
 
+// ========================= DateTime Step 2 =========================
 function DateTimeStep({
     availableDates,
     selectedDate,
@@ -273,6 +282,7 @@ function DateTimeStep({
     availableTimes,
     selectedTime,
     setSelectedTime,
+    isLoadingAvailability,
     onBack,
     onNext,
 }: DateTimeStepProps) {
@@ -297,39 +307,61 @@ function DateTimeStep({
                 <CardContent className="space-y-6 ">
                     <div className="space-y-3 ">
                         <Label className="text-base font-medium">{t("selectDate")}</Label>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                            {availableDates.map((dateOption) => (
-                                <Button
-                                    key={dateOption.date}
-                                    variant={selectedDate === dateOption.date ? "default" : "outline"}
-                                    className={`h-14 sm:h-16 flex flex-col ${!dateOption.available ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    disabled={!dateOption.available}
-                                    onClick={() => onDateClick(dateOption)}
-                                >
-                                    <span className="font-medium">{dateOption.day}</span>
-                                    <span className="text-xs">{moment.utc(dateOption.date, "YYYY-MM-DD").format("DD/MM")}</span>
-                                </Button>
-                            ))}
-                        </div>
+                        {isLoadingAvailability ? (
+                            <div className="flex items-center justify-center py-8">
+                                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                                <span className="ml-2 text-muted-foreground">{t("loadingAvailability") }</span>
+                            </div>
+                        ) : availableDates.length === 0 ? (
+                            <div className="text-center py-8 text-muted-foreground">
+                                {t("noAvailableDates") }
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                {availableDates.map((dateOption) => (
+                                    <Button
+                                        key={dateOption.date}
+                                        variant={selectedDate === dateOption.date ? "default" : "outline"}
+                                        className={`h-14 sm:h-16 flex flex-col ${!dateOption.available ? "opacity-50 cursor-not-allowed" : ""}`}
+                                        disabled={!dateOption.available}
+                                        onClick={() => onDateClick(dateOption)}
+                                    >
+                                        <span className="font-medium">{dateOption.day}</span>
+                                        <span className="text-xs">{moment.utc(dateOption.date, "YYYY-MM-DD").format("DD/MM")}</span>
+                                    </Button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {selectedDate && (
                         <div className="space-y-3">
                             <Label className="text-base font-medium">{t("selectTime")}</Label>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                                {availableTimes.map((timeOption) => (
-                                    <Button
-                                        key={timeOption.time}
-                                        variant={selectedTime === timeOption.time ? "default" : "outline"}
-                                        size="sm"
-                                        className={`${!timeOption.available ? "opacity-50 cursor-not-allowed" : ""} min-h-10 sm:min-h-0`}
-                                        disabled={!timeOption.available}
-                                        onClick={() => timeOption.available && setSelectedTime(timeOption.time)}
-                                    >
-                                        {timeOption.time}
-                                    </Button>
-                                ))}
-                            </div>
+                            {isLoadingAvailability ? (
+                                <div className="flex items-center justify-center py-8">
+                                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                                    <span className="ml-2 text-muted-foreground">{t("loadingAvailability")}</span>
+                                </div>
+                            ) : availableTimes.length === 0 ? (
+                                <div className="text-center py-8 text-muted-foreground">
+                                    {t("noAvailableTimes")}
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                    {availableTimes.map((timeOption) => (
+                                        <Button
+                                            key={timeOption.time}
+                                            variant={selectedTime === timeOption.time ? "default" : "outline"}
+                                            size="sm"
+                                            className={`${!timeOption.available ? "opacity-50 cursor-not-allowed" : ""} min-h-10 sm:min-h-0`}
+                                            disabled={!timeOption.available}
+                                            onClick={() => timeOption.available && setSelectedTime(timeOption.time)}
+                                        >
+                                            {timeOption.time}
+                                        </Button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -368,9 +400,12 @@ interface CustomerDetailsStepProps {
     selectedTime: string;
     totalPrice: number;
     onBack: () => void;
-    onConfirm: () => void;
+    isBooking: boolean;
+    bookingError: string | null;
+    onConfirm: () => Promise<void>;
 }
 
+// ========================= Customer Details Step 3 =========================
 function CustomerDetailsStep({
     customerInfo,
     setCustomerInfo,
@@ -382,6 +417,8 @@ function CustomerDetailsStep({
     selectedTime,
     totalPrice,
     onBack,
+    isBooking,
+    bookingError,
     onConfirm,
 }: CustomerDetailsStepProps) {
     const { t } = useLanguage();
@@ -523,6 +560,12 @@ function CustomerDetailsStep({
                 </Card>
             </div>
 
+            {bookingError && (
+                <div role="alert" aria-live="polite" className="mt-3 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+                    {bookingError}
+                </div>
+            )}
+
             <div className="flex flex-col sm:flex-row gap-3 mt-3">
                 <Button variant="outline" size="lg" onClick={onBack} className="bg-transparent w-full sm:w-auto">
                     <ArrowRight className="h-4 w-4 mr-2" />
@@ -531,11 +574,20 @@ function CustomerDetailsStep({
                 <Button
                     className="w-full sm:flex-1"
                     size="lg"
-                    disabled={!isAuthenticated || !customerInfo.firstName || !customerInfo.lastName || !customerInfo.phone || !customerInfo.email}
-                    onClick={onConfirm}
+                    disabled={!isAuthenticated || !customerInfo.firstName || !customerInfo.lastName || !customerInfo.phone || !customerInfo.email || isBooking}
+                    onClick={() => void onConfirm()}
                 >
-                    {t("confirmBooking")}
-                    <CheckCircle className="h-4 w-4 mr-2" />
+                    {isBooking ? (
+                        <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            {t("bookingInProgress")}
+                        </>
+                    ) : (
+                        <>
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            {t("confirmBooking")}
+                        </>
+                    )}
                 </Button>
             </div>
         </motion.div>
@@ -552,6 +604,7 @@ interface ConfirmationStepProps {
     selectedTime: string;
 }
 
+// ========================= Confirmation Step 4 =========================
 function ConfirmationStep({
     businessName,
     businessAddress,

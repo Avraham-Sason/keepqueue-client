@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useBusinessesStore } from "@/lib/store";
-import type { Service, CalendarEvent, OperationSchedule } from "@/lib/types";
+import { useAuthStore, useBusinessesStore } from "@/lib/store";
+import type { Service, CalendarEvent, OperationSchedule, AvailabilitySlot } from "@/lib/types";
 import { timestampToMillis } from "@/lib/helpers/time";
 import moment from "moment-timezone";
 import { getDocumentById, queryDocuments } from "@/lib/firebase/firestore";
 import { useLanguage } from "@/hooks";
+import { apiCall, ApiError } from "@/lib/helpers/api";
+import { Timestamp } from "firebase/firestore";
 
 export interface DateOption {
     date: string;
@@ -41,6 +43,7 @@ export interface CustomerInfo {
 export function useBookingState(businessId: string) {
     const { t } = useLanguage();
     const currentBusiness = useBusinessesStore.currentBusiness();
+    const user = useAuthStore.user();
 
     const [fallbackLoaded, setFallbackLoaded] = useState(false);
     const [fallbackServices, setFallbackServices] = useState<Service[]>([]);
@@ -48,11 +51,15 @@ export function useBookingState(businessId: string) {
     const [fallbackSchedule, setFallbackSchedule] = useState<OperationSchedule[]>([]);
     const [fallbackMeta, setFallbackMeta] = useState<{ name?: string; phone?: string; logoUrl?: string } | null>(null);
 
-    const [selectedService, setSelectedService] = useState<string | null>(null);
-    const [selectedDate, setSelectedDate] = useState<string>("");
-    const [selectedTime, setSelectedTime] = useState<string>("");
+    const [selectedService, setSelectedServiceState] = useState<string | null>(null);
+    const [selectedDate, setSelectedDateState] = useState<string>("");
+    const [selectedTime, setSelectedTimeState] = useState<string>("");
     const [step, setStep] = useState<number>(1);
     const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({ firstName: "", lastName: "", phone: "", email: "", notes: "" });
+    const [isBooking, setIsBooking] = useState<boolean>(false);
+    const [bookingError, setBookingError] = useState<string | null>(null);
+    const [serviceAvailability, setServiceAvailability] = useState<AvailabilitySlot[]>([]);
+    const [isLoadingAvailability, setIsLoadingAvailability] = useState<boolean>(false);
 
     useEffect(() => {
         const run = async () => {
@@ -95,6 +102,34 @@ export function useBookingState(businessId: string) {
     const services: Service[] = useMemo(() => currentBusiness?.services ?? fallbackServices, [currentBusiness?.services, fallbackServices]);
 
     const selectedServiceData = useMemo(() => services.find((s) => s.id === selectedService), [services, selectedService]);
+
+    // Fetch availability from server when service is selected
+    useEffect(() => {
+        const fetchAvailability = async () => {
+            if (!selectedService) {
+                setServiceAvailability([]);
+                return;
+            }
+            
+            setIsLoadingAvailability(true);
+            try {
+                const availability = await apiCall<AvailabilitySlot[]>(
+                    "POST",
+                    "data",
+                    "getAvailabilityByServiceId",
+                    { serviceId: selectedService }
+                );
+                setServiceAvailability(availability ?? []);
+            } catch (error) {
+                console.error("Error fetching availability:", error);
+                setServiceAvailability([]);
+            } finally {
+                setIsLoadingAvailability(false);
+            }
+        };
+        
+        fetchAvailability();
+    }, [selectedService]);
 
     const businessOperationSchedule = useMemo(
         () => currentBusiness?.operationSchedule ?? fallbackSchedule,
@@ -148,50 +183,95 @@ export function useBookingState(businessId: string) {
     };
 
     const availableDates: DateOption[] = useMemo(() => {
+        // Show empty array while loading or if no service selected
+        if (!selectedService || isLoadingAvailability) {
+            return [];
+        }
+        
+        if (serviceAvailability.length === 0) {
+            return [];
+        }
+        
         const days: DateOption[] = [];
         const base = moment.utc().startOf("day");
-        const durationMin = selectedServiceData?.durationMin ?? 30;
+        
+        // Group availability slots by date
+        const slotsByDate = new Map<string, AvailabilitySlot[]>();
+        for (const slot of serviceAvailability) {
+            const slotStartMs = timestampToMillis(slot.start);
+            const slotDate = moment.utc(slotStartMs).format("YYYY-MM-DD");
+            if (!slotsByDate.has(slotDate)) {
+                slotsByDate.set(slotDate, []);
+            }
+            slotsByDate.get(slotDate)!.push(slot);
+        }
+        
         for (let i = 0; i < 7; i++) {
             const d = base.clone().add(i, "day");
             const dateStr = d.format("YYYY-MM-DD");
-            let found = false;
-            const probeStart = d.clone().hour(8).minute(0);
-            const probeEnd = d.clone().hour(20).minute(0);
-            const stepMin = 30;
-            for (let m = probeStart.clone(); m.isBefore(probeEnd); m.add(stepMin, "minute")) {
-                const startMs = m.valueOf();
-                const endMs = m.clone().add(durationMin, "minute").valueOf();
-                if (!withinSchedule(startMs, endMs)) continue;
-                if (!hasFreeSlot(startMs, endMs)) continue;
-                found = true;
-                break;
-            }
+            const slotsForDate = slotsByDate.get(dateStr) ?? [];
+            const hasAvailableSlots = slotsForDate.length > 0;
+            
             const isToday = i === 0;
             const isTomorrow = i === 1;
             const dayLabel = isToday ? t("today") : isTomorrow ? t("tomorrow") : t(`weekday${d.day()}` as unknown as any);
-            days.push({ date: dateStr, day: dayLabel, available: found });
+            days.push({ date: dateStr, day: dayLabel, available: hasAvailableSlots });
         }
         return days;
-    }, [businessOperationSchedule, serviceOperationSchedule, selectedServiceData?.durationMin, t, eventBlocksForDate]);
+    }, [selectedService, serviceAvailability, isLoadingAvailability, t]);
 
     const availableTimes: TimeOption[] = useMemo(() => {
-        if (!selectedDate || !selectedServiceData) return [] as TimeOption[];
+        // Show empty array while loading or if no date/service selected
+        if (!selectedDate || !selectedServiceData || isLoadingAvailability) {
+            return [] as TimeOption[];
+        }
+        
+        if (serviceAvailability.length === 0) {
+            return [] as TimeOption[];
+        }
+        
         const d = moment.utc(selectedDate, "YYYY-MM-DD");
+        const dateStr = d.format("YYYY-MM-DD");
         const stepMin = 30;
         const durationMin = selectedServiceData.durationMin;
+        const paddingBefore = selectedServiceData.paddingBefore || 0;
+        const paddingAfter = selectedServiceData.paddingAfter || 0;
+        const totalDurationMin = durationMin + paddingBefore + paddingAfter;
+        
+        // Get all availability slots for the selected date
+        const slotsForDate = serviceAvailability.filter((slot) => {
+            const slotStartMs = timestampToMillis(slot.start);
+            const slotDate = moment.utc(slotStartMs).format("YYYY-MM-DD");
+            return slotDate === dateStr;
+        });
+        
+        if (slotsForDate.length === 0) {
+            return [];
+        }
+        
         const times: TimeOption[] = [];
         const startOfDay = d.clone().hour(6).minute(0);
         const endOfDay = d.clone().hour(22).minute(0);
+        
         for (let m = startOfDay.clone(); m.isBefore(endOfDay); m.add(stepMin, "minute")) {
             const startMs = m.valueOf();
-            const endMs = m.clone().add(durationMin, "minute").valueOf();
-            const ok = withinSchedule(startMs, endMs) && hasFreeSlot(startMs, endMs);
-            if (ok) {
+            const endMs = m.clone().add(totalDurationMin, "minute").valueOf();
+            
+            // Check if this time slot fits within any availability slot
+            const fitsInSlot = slotsForDate.some((slot) => {
+                const slotStartMs = timestampToMillis(slot.start);
+                const slotEndMs = timestampToMillis(slot.end);
+                // Check if the requested time slot (with padding) fits completely within the availability slot
+                return startMs >= slotStartMs && endMs <= slotEndMs;
+            });
+            
+            if (fitsInSlot) {
                 times.push({ time: m.format("HH:mm"), available: true });
             }
         }
+        
         return times;
-    }, [selectedDate, selectedServiceData, businessOperationSchedule, serviceOperationSchedule, eventBlocksForDate]);
+    }, [selectedDate, selectedServiceData, serviceAvailability, isLoadingAvailability]);
 
     const totalPrice = selectedServiceData?.price || 0;
 
@@ -207,10 +287,133 @@ export function useBookingState(businessId: string) {
         if (step > 1) setStep(step - 1);
     };
 
-    const handleBooking = () => {
-        // Here you would typically send the booking data to your backend
-        // console.log booking kept in calling component if needed
-        setStep(4);
+    const clearBookingError = () => {
+        if (bookingError) {
+            setBookingError(null);
+        }
+    };
+
+    const setSelectedService = (id: string | null) => {
+        clearBookingError();
+        // Clear date and time when service is changed or cleared
+        if (id !== selectedService) {
+            setSelectedDateState("");
+            setSelectedTimeState("");
+        }
+        setSelectedServiceState(id);
+    };
+
+    const setSelectedDate = (date: string) => {
+        clearBookingError();
+        setSelectedDateState(date);
+    };
+
+    const setSelectedTime = (time: string) => {
+        clearBookingError();
+        setSelectedTimeState(time);
+    };
+
+    const handleBooking = async (): Promise<void> => {
+        if (isBooking) return;
+        if (!selectedServiceData || !selectedServiceData.id) {
+            setBookingError(t("bookingErrorSelectService"));
+            return;
+        }
+        if (!selectedDate || !selectedTime) {
+            setBookingError(t("bookingErrorSelectSlot"));
+            return;
+        }
+        if (!user?.id) {
+            setBookingError(t("bookingLoginRequired"));
+            return;
+        }
+
+        const startMoment = moment.utc(`${selectedDate} ${selectedTime}`, "YYYY-MM-DD HH:mm");
+        if (!startMoment.isValid()) {
+            setBookingError(t("bookingErrorGeneric"));
+            return;
+        }
+
+        const startMs = startMoment.valueOf();
+        const endMs = startMoment.clone().add(selectedServiceData.durationMin, "minute").valueOf();
+        const trimmedNotes = customerInfo.notes?.trim();
+
+        setIsBooking(true);
+        setBookingError(null);
+
+        try {
+            const payload: Record<string, unknown> = {
+                businessId,
+                userId: user.id,
+                serviceId: selectedServiceData.id,
+                start: startMs,
+                end: endMs,
+                source: "web",
+                type: "APPOINTMENT",
+            };
+
+            if (trimmedNotes) {
+                payload.notes = trimmedNotes;
+            }
+
+            const result = await apiCall<{ calendarEventId: string }>("POST", "actions", "businesses/appointments/create", payload);
+
+            const calendarEventId = result?.calendarEventId;
+            if (!calendarEventId) {
+                throw new ApiError("Missing calendarEventId in response");
+            }
+
+            if (!currentBusiness) {
+                const nowTs = Timestamp.now();
+                const newEvent = {
+                    id: calendarEventId,
+                    businessId,
+                    userId: user.id,
+                    serviceId: selectedServiceData.id,
+                    type: "APPOINTMENT",
+                    status: "BOOKED",
+                    title: selectedServiceData.name,
+                    start: Timestamp.fromMillis(startMs),
+                    end: Timestamp.fromMillis(endMs),
+                    source: "web",
+                    created: nowTs,
+                    timestamp: nowTs,
+                } as CalendarEvent;
+
+                if (trimmedNotes) {
+                    newEvent.notes = trimmedNotes;
+                }
+
+                setFallbackCalendar((prev) => [...prev, newEvent]);
+            }
+
+            setStep(4);
+        } catch (error) {
+            const fallbackMessage = t("bookingErrorGeneric");
+            const rawMessage = error instanceof Error ? error.message : "";
+            const normalized = rawMessage.toLowerCase();
+            let resolvedMessage = rawMessage;
+
+            if (!rawMessage) {
+                resolvedMessage = fallbackMessage;
+            } else if (normalized.includes("slot") && normalized.includes("booked")) {
+                resolvedMessage = t("bookingSlotTaken");
+            } else if (normalized.includes("service") && normalized.includes("not")) {
+                resolvedMessage = t("bookingErrorServiceNotFound");
+            } else if (normalized.includes("auth") || normalized.includes("permission") || normalized.includes("unauthor")) {
+                resolvedMessage = t("bookingLoginRequired");
+            } else if (normalized.includes("calendar") && normalized.includes("missing")) {
+                resolvedMessage = fallbackMessage;
+            }
+
+            if (!resolvedMessage || resolvedMessage === rawMessage) {
+                resolvedMessage = fallbackMessage;
+            }
+
+            setBookingError(resolvedMessage);
+        } finally {
+            setIsBooking(false);
+        }
     };
 
     return {
@@ -233,8 +436,12 @@ export function useBookingState(businessId: string) {
         handleNext,
         handleBack,
         handleBooking,
+        isBooking,
+        bookingError,
         // customer
         customerInfo,
         setCustomerInfo,
+        // loading state
+        isLoadingAvailability,
     } as const;
 }

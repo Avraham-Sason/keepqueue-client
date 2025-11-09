@@ -194,6 +194,13 @@
   "pleaseFillYourDetails": "Please fill in your details",
   "personalDetailsAutoFilled": "Your profile information is pre-filled and cannot be edited here",
   "optionalNotes": "Notes (optional)",
+  "bookingInProgress": "Booking your appointment...",
+  "bookingErrorGeneric": "We couldn't schedule the appointment. Please try again.",
+  "bookingSlotTaken": "That time slot was just booked. Please choose a different time.",
+  "bookingErrorServiceNotFound": "The selected service is no longer available.",
+  "bookingErrorSelectService": "Select a service before confirming your booking.",
+  "bookingErrorSelectSlot": "Select a date and time before confirming your booking.",
+  "bookingLoginRequired": "Please sign in to confirm your appointment.",
   "bookingSummary": "Booking summary",
   "yourAppointmentDetails": "Your appointment details",
   "businessLabel": "Business",
@@ -270,5 +277,8 @@
   "weekday3": "Wednesday",
   "weekday4": "Thursday",
   "weekday5": "Friday",
-  "weekday6": "Saturday"
+  "weekday6": "Saturday",
+  "loadingAvailability": "Loading availability...",
+  "noAvailableDates": "No available dates",
+  "noAvailableTimes": "No available times for this date"
 }

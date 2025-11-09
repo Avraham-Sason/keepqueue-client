@@ -1,12 +1,14 @@
-import { BookingInterface } from "@/components/BookingInterface"
-
 interface BookingPageProps {
-  params: Promise<{
-    businessId: string
-  }>
+    params: Promise<{
+        businessId: string;
+    }>;
 }
 
 export default async function BookingPage({ params }: BookingPageProps) {
-  const { businessId } = await params
-  return <BookingInterface businessId={businessId} />
+    const { businessId } = await params;
+    return (
+        <div>
+            <h1>Appointments</h1>
+        </div>
+    );
 }

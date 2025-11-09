@@ -19,7 +19,7 @@ export const useBusiness = (businessId?: string) => {
             console.log("⚡ fetching business");
             try {
                 const business = businessId ? await getBusinessById(businessId, signal) : await getBusinessByOwnerId(userId as string, signal);
-                console.log("🔥 fetched business", business);
+                // console.log("🔥 fetched business", business);
 
                 if (isMounted && business) {
                     setCurrentBusiness(business);

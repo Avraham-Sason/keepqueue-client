@@ -19,6 +19,8 @@ import {
     type CalendarEvent,
 } from "@/components/CalendarComponent";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useCalendarLocalization } from "@/components/CalendarComponent/helpers/localization";
+import { cn } from "@/lib/utils";
 
 interface MonthViewProps {
     currentDate: Date;
@@ -28,6 +30,7 @@ interface MonthViewProps {
 }
 
 export function MonthView({ currentDate, events, onEventSelect, onEventCreate }: MonthViewProps) {
+    const { locale, translate, isRtl } = useCalendarLocalization();
     const days = useMemo(() => {
         const monthStart = startOfMonth(currentDate);
         const monthEnd = endOfMonth(monthStart);
@@ -40,9 +43,9 @@ export function MonthView({ currentDate, events, onEventSelect, onEventCreate }:
     const weekdays = useMemo(() => {
         return Array.from({ length: 7 }).map((_, i) => {
             const date = addDays(startOfWeek(new Date()), i);
-            return format(date, "EEE");
+            return format(date, "EEE", { locale });
         });
-    }, []);
+    }, [locale]);
 
     const weeks = useMemo(() => {
         const result = [];
@@ -118,7 +121,7 @@ export function MonthView({ currentDate, events, onEventSelect, onEventCreate }:
                                         }}
                                     >
                                         <div className="mt-1 inline-flex size-6 items-center justify-center rounded-full text-sm group-data-today:bg-primary group-data-today:text-primary-foreground">
-                                            {format(day, "d")}
+                                            {format(day, "d", { locale })}
                                         </div>
                                         <div
                                             ref={isReferenceCell ? contentRef : null}
@@ -149,7 +152,7 @@ export function MonthView({ currentDate, events, onEventSelect, onEventCreate }:
                                                                 isLastDay={isLastDay}
                                                             >
                                                                 <div className="invisible" aria-hidden={true}>
-                                                                    {!event.allDay && <span>{format(new Date(event.start), "h:mm")} </span>}
+                                                                    {!event.allDay && <span>{format(new Date(event.start), "p", { locale })} </span>}
                                                                     {event.title}
                                                                 </div>
                                                             </EventItem>
@@ -174,12 +177,13 @@ export function MonthView({ currentDate, events, onEventSelect, onEventCreate }:
                                                 <Popover modal>
                                                     <PopoverTrigger asChild>
                                                         <button
-                                                            className="mt-[var(--event-gap)] flex h-[var(--event-height)] w-full items-center overflow-hidden px-1 text-left text-[10px] text-muted-foreground backdrop-blur-md transition outline-none select-none hover:bg-muted/50 hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:px-2 sm:text-xs"
+                                                            className={cn(
+                                                                "mt-[var(--event-gap)] flex h-[var(--event-height)] w-full items-center overflow-hidden px-1 text-left text-[10px] text-muted-foreground backdrop-blur-md transition outline-none select-none hover:bg-muted/50 hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:px-2 sm:text-xs",
+                                                                isRtl && "text-right"
+                                                            )}
                                                             onClick={(e) => e.stopPropagation()}
                                                         >
-                                                            <span>
-                                                                + {remainingCount} <span className="max-sm:sr-only">more</span>
-                                                            </span>
+                                                            <span>{translate("calendarMoreEventsButton", { count: remainingCount })}</span>
                                                         </button>
                                                     </PopoverTrigger>
                                                     <PopoverContent
@@ -192,7 +196,7 @@ export function MonthView({ currentDate, events, onEventSelect, onEventCreate }:
                                                         }
                                                     >
                                                         <div className="space-y-2">
-                                                            <div className="text-sm font-medium">{format(day, "EEE d")}</div>
+                                                            <div className="text-sm font-medium">{format(day, "EEE d", { locale })}</div>
                                                             <div className="space-y-1">
                                                                 {sortEvents(allEvents).map((event) => {
                                                                     const eventStart = new Date(event.start);

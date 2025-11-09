@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { addDays, setHours, setMinutes, subDays } from "date-fns";
 
-import { EventCalendar } from "@/components/CalendarComponent/event-calendar";
+import { EventCalendar, type EventCalendarProps } from "@/components/CalendarComponent/event-calendar";
 import type { CalendarEvent } from "@/components/CalendarComponent/helpers";
 
 // Sample events data with hardcoded times
@@ -130,20 +130,49 @@ const sampleEvents: CalendarEvent[] = [
     },
 ];
 
-export default function Component() {
-    const [events, setEvents] = useState<CalendarEvent[]>(sampleEvents);
+type CalendarComponentProps = Pick<EventCalendarProps, "onEventAdd" | "onEventUpdate" | "onEventDelete" | "className" | "initialView"> & {
+    events?: CalendarEvent[];
+};
+
+export default function CalendarComponent({
+    events,
+    onEventAdd,
+    onEventUpdate,
+    onEventDelete,
+    ...rest
+}: CalendarComponentProps) {
+    const [internalEvents, setInternalEvents] = useState<CalendarEvent[]>(sampleEvents);
+    const isControlled = Array.isArray(events);
+    const resolvedEvents = isControlled ? events : internalEvents;
 
     const handleEventAdd = (event: CalendarEvent) => {
-        setEvents([...events, event]);
+        if (!isControlled) {
+            setInternalEvents((prev) => [...prev, event]);
+        }
+        onEventAdd?.(event);
     };
 
     const handleEventUpdate = (updatedEvent: CalendarEvent) => {
-        setEvents(events.map((event) => (event.id === updatedEvent.id ? updatedEvent : event)));
+        if (!isControlled) {
+            setInternalEvents((prev) => prev.map((event) => (event.id === updatedEvent.id ? updatedEvent : event)));
+        }
+        onEventUpdate?.(updatedEvent);
     };
 
     const handleEventDelete = (eventId: string) => {
-        setEvents(events.filter((event) => event.id !== eventId));
+        if (!isControlled) {
+            setInternalEvents((prev) => prev.filter((event) => event.id !== eventId));
+        }
+        onEventDelete?.(eventId);
     };
 
-    return <EventCalendar events={events} onEventAdd={handleEventAdd} onEventUpdate={handleEventUpdate} onEventDelete={handleEventDelete} />;
+    return (
+        <EventCalendar
+            events={resolvedEvents ?? []}
+            onEventAdd={handleEventAdd}
+            onEventUpdate={handleEventUpdate}
+            onEventDelete={handleEventDelete}
+            {...rest}
+        />
+    );
 }

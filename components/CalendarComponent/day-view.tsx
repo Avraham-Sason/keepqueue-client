@@ -18,6 +18,7 @@ import { DroppableCell } from "@/components/CalendarComponent/droppable-cell";
 import { EventItem } from "@/components/CalendarComponent/event-item";
 import { type CalendarEvent, isMultiDayEvent, WeekCellsHeight, EndHour, StartHour, useCurrentTimeIndicator } from "@/components/CalendarComponent/";
 import { cn } from "@/lib/utils";
+import { useCalendarLocalization } from "@/components/CalendarComponent/helpers/localization";
 
 interface DayViewProps {
     currentDate: Date;
@@ -36,6 +37,7 @@ interface PositionedEvent {
 }
 
 export function DayView({ currentDate, events, onEventSelect, onEventCreate }: DayViewProps) {
+    const { locale, translate, isRtl } = useCalendarLocalization();
     const hours = useMemo(() => {
         const dayStart = startOfDay(currentDate);
         return eachHourOfInterval({
@@ -169,8 +171,13 @@ export function DayView({ currentDate, events, onEventSelect, onEventCreate }: D
                 <div className="border-t border-border/70 bg-muted/50">
                     <div className="grid grid-cols-[3rem_1fr] sm:grid-cols-[4rem_1fr]">
                         <div className="relative">
-                            <span className="absolute bottom-0 left-0 h-6 w-16 max-w-full pe-2 text-right text-[10px] text-muted-foreground/70 sm:pe-4 sm:text-xs">
-                                All day
+                            <span
+                                className={cn(
+                                    "absolute bottom-0 h-6 w-16 max-w-full text-[10px] text-muted-foreground/70 sm:text-xs",
+                                    isRtl ? "right-0 ps-2 text-left sm:ps-4" : "left-0 pe-2 text-right sm:pe-4"
+                                )}
+                            >
+                                {translate("calendarDialogAllDay")}
                             </span>
                         </div>
                         <div className="relative border-r border-border/70 p-1 last:border-r-0">
@@ -205,7 +212,7 @@ export function DayView({ currentDate, events, onEventSelect, onEventCreate }: D
                         <div key={hour.toString()} className="relative h-[var(--week-cells-height)] border-b border-border/70 last:border-b-0">
                             {index > 0 && (
                                 <span className="absolute -top-3 left-0 flex h-6 w-16 max-w-full items-center justify-end bg-background pe-2 text-[10px] text-muted-foreground/70 sm:pe-4 sm:text-xs">
-                                    {format(hour, "h a")}
+                                    {format(hour, "p", { locale })}
                                 </span>
                             )}
                         </div>

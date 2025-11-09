@@ -39,6 +39,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { useCalendarLocalization } from "@/components/CalendarComponent/helpers/localization"
 
 interface EventDialogProps {
   event: CalendarEvent | null
@@ -55,6 +56,7 @@ export function EventDialog({
   onSave,
   onDelete,
 }: EventDialogProps) {
+  const { translate, locale, dir, isRtl } = useCalendarLocalization()
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [startDate, setStartDate] = useState<Date>(new Date())
@@ -123,12 +125,12 @@ export function EventDialog({
         const value = `${formattedHour}:${formattedMinute}`
         // Use a fixed date to avoid unnecessary date object creations
         const date = new Date(2000, 0, 1, hour, minute)
-        const label = format(date, "h:mm a")
+        const label = format(date, "p", { locale })
         options.push({ value, label })
       }
     }
     return options
-  }, []) // Empty dependency array ensures this only runs once
+  }, [locale]) // Recompute when locale changes
 
   const handleSave = () => {
     const start = new Date(startDate)
@@ -147,7 +149,10 @@ export function EventDialog({
         endHours > EndHour
       ) {
         setError(
-          `Selected time must be between ${StartHour}:00 and ${EndHour}:00`
+          translate("calendarDialogErrorTimeRange", {
+            start: `${StartHour}:00`,
+            end: `${EndHour}:00`,
+          })
         )
         return
       }
@@ -161,12 +166,12 @@ export function EventDialog({
 
     // Validate that end date is not before start date
     if (isBefore(end, start)) {
-      setError("End date cannot be before start date")
+      setError(translate("calendarDialogErrorEndBeforeStart"))
       return
     }
 
     // Use generic title if empty
-    const eventTitle = title.trim() ? title : "(no title)"
+    const eventTitle = title.trim() ? title : translate("calendarDialogNoTitle")
 
     onSave({
       id: event?.id || "",
@@ -187,59 +192,71 @@ export function EventDialog({
   }
 
   // Updated color options to match types.ts
-  const colorOptions: Array<{
-    value: EventColor
-    label: string
-    bgClass: string
-    borderClass: string
-  }> = [
-    {
-      value: "sky",
-      label: "Sky",
-      bgClass: "bg-sky-400 data-[state=checked]:bg-sky-400",
-      borderClass: "border-sky-400 data-[state=checked]:border-sky-400",
-    },
-    {
-      value: "amber",
-      label: "Amber",
-      bgClass: "bg-amber-400 data-[state=checked]:bg-amber-400",
-      borderClass: "border-amber-400 data-[state=checked]:border-amber-400",
-    },
-    {
-      value: "violet",
-      label: "Violet",
-      bgClass: "bg-violet-400 data-[state=checked]:bg-violet-400",
-      borderClass: "border-violet-400 data-[state=checked]:border-violet-400",
-    },
-    {
-      value: "rose",
-      label: "Rose",
-      bgClass: "bg-rose-400 data-[state=checked]:bg-rose-400",
-      borderClass: "border-rose-400 data-[state=checked]:border-rose-400",
-    },
-    {
-      value: "emerald",
-      label: "Emerald",
-      bgClass: "bg-emerald-400 data-[state=checked]:bg-emerald-400",
-      borderClass: "border-emerald-400 data-[state=checked]:border-emerald-400",
-    },
-    {
-      value: "orange",
-      label: "Orange",
-      bgClass: "bg-orange-400 data-[state=checked]:bg-orange-400",
-      borderClass: "border-orange-400 data-[state=checked]:border-orange-400",
-    },
-  ]
+  const colorOptions = useMemo(
+    () =>
+      [
+        {
+          value: "sky" as EventColor,
+          label: translate("calendarColorSky"),
+          bgClass: "bg-sky-400 data-[state=checked]:bg-sky-400",
+          borderClass: "border-sky-400 data-[state=checked]:border-sky-400",
+        },
+        {
+          value: "amber" as EventColor,
+          label: translate("calendarColorAmber"),
+          bgClass: "bg-amber-400 data-[state=checked]:bg-amber-400",
+          borderClass: "border-amber-400 data-[state=checked]:border-amber-400",
+        },
+        {
+          value: "violet" as EventColor,
+          label: translate("calendarColorViolet"),
+          bgClass: "bg-violet-400 data-[state=checked]:bg-violet-400",
+          borderClass: "border-violet-400 data-[state=checked]:border-violet-400",
+        },
+        {
+          value: "rose" as EventColor,
+          label: translate("calendarColorRose"),
+          bgClass: "bg-rose-400 data-[state=checked]:bg-rose-400",
+          borderClass: "border-rose-400 data-[state=checked]:border-rose-400",
+        },
+        {
+          value: "emerald" as EventColor,
+          label: translate("calendarColorEmerald"),
+          bgClass: "bg-emerald-400 data-[state=checked]:bg-emerald-400",
+          borderClass: "border-emerald-400 data-[state=checked]:border-emerald-400",
+        },
+        {
+          value: "orange" as EventColor,
+          label: translate("calendarColorOrange"),
+          bgClass: "bg-orange-400 data-[state=checked]:bg-orange-400",
+          borderClass: "border-orange-400 data-[state=checked]:border-orange-400",
+        },
+      ] satisfies Array<{
+        value: EventColor
+        label: string
+        bgClass: string
+        borderClass: string
+      }>,
+    [translate]
+  )
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        dir={dir}
+        data-rtl={isRtl || undefined}
+        className={cn("sm:max-w-[425px]", isRtl && "text-right")}
+      >
         <DialogHeader>
-          <DialogTitle>{event?.id ? "Edit Event" : "Create Event"}</DialogTitle>
+          <DialogTitle>
+            {event?.id
+              ? translate("calendarDialogEditTitle")
+              : translate("calendarDialogCreateTitle")}
+          </DialogTitle>
           <DialogDescription className="sr-only">
             {event?.id
-              ? "Edit the details of this event"
-              : "Add a new event to your calendar"}
+              ? translate("calendarDialogEditDescription")
+              : translate("calendarDialogCreateDescription")}
           </DialogDescription>
         </DialogHeader>
         {error && (
@@ -249,27 +266,33 @@ export function EventDialog({
         )}
         <div className="grid gap-4 py-4">
           <div className="*:not-first:mt-1.5">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">{translate("calendarDialogFieldTitle")}</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              dir={dir}
             />
           </div>
 
           <div className="*:not-first:mt-1.5">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">
+              {translate("calendarDialogFieldDescription")}
+            </Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
+              dir={dir}
             />
           </div>
 
           <div className="flex gap-4">
             <div className="flex-1 *:not-first:mt-1.5">
-              <Label htmlFor="start-date">Start Date</Label>
+              <Label htmlFor="start-date">
+                {translate("calendarDialogFieldStartDate")}
+              </Label>
               <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
                 <PopoverTrigger asChild>
                   <Button
@@ -286,7 +309,9 @@ export function EventDialog({
                         !startDate && "text-muted-foreground"
                       )}
                     >
-                      {startDate ? format(startDate, "PPP") : "Pick a date"}
+                      {startDate
+                        ? format(startDate, "PPP", { locale })
+                        : translate("calendarDialogPickDate")}
                     </span>
                     <RiCalendarLine
                       size={16}
@@ -295,15 +320,19 @@ export function EventDialog({
                     />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-2" align="start">
+                <PopoverContent
+                  className="w-auto p-2"
+                  align={isRtl ? "end" : "start"}
+                  dir={dir}
+                >
                   <Calendar
+                    locale={locale}
                     mode="single"
                     selected={startDate}
                     defaultMonth={startDate}
                     onSelect={(date) => {
                       if (date) {
                         setStartDate(date)
-                        // If end date is before the new start date, update it to match the start date
                         if (isBefore(endDate, date)) {
                           setEndDate(date)
                         }
@@ -318,12 +347,14 @@ export function EventDialog({
 
             {!allDay && (
               <div className="min-w-28 *:not-first:mt-1.5">
-                <Label htmlFor="start-time">Start Time</Label>
+                <Label htmlFor="start-time">
+                  {translate("calendarDialogFieldStartTime")}
+                </Label>
                 <Select value={startTime} onValueChange={setStartTime}>
-                  <SelectTrigger id="start-time">
-                    <SelectValue placeholder="Select time" />
+                  <SelectTrigger id="start-time" dir={dir}>
+                    <SelectValue placeholder={translate("calendarDialogSelectTime")} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent dir={dir}>
                     {timeOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
@@ -337,7 +368,9 @@ export function EventDialog({
 
           <div className="flex gap-4">
             <div className="flex-1 *:not-first:mt-1.5">
-              <Label htmlFor="end-date">End Date</Label>
+              <Label htmlFor="end-date">
+                {translate("calendarDialogFieldEndDate")}
+              </Label>
               <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
                 <PopoverTrigger asChild>
                   <Button
@@ -354,7 +387,9 @@ export function EventDialog({
                         !endDate && "text-muted-foreground"
                       )}
                     >
-                      {endDate ? format(endDate, "PPP") : "Pick a date"}
+                      {endDate
+                        ? format(endDate, "PPP", { locale })
+                        : translate("calendarDialogPickDate")}
                     </span>
                     <RiCalendarLine
                       size={16}
@@ -363,8 +398,13 @@ export function EventDialog({
                     />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-2" align="start">
+                <PopoverContent
+                  className="w-auto p-2"
+                  align={isRtl ? "end" : "start"}
+                  dir={dir}
+                >
                   <Calendar
+                    locale={locale}
                     mode="single"
                     selected={endDate}
                     defaultMonth={endDate}
@@ -383,12 +423,14 @@ export function EventDialog({
 
             {!allDay && (
               <div className="min-w-28 *:not-first:mt-1.5">
-                <Label htmlFor="end-time">End Time</Label>
+                <Label htmlFor="end-time">
+                  {translate("calendarDialogFieldEndTime")}
+                </Label>
                 <Select value={endTime} onValueChange={setEndTime}>
-                  <SelectTrigger id="end-time">
-                    <SelectValue placeholder="Select time" />
+                  <SelectTrigger id="end-time" dir={dir}>
+                    <SelectValue placeholder={translate("calendarDialogSelectTime")} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent dir={dir}>
                     {timeOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
@@ -406,23 +448,28 @@ export function EventDialog({
               checked={allDay}
               onCheckedChange={(checked) => setAllDay(checked === true)}
             />
-            <Label htmlFor="all-day">All day</Label>
+            <Label htmlFor="all-day">
+              {translate("calendarDialogAllDay")}
+            </Label>
           </div>
 
           <div className="*:not-first:mt-1.5">
-            <Label htmlFor="location">Location</Label>
+            <Label htmlFor="location">
+              {translate("calendarDialogLocation")}
+            </Label>
             <Input
               id="location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
+              dir={dir}
             />
           </div>
           <fieldset className="space-y-4">
-            <legend className="text-sm leading-none font-medium text-foreground">
-              Etiquette
+            <legend className="text-sm font-medium leading-none text-foreground">
+              {translate("calendarDialogColorLegend")}
             </legend>
             <RadioGroup
-              className="flex gap-1.5"
+              className={cn("flex gap-1.5", isRtl && "flex-row-reverse")}
               defaultValue={colorOptions[0]?.value}
               value={color}
               onValueChange={(value: EventColor) => setColor(value)}
@@ -443,22 +490,32 @@ export function EventDialog({
             </RadioGroup>
           </fieldset>
         </div>
-        <DialogFooter className="flex-row sm:justify-between">
+        <DialogFooter
+          className={cn(
+            "flex-row sm:justify-between",
+            isRtl && "flex-row-reverse sm:flex-row-reverse"
+          )}
+        >
           {event?.id && (
             <Button
               variant="outline"
               size="icon"
               onClick={handleDelete}
-              aria-label="Delete event"
+              aria-label={translate("calendarDialogDeleteEventAria")}
             >
               <RiDeleteBinLine size={16} aria-hidden="true" />
             </Button>
           )}
-          <div className="flex flex-1 justify-end gap-2">
+          <div
+            className={cn(
+              "flex flex-1 justify-end gap-2",
+              isRtl && "justify-start"
+            )}
+          >
             <Button variant="outline" onClick={onClose}>
-              Cancel
+              {translate("cancel")}
             </Button>
-            <Button onClick={handleSave}>Save</Button>
+            <Button onClick={handleSave}>{translate("save")}</Button>
           </div>
         </DialogFooter>
       </DialogContent>

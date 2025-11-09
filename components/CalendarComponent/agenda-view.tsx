@@ -6,6 +6,8 @@ import { addDays, format, isToday } from "date-fns";
 
 import { EventItem } from "@/components/CalendarComponent/event-item";
 import { getAgendaEventsForDay, type CalendarEvent, AgendaDaysToShow } from "@/components/CalendarComponent/helpers";
+import { useCalendarLocalization } from "@/components/CalendarComponent/helpers/localization";
+import { cn } from "@/lib/utils";
 
 interface AgendaViewProps {
     currentDate: Date;
@@ -14,6 +16,7 @@ interface AgendaViewProps {
 }
 
 export function AgendaView({ currentDate, events, onEventSelect }: AgendaViewProps) {
+    const { translate, locale, isRtl } = useCalendarLocalization();
     // Show events for the next days based on constant
     const days = useMemo(() => {
         console.log("Agenda view updating with date:", currentDate.toISOString());
@@ -34,8 +37,8 @@ export function AgendaView({ currentDate, events, onEventSelect }: AgendaViewPro
             {!hasEvents ? (
                 <div className="flex min-h-[70svh] flex-col items-center justify-center py-16 text-center">
                     <RiCalendarEventLine size={32} className="mb-2 text-muted-foreground/50" />
-                    <h3 className="text-lg font-medium">No events found</h3>
-                    <p className="text-muted-foreground">There are no events scheduled for this time period.</p>
+                    <h3 className="text-lg font-medium">{translate("calendarNoEventsTitle")}</h3>
+                    <p className="text-muted-foreground">{translate("calendarNoEventsSubtitle")}</p>
                 </div>
             ) : (
                 days.map((day) => {
@@ -46,10 +49,13 @@ export function AgendaView({ currentDate, events, onEventSelect }: AgendaViewPro
                     return (
                         <div key={day.toString()} className="relative my-12 border-t border-border/70">
                             <span
-                                className="absolute -top-3 left-0 flex h-6 items-center bg-background pe-4 text-[10px] uppercase data-today:font-medium sm:pe-4 sm:text-xs"
+                                className={cn(
+                                    "absolute -top-3 flex h-6 items-center bg-background text-[10px] uppercase data-today:font-medium sm:text-xs",
+                                    isRtl ? "right-0 ps-4 text-right sm:ps-4" : "left-0 pe-4 sm:pe-4"
+                                )}
                                 data-today={isToday(day) || undefined}
                             >
-                                {format(day, "d MMM, EEEE")}
+                                {format(day, "d MMMM, EEEE", { locale })}
                             </span>
                             <div className="mt-6 space-y-2">
                                 {dayEvents.map((event) => (

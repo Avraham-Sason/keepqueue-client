@@ -3,18 +3,11 @@
 import { useMemo } from "react";
 import type { DraggableAttributes } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import { differenceInMinutes, format, getMinutes, isPast } from "date-fns";
+import { differenceInMinutes, format, isPast } from "date-fns";
 
 import { getBorderRadiusClasses, getEventColorClasses, type CalendarEvent } from "@/components/CalendarComponent/";
 import { cn } from "@/lib/utils";
-
-// Using date-fns format with custom formatting:
-// 'h' - hours (1-12)
-// 'a' - am/pm
-// ':mm' - minutes with leading zero (only if the token 'mm' is present)
-const formatTimeWithOptionalMinutes = (date: Date) => {
-    return format(date, getMinutes(date) === 0 ? "ha" : "h:mma").toLowerCase();
-};
+import { useCalendarLocalization } from "@/components/CalendarComponent/helpers/localization";
 
 interface EventWrapperProps {
     event: CalendarEvent;
@@ -107,6 +100,12 @@ export function EventItem({
     onMouseDown,
     onTouchStart,
 }: EventItemProps) {
+    const { locale, translate } = useCalendarLocalization();
+
+    const formatTime = (date: Date) => {
+        return format(date, "p", { locale });
+    };
+
     const eventColor = event.color;
 
     // Use the provided currentTime (for dragging) or the event's actual time
@@ -126,15 +125,15 @@ export function EventItem({
     }, [displayStart, displayEnd]);
 
     const getEventTime = () => {
-        if (event.allDay) return "All day";
+        if (event.allDay) return translate("calendarDialogAllDay");
 
         // For short events (less than 45 minutes), only show start time
         if (durationMinutes < 45) {
-            return formatTimeWithOptionalMinutes(displayStart);
+            return formatTime(displayStart);
         }
 
         // For longer events, show both start and end time
-        return `${formatTimeWithOptionalMinutes(displayStart)} - ${formatTimeWithOptionalMinutes(displayEnd)}`;
+        return `${formatTime(displayStart)} - ${formatTime(displayEnd)}`;
     };
 
     if (view === "month") {
@@ -155,7 +154,7 @@ export function EventItem({
                 {children || (
                     <span className="truncate">
                         {!event.allDay && (
-                            <span className="truncate font-normal opacity-70 sm:text-[11px]">{formatTimeWithOptionalMinutes(displayStart)} </span>
+                            <span className="truncate font-normal opacity-70 sm:text-[11px]">{formatTime(displayStart)} </span>
                         )}
                         {event.title}
                     </span>
@@ -186,7 +185,7 @@ export function EventItem({
             >
                 {durationMinutes < 45 ? (
                     <div className="truncate">
-                        {event.title} {showTime && <span className="opacity-70">{formatTimeWithOptionalMinutes(displayStart)}</span>}
+                        {event.title} {showTime && <span className="opacity-70">{formatTime(displayStart)}</span>}
                     </div>
                 ) : (
                     <>
@@ -216,10 +215,10 @@ export function EventItem({
             <div className="text-sm font-medium">{event.title}</div>
             <div className="text-xs opacity-70">
                 {event.allDay ? (
-                    <span>All day</span>
+                    <span>{translate("calendarDialogAllDay")}</span>
                 ) : (
-                    <span className="uppercase">
-                        {formatTimeWithOptionalMinutes(displayStart)} - {formatTimeWithOptionalMinutes(displayEnd)}
+                    <span>
+                        {formatTime(displayStart)} - {formatTime(displayEnd)}
                     </span>
                 )}
                 {event.location && (

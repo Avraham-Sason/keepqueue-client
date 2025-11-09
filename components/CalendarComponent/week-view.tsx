@@ -23,6 +23,7 @@ import { DroppableCell } from "@/components/CalendarComponent/droppable-cell";
 import { EventItem } from "@/components/CalendarComponent/event-item";
 import { isMultiDayEvent, useCurrentTimeIndicator, type CalendarEvent, WeekCellsHeight, EndHour, StartHour } from "@/components/CalendarComponent";
 import { cn } from "@/lib/utils";
+import { useCalendarLocalization } from "@/components/CalendarComponent/helpers/localization";
 
 interface WeekViewProps {
     currentDate: Date;
@@ -41,6 +42,7 @@ interface PositionedEvent {
 }
 
 export function WeekView({ currentDate, events, onEventSelect, onEventCreate }: WeekViewProps) {
+    const { locale, translate, isRtl } = useCalendarLocalization();
     const days = useMemo(() => {
         const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
         const weekEnd = endOfWeek(currentDate, { weekStartsOn: 0 });
@@ -199,9 +201,9 @@ export function WeekView({ currentDate, events, onEventSelect, onEventCreate }: 
                         data-today={isToday(day) || undefined}
                     >
                         <span className="sm:hidden" aria-hidden="true">
-                            {format(day, "E")[0]} {format(day, "d")}
+                            {format(day, "EEEEE", { locale })} {format(day, "d", { locale })}
                         </span>
-                        <span className="max-sm:hidden">{format(day, "EEE dd")}</span>
+                        <span className="max-sm:hidden">{format(day, "EEE dd", { locale })}</span>
                     </div>
                 ))}
             </div>
@@ -210,8 +212,13 @@ export function WeekView({ currentDate, events, onEventSelect, onEventCreate }: 
                 <div className="border-b border-border/70 bg-muted/50">
                     <div className="grid grid-cols-8">
                         <div className="relative border-r border-border/70">
-                            <span className="absolute bottom-0 left-0 h-6 w-16 max-w-full pe-2 text-right text-[10px] text-muted-foreground/70 sm:pe-4 sm:text-xs">
-                                All day
+                            <span
+                                className={cn(
+                                    "absolute bottom-0 h-6 w-16 max-w-full text-[10px] text-muted-foreground/70 sm:text-xs",
+                                    isRtl ? "right-0 ps-2 text-left sm:ps-4" : "left-0 pe-2 text-right sm:pe-4"
+                                )}
+                            >
+                                {translate("calendarDialogAllDay")}
                             </span>
                         </div>
                         {days.map((day, dayIndex) => {
@@ -266,7 +273,7 @@ export function WeekView({ currentDate, events, onEventSelect, onEventCreate }: 
                         <div key={hour.toString()} className="relative min-h-[var(--week-cells-height)] border-b border-border/70 last:border-b-0">
                             {index > 0 && (
                                 <span className="absolute -top-3 left-0 flex h-6 w-16 max-w-full items-center justify-end bg-background pe-2 text-[10px] text-muted-foreground/70 sm:pe-4 sm:text-xs">
-                                    {format(hour, "h a")}
+                                    {format(hour, "p", { locale })}
                                 </span>
                             )}
                         </div>

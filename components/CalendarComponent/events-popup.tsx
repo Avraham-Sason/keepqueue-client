@@ -6,6 +6,7 @@ import { XIcon } from "lucide-react"
 
 import { EventItem } from "@/components/CalendarComponent/event-item"
 import { type CalendarEvent } from "@/components/CalendarComponent"
+import { useCalendarLocalization } from "@/components/CalendarComponent/helpers/localization"
 
 interface EventsPopupProps {
   date: Date
@@ -22,6 +23,7 @@ export function EventsPopup({
   onClose,
   onEventSelect,
 }: EventsPopupProps) {
+  const { locale, translate, dir } = useCalendarLocalization()
   const popupRef = useRef<HTMLDivElement>(null)
 
   // Handle click outside to close popup
@@ -88,17 +90,18 @@ export function EventsPopup({
     <div
       ref={popupRef}
       className="absolute z-50 max-h-96 w-80 overflow-auto rounded-md border bg-background shadow-lg"
+      dir={dir}
       style={{
         top: `${adjustedPosition.top}px`,
         left: `${adjustedPosition.left}px`,
       }}
     >
       <div className="sticky top-0 flex items-center justify-between border-b bg-background p-3">
-        <h3 className="font-medium">{format(date, "d MMMM yyyy")}</h3>
+        <h3 className="font-medium">{format(date, "PPP", { locale })}</h3>
         <button
           onClick={onClose}
           className="rounded-full p-1 hover:bg-muted"
-          aria-label="Close"
+          aria-label={translate("close")}
         >
           <XIcon className="h-4 w-4" />
         </button>
@@ -106,7 +109,9 @@ export function EventsPopup({
 
       <div className="space-y-2 p-3">
         {events.length === 0 ? (
-          <div className="py-2 text-sm text-muted-foreground">No events</div>
+          <div className="py-2 text-sm text-muted-foreground">
+            {translate("calendarNoEvents")}
+          </div>
         ) : (
           events.map((event) => {
             const eventStart = new Date(event.start)

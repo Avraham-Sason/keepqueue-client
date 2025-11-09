@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { RiCalendarCheckLine } from "@remixicon/react";
 import { addDays, addMonths, addWeeks, endOfWeek, format, isSameMonth, startOfWeek, subMonths, subWeeks } from "date-fns";
+import { enUS, he } from "date-fns/locale";
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 
@@ -21,6 +22,8 @@ import { DayView } from "@/components/CalendarComponent/day-view";
 import { EventDialog } from "@/components/CalendarComponent/event-dialog";
 import { MonthView } from "@/components/CalendarComponent/month-view";
 import { WeekView } from "@/components/CalendarComponent/week-view";
+import { CalendarLocalizationProvider } from "@/components/CalendarComponent/helpers/localization";
+import { useLanguage } from "@/hooks";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -35,10 +38,48 @@ export interface EventCalendarProps {
 }
 
 export function EventCalendar({ events = [], onEventAdd, onEventUpdate, onEventDelete, className, initialView = "month" }: EventCalendarProps) {
+    const { t, dir, isRtl, language } = useLanguage();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [view, setView] = useState<CalendarView>(initialView);
     const [isEventDialogOpen, setIsEventDialogOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+
+    const locale = useMemo(() => (language === "he" ? he : enUS), [language]);
+
+    const translate = useCallback(
+        (key: string, replacements?: Record<string, string | number>) => {
+            let value = t(key as any) ?? key;
+            if (replacements) {
+                Object.entries(replacements).forEach(([token, tokenValue]) => {
+                    value = value.replace(new RegExp(`{${token}}`, "g"), String(tokenValue));
+                });
+            }
+            return value;
+        },
+        [t]
+    );
+
+    const viewLabels = useMemo(
+        () => ({
+            month: translate("calendarViewMonth"),
+            week: translate("calendarViewWeek"),
+            day: translate("calendarViewDay"),
+            agenda: translate("calendarViewAgenda"),
+        }),
+        [translate]
+    );
+
+    const viewShortLabels = useMemo(
+        () => ({
+            month: viewLabels.month.charAt(0).toUpperCase(),
+            week: viewLabels.week.charAt(0).toUpperCase(),
+            day: viewLabels.day.charAt(0).toUpperCase(),
+            agenda: viewLabels.agenda.charAt(0).toUpperCase(),
+        }),
+        [viewLabels]
+    );
+
+    const toastPosition = isRtl ? "bottom-right" : "bottom-left";
 
     // Add keyboard shortcuts for view switching
     useEffect(() => {
@@ -146,20 +187,31 @@ export function EventCalendar({ events = [], onEventAdd, onEventUpdate, onEventD
         if (event.id) {
             onEventUpdate?.(event);
             // Show toast notification when an event is updated
-            toast(`Event "${event.title}" updated`, {
-                description: format(new Date(event.start), "MMM d, yyyy"),
-                position: "bottom-left",
-            });
+            toast(
+                translate("calendarToastEventUpdated", {
+                    title: event.title || translate("calendarDialogNoTitle"),
+                }),
+                {
+                    description: format(new Date(event.start), "PPP", { locale }),
+                    position: toastPosition,
+                }
+            );
         } else {
-            onEventAdd?.({
+            const newEvent = {
                 ...event,
                 id: Math.random().toString(36).substring(2, 11),
-            });
+            };
+            onEventAdd?.(newEvent);
             // Show toast notification when an event is added
-            toast(`Event "${event.title}" added`, {
-                description: format(new Date(event.start), "MMM d, yyyy"),
-                position: "bottom-left",
-            });
+            toast(
+                translate("calendarToastEventAdded", {
+                    title: newEvent.title || translate("calendarDialogNoTitle"),
+                }),
+                {
+                    description: format(new Date(newEvent.start), "PPP", { locale }),
+                    position: toastPosition,
+                }
+            );
         }
         setIsEventDialogOpen(false);
         setSelectedEvent(null);
@@ -173,10 +225,15 @@ export function EventCalendar({ events = [], onEventAdd, onEventUpdate, onEventD
 
         // Show toast notification when an event is deleted
         if (deletedEvent) {
-            toast(`Event "${deletedEvent.title}" deleted`, {
-                description: format(new Date(deletedEvent.start), "MMM d, yyyy"),
-                position: "bottom-left",
-            });
+            toast(
+                translate("calendarToastEventDeleted", {
+                    title: deletedEvent.title || translate("calendarDialogNoTitle"),
+                }),
+                {
+                    description: format(new Date(deletedEvent.start), "PPP", { locale }),
+                    position: toastPosition,
+                }
+            );
         }
     };
 
@@ -184,33 +241,38 @@ export function EventCalendar({ events = [], onEventAdd, onEventUpdate, onEventD
         onEventUpdate?.(updatedEvent);
 
         // Show toast notification when an event is updated via drag and drop
-        toast(`Event "${updatedEvent.title}" moved`, {
-            description: format(new Date(updatedEvent.start), "MMM d, yyyy"),
-            position: "bottom-left",
-        });
+        toast(
+            translate("calendarToastEventMoved", {
+                title: updatedEvent.title || translate("calendarDialogNoTitle"),
+            }),
+            {
+                description: format(new Date(updatedEvent.start), "PPP", { locale }),
+                position: toastPosition,
+            }
+        );
     };
 
     const viewTitle = useMemo(() => {
         if (view === "month") {
-            return format(currentDate, "MMMM yyyy");
+            return format(currentDate, "LLLL yyyy", { locale });
         } else if (view === "week") {
             const start = startOfWeek(currentDate, { weekStartsOn: 0 });
             const end = endOfWeek(currentDate, { weekStartsOn: 0 });
             if (isSameMonth(start, end)) {
-                return format(start, "MMMM yyyy");
+                return format(start, "LLLL yyyy", { locale });
             } else {
-                return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
+                return `${format(start, "LLL", { locale })} - ${format(end, "LLL yyyy", { locale })}`;
             }
         } else if (view === "day") {
             return (
                 <>
                     <span className="min-[480px]:hidden" aria-hidden="true">
-                        {format(currentDate, "MMM d, yyyy")}
+                        {format(currentDate, "PP", { locale })}
                     </span>
                     <span className="max-[479px]:hidden min-md:hidden" aria-hidden="true">
-                        {format(currentDate, "MMMM d, yyyy")}
+                        {format(currentDate, "PPPP", { locale })}
                     </span>
-                    <span className="max-md:hidden">{format(currentDate, "EEE MMMM d, yyyy")}</span>
+                    <span className="max-md:hidden">{format(currentDate, "PPPP", { locale })}</span>
                 </>
             );
         } else if (view === "agenda") {
@@ -219,39 +281,47 @@ export function EventCalendar({ events = [], onEventAdd, onEventUpdate, onEventD
             const end = addDays(currentDate, AgendaDaysToShow - 1);
 
             if (isSameMonth(start, end)) {
-                return format(start, "MMMM yyyy");
+                return format(start, "LLLL yyyy", { locale });
             } else {
-                return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
+                return `${format(start, "LLL", { locale })} - ${format(end, "LLL yyyy", { locale })}`;
             }
         } else {
-            return format(currentDate, "MMMM yyyy");
+            return format(currentDate, "LLLL yyyy", { locale });
         }
-    }, [currentDate, view]);
+    }, [currentDate, locale, view]);
 
     return (
-        <div
-            className="flex flex-col rounded-lg border has-data-[slot=month-view]:flex-1"
-            style={
-                {
-                    "--event-height": `${EventHeight}px`,
-                    "--event-gap": `${EventGap}px`,
-                    "--week-cells-height": `${WeekCellsHeight}px`,
-                } as React.CSSProperties
-            }
-        >
-            <CalendarDndProvider onEventUpdate={handleEventUpdate}>
-                <div className={cn("flex items-center justify-between p-2 sm:p-4", className)}>
+        <CalendarLocalizationProvider value={{ locale, dir, isRtl, translate }}>
+            <div
+                dir={dir}
+                data-rtl={isRtl || undefined}
+                className="flex flex-col rounded-lg border has-data-[slot=month-view]:flex-1"
+                style={
+                    {
+                        "--event-height": `${EventHeight}px`,
+                        "--event-gap": `${EventGap}px`,
+                        "--week-cells-height": `${WeekCellsHeight}px`,
+                    } as React.CSSProperties
+                }
+            >
+                <CalendarDndProvider onEventUpdate={handleEventUpdate}>
+                <div className={cn("flex items-center justify-between p-2 sm:p-4", className)} dir={dir} data-rtl={isRtl || undefined}>
                     <div className="flex items-center gap-1 sm:gap-4">
-                        <Button variant="outline" className="max-[479px]:aspect-square max-[479px]:p-0!" onClick={handleToday}>
+                        <Button
+                            variant="outline"
+                            className="max-[479px]:aspect-square max-[479px]:p-0!"
+                            onClick={handleToday}
+                            aria-label={translate("today")}
+                        >
                             <RiCalendarCheckLine className="min-[480px]:hidden" size={16} aria-hidden="true" />
-                            <span className="max-[479px]:sr-only">Today</span>
+                            <span className="hidden min-[480px]:inline">{translate("today")}</span>
                         </Button>
                         <div className="flex items-center sm:gap-2">
-                            <Button variant="ghost" size="icon" onClick={handlePrevious} aria-label="Previous">
-                                <ChevronLeftIcon size={16} aria-hidden="true" />
+                            <Button variant="ghost" size="icon" onClick={handlePrevious} aria-label={translate("calendarAriaPrevious")}>
+                                {isRtl ? <ChevronRightIcon size={16} aria-hidden="true" /> : <ChevronLeftIcon size={16} aria-hidden="true" />}
                             </Button>
-                            <Button variant="ghost" size="icon" onClick={handleNext} aria-label="Next">
-                                <ChevronRightIcon size={16} aria-hidden="true" />
+                            <Button variant="ghost" size="icon" onClick={handleNext} aria-label={translate("calendarAriaNext")}>
+                                {isRtl ? <ChevronLeftIcon size={16} aria-hidden="true" /> : <ChevronRightIcon size={16} aria-hidden="true" />}
                             </Button>
                         </div>
                         <h2 className="text-sm font-semibold sm:text-lg md:text-xl">{viewTitle}</h2>
@@ -262,30 +332,35 @@ export function EventCalendar({ events = [], onEventAdd, onEventUpdate, onEventD
                                 <Button variant="outline" className="gap-1.5 max-[479px]:h-8">
                                     <span>
                                         <span className="min-[480px]:hidden" aria-hidden="true">
-                                            {view.charAt(0).toUpperCase()}
+                                            {viewShortLabels[view]}
                                         </span>
-                                        <span className="max-[479px]:sr-only">{view.charAt(0).toUpperCase() + view.slice(1)}</span>
+                                        <span className="max-[479px]:sr-only">{viewLabels[view]}</span>
+                                        <span className="hidden min-[480px]:inline">{viewLabels[view]}</span>
                                     </span>
                                     <ChevronDownIcon className="-me-1 opacity-60" size={16} aria-hidden="true" />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="min-w-32">
+                            <DropdownMenuContent
+                                align={isRtl ? "start" : "end"}
+                                className={cn("min-w-32", isRtl && "text-right")}
+                                style={{ direction: dir }}
+                            >
                                 <DropdownMenuItem onClick={() => setView("month")}>
-                                    Month <DropdownMenuShortcut>M</DropdownMenuShortcut>
+                                    {viewLabels.month} <DropdownMenuShortcut>M</DropdownMenuShortcut>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => setView("week")}>
-                                    Week <DropdownMenuShortcut>W</DropdownMenuShortcut>
+                                    {viewLabels.week} <DropdownMenuShortcut>W</DropdownMenuShortcut>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => setView("day")}>
-                                    Day <DropdownMenuShortcut>D</DropdownMenuShortcut>
+                                    {viewLabels.day} <DropdownMenuShortcut>D</DropdownMenuShortcut>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => setView("agenda")}>
-                                    Agenda <DropdownMenuShortcut>A</DropdownMenuShortcut>
+                                    {viewLabels.agenda} <DropdownMenuShortcut>A</DropdownMenuShortcut>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                         <Button
-                            className="max-[479px]:aspect-square max-[479px]:p-0!"
+                            className="hidden lg:flex max-[479px]:aspect-square max-[479px]:p-0!"
                             size="sm"
                             onClick={() => {
                                 setSelectedEvent(null); // Ensure we're creating a new event
@@ -293,7 +368,7 @@ export function EventCalendar({ events = [], onEventAdd, onEventUpdate, onEventD
                             }}
                         >
                             <PlusIcon className="opacity-60 sm:-ms-1" size={16} aria-hidden="true" />
-                            <span className="max-sm:sr-only">New event</span>
+                            <span className="hidden sm:inline">{translate("calendarNewEvent")}</span>
                         </Button>
                     </div>
                 </div>
@@ -311,17 +386,18 @@ export function EventCalendar({ events = [], onEventAdd, onEventUpdate, onEventD
                     {view === "agenda" && <AgendaView currentDate={currentDate} events={events} onEventSelect={handleEventSelect} />}
                 </div>
 
-                <EventDialog
-                    event={selectedEvent}
-                    isOpen={isEventDialogOpen}
-                    onClose={() => {
-                        setIsEventDialogOpen(false);
-                        setSelectedEvent(null);
-                    }}
-                    onSave={handleEventSave}
-                    onDelete={handleEventDelete}
-                />
-            </CalendarDndProvider>
-        </div>
+                    <EventDialog
+                        event={selectedEvent}
+                        isOpen={isEventDialogOpen}
+                        onClose={() => {
+                            setIsEventDialogOpen(false);
+                            setSelectedEvent(null);
+                        }}
+                        onSave={handleEventSave}
+                        onDelete={handleEventDelete}
+                    />
+                </CalendarDndProvider>
+            </div>
+        </CalendarLocalizationProvider>
     );
 }

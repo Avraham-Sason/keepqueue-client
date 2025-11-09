@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme";
 import { getServerTranslation, getServerLanguage } from "@translations/server";
 import { LanguageInitializer, A11yInitializer } from "@/components/config";
 import { cn } from "@/lib/utils";
+import { Version } from "@/components/version";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,6 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <html lang={lang} dir={lang === "he" ? "rtl" : "ltr"} suppressHydrationWarning>
             <body className={cn(inter.className, "w-screen min-h-dvh")} suppressHydrationWarning>
                 <A11yInitializer />
+                <Version />
                 <LanguageInitializer />
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                     {children}

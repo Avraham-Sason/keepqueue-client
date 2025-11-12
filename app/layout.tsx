@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme";
+import { QueryProvider } from "@/components/query";
 import { getServerTranslation, getServerLanguage } from "@translations/server";
 import { LanguageInitializer, A11yInitializer } from "@/components/config";
 import { cn } from "@/lib/utils";
@@ -46,9 +47,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <A11yInitializer />
                 <Version />
                 <LanguageInitializer />
-                <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                    {children}
-                </ThemeProvider>
+                <QueryProvider>
+                    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                        {children}
+                    </ThemeProvider>
+                </QueryProvider>
             </body>
         </html>
     );

@@ -35,8 +35,6 @@ export function DashboardOverview() {
     const params = useParams<{ businessId: string }>();
     const businessIdParam = params?.businessId;
     const businessId = Array.isArray(businessIdParam) ? businessIdParam[0] : businessIdParam;
-    
-    useBusiness(businessId);
 
     const user = useAuthStore.user();
     const businessOwner = user as User;
@@ -50,8 +48,6 @@ export function DashboardOverview() {
     if (!currentBusiness || (businessId && currentBusiness.id !== businessId)) {
         return <BusinessLoading />;
     }
-
-    
 
     return (
         <div className="space-y-8">

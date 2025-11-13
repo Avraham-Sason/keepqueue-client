@@ -1,4 +1,4 @@
-import Appointments from "./Appointments";
+import Customers from "./Customers";
 
 interface BookingPageProps {
     params: Promise<{
@@ -8,5 +8,5 @@ interface BookingPageProps {
 
 export default async function BookingPage({ params }: BookingPageProps) {
     const { businessId } = await params;
-    return <Appointments />;
+    return <Customers />;
 }

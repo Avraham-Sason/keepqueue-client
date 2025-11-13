@@ -2,7 +2,6 @@ import type React from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { BusinessConfig, BusinessHeader, BusinessSidebar } from "./components";
 
-
 export default function BusinessDashboardLayout({ children }: { children: React.ReactNode }) {
     return (
         <SidebarProvider>
@@ -10,7 +9,7 @@ export default function BusinessDashboardLayout({ children }: { children: React.
             <BusinessSidebar />
             <SidebarInset>
                 <BusinessHeader />
-                <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">{children}</div>
+                <div className="flex-1 size-full space-y-4 p-4 md:p-8 pt-6">{children}</div>
             </SidebarInset>
         </SidebarProvider>
     );

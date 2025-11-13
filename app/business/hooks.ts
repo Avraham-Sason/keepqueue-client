@@ -10,10 +10,19 @@ export const useBusiness = (businessId?: string) => {
     const setCurrentBusiness = useBusinessesStore.setCurrentBusiness();
     const userId = user?.id;
 
+    const queryKey = ["business", businessId || userId];
     const { data: queryData, isLoading } = useQuery({
-        queryKey: ["business", businessId || userId],
+        queryKey,
         queryFn: async (context) => {
-            console.log("⚡ fetching business");
+            if (!businessId && !userId) {
+                return;
+            }
+            console.log("⚡ fetching business", {
+                queryKey: queryKey[1],
+                timestamp: Date.now(),
+                isAborted: context.signal.aborted,
+            });
+
             const business = businessId
                 ? await getBusinessById(businessId, context.signal)
                 : await getBusinessByOwnerId(userId as string, context.signal);

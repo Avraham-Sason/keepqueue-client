@@ -1,35 +1,19 @@
 "use client";
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Bell, Search, Settings } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { ThemeToggle } from "@/components/theme";
-import { A11yToggle } from "@/components/config/a11y";
 import { useLanguage } from "@/hooks";
 import { LanguageToggle } from "@/components/config";
+import { useBusinessesStore } from "@/lib/store";
 
 export function BusinessHeader() {
     const { t } = useLanguage();
+    const currentBusiness = useBusinessesStore.currentBusiness();
     return (
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-            <div className="flex-1 flex items-center gap-2 px-4">
-                <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder={t("searchPlaceholder")} className="pl-8" />
-                </div>
+        <header className="flex shrink-0 items-center gap-2 border-b py-5 px-4 justify-between">
+            <div className="text-lg font-semibold">
+                {t("welcomeBusinessAdminPanelOf")} {currentBusiness?.name ?? ""}
             </div>
-            <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="relative">
-                    <Bell className="h-4 w-4" />
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">3</Badge>
-                </Button>
-                <A11yToggle />
-                <ThemeToggle />
-                <SidebarTrigger className="-ml-1" />
-                <LanguageToggle />
-            </div>
+            <SidebarTrigger className="-ml-1" />
         </header>
     );
 }

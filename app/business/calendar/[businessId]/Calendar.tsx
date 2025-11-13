@@ -90,7 +90,6 @@ function Calendar() {
     const businessIdParam = params?.businessId;
     const businessId = Array.isArray(businessIdParam) ? businessIdParam[0] : businessIdParam;
 
-    useBusiness(businessId);
     const currentBusiness = useBusinessesStore.currentBusiness();
     const { t } = useLanguage();
 

@@ -48,7 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <Version />
                 <LanguageInitializer />
                 <QueryProvider>
-                    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                    <ThemeProvider  attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                         {children}
                     </ThemeProvider>
                 </QueryProvider>

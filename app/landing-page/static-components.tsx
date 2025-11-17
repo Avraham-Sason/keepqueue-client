@@ -273,8 +273,8 @@ export function TestimonialCard({ testimonial }: { testimonial: TestimonialStati
     return (
         <Card className="h-full">
             <CardContent className="pt-6">
-                <div className="flex items-center mb-4">
-                    <Image src={image || "/placeholder.svg"} alt={t(nameKey)} width={60} height={60} className="h-12 w-12 rounded-full mr-4" />
+                <div className="flex items-center mb-4 gap-2">
+                    <Image src={image || "/placeholder.svg"} alt={t(nameKey)} width={60} height={60} className="h-12 w-12 rounded-full " />
                     <div>
                         <h4 className="font-semibold">{t(nameKey)}</h4>
                         <p className="text-sm text-muted-foreground">{t(businessKey)}</p>
@@ -358,7 +358,7 @@ export function SiteFooter() {
                     />
                 </div>
                 <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t">
-                    <div className="flex space-x-6 text-sm text-muted-foreground mb-4 md:mb-0">
+                    <div className="flex gap-2 text-sm text-muted-foreground mb-4 md:mb-0">
                         <Link href="/privacy" className="hover:text-foreground transition-colors">
                             {t("privacyPolicy")}
                         </Link>

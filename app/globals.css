@@ -135,6 +135,9 @@
     .a11y .opacity-50 {
         opacity: 0.75 !important;
     }
+  .theme {
+        --animate-pulse: pulse var(--duration) ease-out infinite;
+    }
 }
 
 @layer base {
@@ -384,4 +387,24 @@
 
 .text-pretty {
     text-wrap: pretty;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+}
+
+@theme inline {
+  @keyframes pulse {
+  0%, 100% {
+    boxShadow: 0 0 0 0 var(--pulse-color);
+        }
+  50% {
+    boxShadow: 0 0 0 8px var(--pulse-color);
+        }
+    }
 }

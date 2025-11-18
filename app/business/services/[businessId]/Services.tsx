@@ -12,6 +12,7 @@ import { formatDuration, formatPrice } from "./heleprs";
 import { useLanguage } from "@/hooks";
 import { addDocument, setDocument } from "@/lib/firebase";
 import { useRefreshBusiness } from "../../hooks";
+import StarBorder from "@/components/StarBorder";
 
 function Services() {
     const { t } = useLanguage();
@@ -47,10 +48,12 @@ function Services() {
                     <h1 className="text-3xl font-bold tracking-tight">{t("services")}</h1>
                     <p className="text-muted-foreground mt-1">{t("manageAllServices")}</p>
                 </div>
-                <Button onClick={openAddDialog} className="w-full sm:w-auto animate-heartbeat">
-                    <Plus className="h-4 w-4 mr-2" />
-                    {t("addNewService")}
-                </Button>
+                <StarBorder onClick={openAddDialog} className="w-full sm:w-auto animate-heartbeat">
+                    <div className="flex gap-1 items-center">
+                        <Plus className="h-4 w-4" />
+                        {t("addNewService")}
+                    </div>
+                </StarBorder>
             </motion.div>
 
             {/* Services List */}

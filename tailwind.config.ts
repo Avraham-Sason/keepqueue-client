@@ -55,6 +55,14 @@ const config: Config = {
                 sm: "calc(var(--radius) - 4px)",
             },
             keyframes: {
+                "star-movement-bottom": {
+                    "0%": { transform: "translate(0%, 0%)", opacity: "1" },
+                    "100%": { transform: "translate(-100%, 0%)", opacity: "0" },
+                },
+                "star-movement-top": {
+                    "0%": { transform: "translate(0%, 0%)", opacity: "1" },
+                    "100%": { transform: "translate(100%, 0%)", opacity: "0" },
+                },
                 "accordion-down": {
                     from: { height: "0" },
                     to: { height: "var(--radix-accordion-content-height)" },
@@ -159,18 +167,18 @@ const config: Config = {
                     from: { transform: "rotate(360deg)" },
                     to: { transform: "rotate(0deg)" },
                 },
-                "ping": {
+                ping: {
                     "75%, 100%": { transform: "scale(2)", opacity: "0" },
                 },
-                "wiggle": {
+                wiggle: {
                     "0%, 100%": { transform: "rotate(-3deg)" },
                     "50%": { transform: "rotate(3deg)" },
                 },
-                "float": {
+                float: {
                     "0%, 100%": { transform: "translateY(0px)" },
                     "50%": { transform: "translateY(-20px)" },
                 },
-                "glow": {
+                glow: {
                     "0%, 100%": { opacity: "1" },
                     "50%": { opacity: "0.5" },
                 },
@@ -204,6 +212,8 @@ const config: Config = {
                 wiggle: "wiggle 1s ease-in-out infinite",
                 float: "float 3s ease-in-out infinite",
                 glow: "glow 2s ease-in-out infinite",
+                "star-movement-bottom": "star-movement-bottom linear infinite alternate",
+                "star-movement-top": "star-movement-top linear infinite alternate",
             },
         },
     },

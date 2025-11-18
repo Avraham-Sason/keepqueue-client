@@ -4,12 +4,12 @@ import { use } from "react";
 import { Calendar, Clock, MessageSquare, Users, Star, BarChart3, Building, User, Smartphone, LucideIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { getServerTranslation, TranslationsKey } from "@translations/server";
+import CountUp from "@/components/CountUp";
+import DecryptedText from "@/components/DecryptedText";
+import TextType from "@/components/TextType";
 
-// -----------------------
 // Shared static types
-// -----------------------
 export interface FeatureStatic {
     icon: LucideIcon;
     titleKey: TranslationsKey;
@@ -25,9 +25,7 @@ export interface TestimonialStatic {
     textKey: TranslationsKey;
 }
 
-/***************************
- * STATIC DATA (SEO-friendly)
- ***************************/
+//   STATIC DATA (SEO-friendly)
 export const FEATURES: FeatureStatic[] = [
     {
         icon: Calendar,
@@ -92,20 +90,20 @@ export const TESTIMONIALS: TestimonialStatic[] = [
 ];
 
 export interface StatItem {
-    number: string;
+    number: number | string;
     label: TranslationsKey;
+    from?: number;
+    delay?: number;
 }
 
 export const STATS: StatItem[] = [
-    { number: "10,000+", label: "statBusinessesActive" },
-    { number: "500K+", label: "statMonthlyAppointments" },
     { number: "98%", label: "statSatisfaction" },
+    { number: 500000, label: "statMonthlyAppointments", from: 200000 },
     { number: "24/7", label: "statSupport" },
+    { number: 10000, label: "statBusinessesActive", from: 5000 },
 ];
 
-/************************************************
- * SigninForms – two main CTA cards               *
- ************************************************/
+///  SigninForms – two main CTA cards
 export function SigninForms() {
     const t = use(getServerTranslation());
     return (
@@ -143,9 +141,7 @@ export function SigninForms() {
     );
 }
 
-/****************************************
- * FeatureCard – single feature tile    *
- ****************************************/
+//  FeatureCard – single feature tile
 export function FeatureCard({ feature }: { feature: FeatureStatic }) {
     const t = use(getServerTranslation());
     const { icon: Icon, titleKey, descriptionKey, color } = feature;
@@ -177,7 +173,17 @@ export function StatsGrid() {
                     className="text-center animate-in fade-in slide-in-from-bottom-3 duration-500"
                     style={{ animationDelay: `${0.2 + index * 0.1}s` }}
                 >
-                    <div className="text-2xl md:text-3xl font-bold text-primary">{stat.number}</div>
+                    {typeof stat.number === "number" ? (
+                        <CountUp
+                            className="text-2xl md:text-3xl font-bold text-primary"
+                            to={stat.number}
+                            from={stat.from}
+                            delay={stat.delay}
+                            separator=","
+                        />
+                    ) : (
+                        <div className="text-2xl md:text-3xl font-bold text-primary">{stat.number}</div>
+                    )}
                     <div className="text-sm text-muted-foreground">{t(stat.label)}</div>
                 </div>
             ))}
@@ -185,9 +191,7 @@ export function StatsGrid() {
     );
 }
 
-/********************************
- * HeroSection – top of page    *
- ********************************/
+//  HeroSection – top of page
 export function HeroSection() {
     const t = use(getServerTranslation());
     return (
@@ -195,11 +199,11 @@ export function HeroSection() {
             <div className="absolute inset-0 queue-pattern opacity-30" />
             <div className="container max-w-6xl mx-auto text-center relative">
                 <div className="animate-in fade-in slide-in-from-bottom-3 duration-500">
-                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-                        {t("heroMain")}
-                        <span className="text-primary block">{t("heroSub")}</span>
+                    <h1 className="text-4xl flex flex-col md:text-6xl font-bold tracking-tight mb-6">
+                        <DecryptedText text={t("heroMain")} />
+                        <DecryptedText text={t("heroSub")} className="text-primary" />
                     </h1>
-                    <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">{t("heroParagraph")}</p>
+                    <TextType typingSpeed={15} text={t("heroParagraph")} className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto" />
                     <SigninForms />
                     <StatsGrid />
                 </div>

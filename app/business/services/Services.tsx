@@ -11,7 +11,7 @@ import { ServiceCard, EmptyState, ServiceDialog, DeleteServiceDialog } from "./c
 import { formatDuration, formatPrice } from "./heleprs";
 import { useLanguage } from "@/hooks";
 import { addDocument, setDocument } from "@/lib/firebase";
-import { useRefreshBusiness } from "../../hooks";
+import { useRefreshBusiness } from "../hooks";
 import StarBorder from "@/components/StarBorder";
 
 function Services() {
@@ -48,7 +48,7 @@ function Services() {
                     <h1 className="text-3xl font-bold tracking-tight">{t("services")}</h1>
                     <p className="text-muted-foreground mt-1">{t("manageAllServices")}</p>
                 </div>
-                <StarBorder onClick={openAddDialog} className="w-full sm:w-auto animate-heartbeat">
+                <StarBorder onClick={openAddDialog} className="w-11/12 mx-auto sm:mx-0 sm:w-auto animate-heartbeat">
                     <div className="flex gap-1 items-center">
                         <Plus className="h-4 w-4" />
                         {t("addNewService")}

@@ -9,7 +9,7 @@ import { useBusiness } from "@/app/business/hooks";
 import { useBusinessesStore } from "@/lib/store";
 import { timestampToMillis } from "@/lib/helpers";
 import type { CalendarEventStatus, CalendarEventWithRelations } from "@/lib/types";
-import BusinessLoading from "../../loading";
+import BusinessLoading from "../loading";
 import { useLanguage } from "@/hooks";
 
 const statusColorByStatus: Record<CalendarEventStatus, EventColor> = {

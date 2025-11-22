@@ -1,34 +1,10 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-    Calendar,
-    Users,
-    DollarSign,
-    TrendingUp,
-    Clock,
-    Star,
-    Phone,
-    Mail,
-    MapPin,
-    MoreHorizontal,
-    CheckCircle,
-    XCircle,
-    AlertCircle,
-    Plus,
-} from "lucide-react";
-import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useBusinessesStore } from "@/lib/store";
 import { useAuthStore } from "@/lib/store";
-import { useBusiness } from "../../hooks";
-import type { User, CalendarEventWithRelations } from "@/lib/types";
-import { timestampToString, timestampToMillis } from "@/lib/helpers";
-import { useLanguage } from "@/hooks";
-import BusinessLoading from "../../loading";
+import type { User } from "@/lib/types";
+import BusinessLoading from "../loading";
 import { BusinessDetailsSections, QuickActionsSection, RecentAppointmentsSection, StatsSection, WelcomeSection } from "./components";
 
 export function DashboardOverview() {

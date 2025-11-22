@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Customer, CalendarEventWithRelations } from "@/lib/types";
 import { getDocumentById, setDocument } from "@/lib/firebase";
-import { useRefreshBusiness } from "../../hooks";
+import { useRefreshBusiness } from "../hooks";
 import { getUserById } from "./helpers";
 
 export function useCustomers() {

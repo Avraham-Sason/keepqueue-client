@@ -113,7 +113,7 @@ export function BusinessSidebar() {
                             {menuItems.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild isActive={activeTab === item.title} onClick={() => setActiveTab(item.title)}>
-                                        <Link href={`${item.url}/${currentBusiness.id}`} className={cn("flex items-center justify-between")}>
+                                        <Link href={`${item.url}`} className={cn("flex items-center justify-between")}>
                                             <div className={"flex items-center gap-2 "}>
                                                 <item.icon className="h-4 w-4" />
                                                 <span>{t(item.title)}</span>

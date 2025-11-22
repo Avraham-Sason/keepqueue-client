@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Service } from "@/lib/types";
 import { setDocument } from "@/lib/firebase";
-import { useRefreshBusiness } from "../../hooks";
+import { useRefreshBusiness } from "../hooks";
 
 export function useServices() {
     const [deleteServiceId, setDeleteServiceId] = useState<string | null>(null);

@@ -1,7 +1,9 @@
+export const dynamic = 'force-static';
+
 export default function TestPage() {
     return (
         <div className="center h-screen">
-            <div className="">dsfsdf</div>{" "}
+            <div className="">test</div>{" "}
         </div>
     );
 }

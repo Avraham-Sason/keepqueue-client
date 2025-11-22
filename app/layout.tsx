@@ -8,6 +8,7 @@ import { getServerTranslation, getServerLanguage } from "@translations/server";
 import { LanguageInitializer, A11yInitializer } from "@/components/config";
 import { cn } from "@/lib/utils";
 import { Version } from "@/components/version";
+import GlobalConfig from "@/components/config/GlobalConfig";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -47,6 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <A11yInitializer />
                 <Version />
                 <LanguageInitializer />
+                <GlobalConfig />
                 <QueryProvider>
                     <ThemeProvider  attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                         {children}

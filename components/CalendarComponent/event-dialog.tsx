@@ -36,7 +36,6 @@ export function EventDialog({ event, isOpen, onClose, onSave, onDelete }: EventD
     const [endTime, setEndTime] = useState(`${DefaultEndHour}:00`);
     const [allDay, setAllDay] = useState(false);
     const [location, setLocation] = useState("");
-    const [color, setColor] = useState<EventColor>("sky");
     const [error, setError] = useState<string | null>(null);
     const [startDateOpen, setStartDateOpen] = useState(false);
     const [endDateOpen, setEndDateOpen] = useState(false);
@@ -60,7 +59,6 @@ export function EventDialog({ event, isOpen, onClose, onSave, onDelete }: EventD
             setEndTime(formatTimeForInput(end));
             setAllDay(event.allDay || false);
             setLocation(event.location || "");
-            setColor((event.color as EventColor) || "sky");
             setError(null); // Reset error when opening dialog
         } else {
             resetForm();
@@ -76,7 +74,6 @@ export function EventDialog({ event, isOpen, onClose, onSave, onDelete }: EventD
         setEndTime(`${DefaultEndHour}:00`);
         setAllDay(false);
         setLocation("");
-        setColor("sky");
         setError(null);
     };
 
@@ -145,7 +142,6 @@ export function EventDialog({ event, isOpen, onClose, onSave, onDelete }: EventD
             end,
             allDay,
             location,
-            color,
         });
     };
 
@@ -154,55 +150,6 @@ export function EventDialog({ event, isOpen, onClose, onSave, onDelete }: EventD
             onDelete(event.id);
         }
     };
-
-    // Updated color options to match types.ts
-    const colorOptions = useMemo(
-        () =>
-            [
-                {
-                    value: "sky" as EventColor,
-                    label: translate("calendarColorSky"),
-                    bgClass: "bg-sky-400 data-[state=checked]:bg-sky-400",
-                    borderClass: "border-sky-400 data-[state=checked]:border-sky-400",
-                },
-                {
-                    value: "amber" as EventColor,
-                    label: translate("calendarColorAmber"),
-                    bgClass: "bg-amber-400 data-[state=checked]:bg-amber-400",
-                    borderClass: "border-amber-400 data-[state=checked]:border-amber-400",
-                },
-                {
-                    value: "violet" as EventColor,
-                    label: translate("calendarColorViolet"),
-                    bgClass: "bg-violet-400 data-[state=checked]:bg-violet-400",
-                    borderClass: "border-violet-400 data-[state=checked]:border-violet-400",
-                },
-                {
-                    value: "rose" as EventColor,
-                    label: translate("calendarColorRose"),
-                    bgClass: "bg-rose-400 data-[state=checked]:bg-rose-400",
-                    borderClass: "border-rose-400 data-[state=checked]:border-rose-400",
-                },
-                {
-                    value: "emerald" as EventColor,
-                    label: translate("calendarColorEmerald"),
-                    bgClass: "bg-emerald-400 data-[state=checked]:bg-emerald-400",
-                    borderClass: "border-emerald-400 data-[state=checked]:border-emerald-400",
-                },
-                {
-                    value: "orange" as EventColor,
-                    label: translate("calendarColorOrange"),
-                    bgClass: "bg-orange-400 data-[state=checked]:bg-orange-400",
-                    borderClass: "border-orange-400 data-[state=checked]:border-orange-400",
-                },
-            ] satisfies Array<{
-                value: EventColor;
-                label: string;
-                bgClass: string;
-                borderClass: string;
-            }>,
-        [translate]
-    );
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -350,25 +297,6 @@ export function EventDialog({ event, isOpen, onClose, onSave, onDelete }: EventD
                         <Label htmlFor="location">{translate("calendarDialogLocation")}</Label>
                         <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} dir={dir} />
                     </div>
-                    <fieldset className="space-y-4">
-                        <legend className="text-sm font-medium leading-none text-foreground">{translate("calendarDialogColorLegend")}</legend>
-                        <RadioGroup
-                            className={cn("flex gap-1.5", isRtl && "flex-row-reverse")}
-                            defaultValue={colorOptions[0]?.value}
-                            value={color}
-                            onValueChange={(value: EventColor) => setColor(value)}
-                        >
-                            {colorOptions.map((colorOption) => (
-                                <RadioGroupItem
-                                    key={colorOption.value}
-                                    id={`color-${colorOption.value}`}
-                                    value={colorOption.value}
-                                    aria-label={colorOption.label}
-                                    className={cn("size-6 shadow-none", colorOption.bgClass, colorOption.borderClass)}
-                                />
-                            ))}
-                        </RadioGroup>
-                    </fieldset>
                 </div>
                 <DialogFooter className={cn("flex-row sm:justify-between", isRtl && "flex-row-reverse sm:flex-row-reverse")}>
                     {event?.id && (

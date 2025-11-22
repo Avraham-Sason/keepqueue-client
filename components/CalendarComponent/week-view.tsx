@@ -283,7 +283,7 @@ export function WeekView({ currentDate, events, onEventSelect, onEventCreate }: 
                 {days.map((day, dayIndex) => (
                     <div
                         key={day.toString()}
-                        className="relative grid auto-cols-fr border-r border-border/70 last:border-r-0"
+                        className="relative grid auto-cols-fr border-r border-border/70"
                         data-today={isToday(day) || undefined}
                     >
                         {/* Positioned events */}

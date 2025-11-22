@@ -36,7 +36,7 @@ export const StatsSection = () => {
 
     // Calculate real stats
     const todayIso = new Date().toISOString().split("T")[0];
-    const todayAppointments = businessAppointments.filter((apt) => timestampToString(apt.start, { format: "YYYY-MM-DD" }) === todayIso);
+    const todayAppointments = businessAppointments.filter((apt) => timestampToString(apt.start, { format: "DD/MM/YY" }) === todayIso);
     const confirmedAppointments = businessAppointments.filter((apt) => apt.status === "CONFIRMED");
     const totalRevenue = 0;
 

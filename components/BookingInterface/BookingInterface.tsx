@@ -327,7 +327,7 @@ function DateTimeStep({
                                         onClick={() => onDateClick(dateOption)}
                                     >
                                         <span className="font-medium">{dateOption.day}</span>
-                                        <span className="text-xs">{moment.utc(dateOption.date, "YYYY-MM-DD").format("DD/MM")}</span>
+                                        <span className="text-xs">{moment.utc(dateOption.date, "DD/MM/YY").format("DD/MM")}</span>
                                     </Button>
                                 ))}
                             </div>
@@ -528,7 +528,7 @@ function CustomerDetailsStep({
                                 <span className="text-muted-foreground">{t("dateLabel")}:</span>
                                 <span className="font-medium">
                                     {availableDates.find((d) => d.date === selectedDate)?.day} (
-                                    {selectedDate ? moment.utc(selectedDate, "YYYY-MM-DD").format("DD/MM") : ""})
+                                    {selectedDate ? moment.utc(selectedDate, "DD/MM/YY").format("DD/MM") : ""})
                                 </span>
                             </div>
                             <div className="flex justify-between">
@@ -638,7 +638,7 @@ function ConfirmationStep({
                             </p>
                             <p>
                                 <strong>{t("dateLabel")}:</strong> {availableDates.find((d) => d.date === selectedDate)?.day} (
-                                {selectedDate ? moment.utc(selectedDate, "YYYY-MM-DD").format("DD/MM") : ""})
+                                {selectedDate ? moment.utc(selectedDate, "DD/MM/YY").format("DD/MM") : ""})
                             </p>
                             <p>
                                 <strong>{t("timeLabel")}:</strong> {selectedTime}

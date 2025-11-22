@@ -49,7 +49,7 @@ function EventWrapper({
     return (
         <button
             className={cn(
-                "flex size-full overflow-hidden px-1 text-left font-medium backdrop-blur-md transition outline-none select-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-dragging:cursor-grabbing data-dragging:shadow-lg data-past-event:line-through sm:px-2",
+                "flex size-full overflow-hidden px-1 text-start font-medium backdrop-blur-md transition outline-none select-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-dragging:cursor-grabbing data-dragging:shadow-lg data-past-event:line-through sm:px-2",
                 getEventColorClasses(event.color),
                 getBorderRadiusClasses(isFirstDay, isLastDay),
                 className
@@ -153,9 +153,7 @@ export function EventItem({
             >
                 {children || (
                     <span className="truncate">
-                        {!event.allDay && (
-                            <span className="truncate font-normal opacity-70 sm:text-[11px]">{formatTime(displayStart)} </span>
-                        )}
+                        {!event.allDay && <span className="truncate font-normal opacity-70 sm:text-[11px]">{formatTime(displayStart)} </span>}
                         {event.title}
                     </span>
                 )}
@@ -201,7 +199,7 @@ export function EventItem({
     return (
         <button
             className={cn(
-                "flex w-full flex-col gap-1 rounded p-2 text-left transition outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-past-event:line-through data-past-event:opacity-90",
+                "flex w-full flex-col gap-1 rounded p-2 text-start transition outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-past-event:line-through data-past-event:opacity-90",
                 getEventColorClasses(eventColor),
                 className
             )}

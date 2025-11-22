@@ -66,7 +66,7 @@ export const useBusinessProxy = () => {
     useEffect(() => {
         if (!currentBusiness) return;
         if (pathname === "/business") {
-            router.replace(`/business/dashboard/${currentBusiness.id}`);
+            router.replace(`/business/dashboard`);
         }
     }, [currentBusiness?.id, pathname]);
 };

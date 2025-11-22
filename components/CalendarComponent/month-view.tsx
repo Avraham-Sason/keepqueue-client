@@ -107,7 +107,7 @@ export function MonthView({ currentDate, events, onEventSelect, onEventCreate }:
                             return (
                                 <div
                                     key={day.toString()}
-                                    className="group border-r border-b border-border/70 last:border-r-0 data-outside-cell:bg-muted/25 data-outside-cell:text-muted-foreground/70"
+                                    className="group border-r border-b border-border/70 data-outside-cell:bg-muted/25 data-outside-cell:text-muted-foreground/70"
                                     data-today={isToday(day) || undefined}
                                     data-outside-cell={!isCurrentMonth || undefined}
                                 >
@@ -178,8 +178,7 @@ export function MonthView({ currentDate, events, onEventSelect, onEventCreate }:
                                                     <PopoverTrigger asChild>
                                                         <button
                                                             className={cn(
-                                                                "mt-[var(--event-gap)] flex h-[var(--event-height)] w-full items-center overflow-hidden px-1 text-left text-[10px] text-muted-foreground backdrop-blur-md transition outline-none select-none hover:bg-muted/50 hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:px-2 sm:text-xs",
-                                                                isRtl && "text-right"
+                                                                "mt-[var(--event-gap)] flex h-[var(--event-height)] w-full items-center overflow-hidden px-1 text-start text-[10px] text-muted-foreground backdrop-blur-md transition outline-none select-none hover:bg-muted/50 hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:px-2 sm:text-xs"
                                                             )}
                                                             onClick={(e) => e.stopPropagation()}
                                                         >

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { createSelectors } from "./utils";
+import { createSelectors, setState, SetState } from "./utils";
 import heTranslations from "../translations/he.json";
 import enTranslations from "../translations/en.json";
 import { Language } from "../types/global";
@@ -16,6 +16,8 @@ interface SettingsState {
     isRtl: boolean;
     setLanguage: (lang: Language) => void;
     t: (key: TranslationsKey) => string;
+    userTimeZone: string;
+    setUserTimeZone: SetState<string>;
 }
 
 const translations: Record<Language, Translations> = {
@@ -43,9 +45,17 @@ export const useSettingsStoreBase = create<SettingsState>()(
                 }
                 return key as string;
             },
+            userTimeZone: "Asia/Jerusalem",
+            setUserTimeZone: (updater) => setState(updater, set, "userTimeZone"),
         }),
         {
             name: "settings",
+            partialize: (state) => ({
+                a11yEnabled: state.a11yEnabled,
+                language: state.language,
+                isRtl: state.isRtl,
+                userTimeZone: state.userTimeZone,
+            }),
         }
     )
 );

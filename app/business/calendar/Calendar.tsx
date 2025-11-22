@@ -2,41 +2,49 @@
 
 import { useMemo } from "react";
 import { useParams } from "next/navigation";
-
+import moment from "moment-timezone";
 import CalendarComponent from "@/components/CalendarComponent/CalendarComponent";
 import type { CalendarEvent as UiCalendarEvent, EventColor } from "@/components/CalendarComponent";
-import { useBusiness } from "@/app/business/hooks";
-import { useBusinessesStore } from "@/lib/store";
+import { useBusinessesStore, useSettingsStore } from "@/lib/store";
 import { timestampToMillis } from "@/lib/helpers";
 import type { CalendarEventStatus, CalendarEventWithRelations } from "@/lib/types";
 import BusinessLoading from "../loading";
 import { useLanguage } from "@/hooks";
 
 const statusColorByStatus: Record<CalendarEventStatus, EventColor> = {
-    BOOKED: "amber",
+    BOOKED: "primary",
     CONFIRMED: "sky",
     CANCELLED: "rose",
     NO_SHOW: "orange",
     DONE: "emerald",
 };
 
-const toDate = (value: unknown): Date | null => {
+const toDate = (value: unknown, userTimeZone: string): Date | null => {
     if (!value) {
         return null;
     }
+    
+    let utcDate: Date | null = null;
+    
     if (value instanceof Date) {
-        return value;
-    }
-    if (typeof value === "string") {
+        utcDate = value;
+    } else if (typeof value === "string") {
         const parsed = new Date(value);
-        return Number.isNaN(parsed.getTime()) ? null : parsed;
-    }
-    if (typeof (value as { toDate?: () => Date }).toDate === "function") {
+        utcDate = Number.isNaN(parsed.getTime()) ? null : parsed;
+    } else if (typeof (value as { toDate?: () => Date }).toDate === "function") {
         const parsed = (value as { toDate: () => Date }).toDate();
-        return Number.isNaN(parsed.getTime()) ? null : parsed;
+        utcDate = Number.isNaN(parsed.getTime()) ? null : parsed;
+    } else {
+        const millis = timestampToMillis(value as any, { defaultReturnedValue: Number.NaN });
+        utcDate = Number.isNaN(millis) ? null : new Date(millis);
     }
-    const millis = timestampToMillis(value as any, { defaultReturnedValue: Number.NaN });
-    return Number.isNaN(millis) ? null : new Date(millis);
+    
+    if (!utcDate) {
+        return null;
+    }
+    
+    // Convert from UTC to user's timezone
+    return moment.utc(utcDate).tz(userTimeZone).toDate();
 };
 
 const buildDescription = (event: CalendarEventWithRelations): string | undefined => {
@@ -63,9 +71,9 @@ const isAllDay = (event: CalendarEventWithRelations, start: Date, end: Date): bo
     return false;
 };
 
-const mapBusinessEvent = (event: CalendarEventWithRelations, fallbackTitle: string): UiCalendarEvent | null => {
-    const startDate = toDate(event.start);
-    const endDate = toDate(event.end);
+const mapBusinessEvent = (event: CalendarEventWithRelations, fallbackTitle: string, userTimeZone: string): UiCalendarEvent | null => {
+    const startDate = toDate(event.start, userTimeZone);
+    const endDate = toDate(event.end, userTimeZone);
 
     if (!startDate || !endDate) {
         return null;
@@ -81,7 +89,6 @@ const mapBusinessEvent = (event: CalendarEventWithRelations, fallbackTitle: stri
         start: startDate,
         end: endDate,
         allDay: isAllDay(event, startDate, endDate),
-        color: statusColorByStatus[event.status] ?? "sky",
     };
 };
 
@@ -89,7 +96,8 @@ function Calendar() {
     const params = useParams<{ businessId: string }>();
     const businessIdParam = params?.businessId;
     const businessId = Array.isArray(businessIdParam) ? businessIdParam[0] : businessIdParam;
-
+    
+    const userTimeZone = useSettingsStore.userTimeZone();
     const currentBusiness = useBusinessesStore.currentBusiness();
     const { t } = useLanguage();
 
@@ -98,10 +106,10 @@ function Calendar() {
             return [] as UiCalendarEvent[];
         }
         return currentBusiness.calendar
-            .map((event) => mapBusinessEvent(event, t("calendarDefaultEventTitle")))
+            .map((event) => mapBusinessEvent(event, t("calendarDefaultEventTitle"), userTimeZone))
             .filter((event): event is UiCalendarEvent => event !== null)
             .sort((a, b) => a.start.getTime() - b.start.getTime());
-    }, [currentBusiness?.calendar, t]);
+    }, [currentBusiness?.calendar, t, userTimeZone]);
 
     if (!currentBusiness || (businessId && currentBusiness.id !== businessId)) {
         return <BusinessLoading />;

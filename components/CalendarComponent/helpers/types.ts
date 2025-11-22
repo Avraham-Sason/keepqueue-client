@@ -18,3 +18,4 @@ export type EventColor =
   | "rose"
   | "emerald"
   | "orange"
+  | "primary"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useAuthStore, useBusinessesStore } from "@/lib/store";
+import { useAuthStore, useBusinessesStore, useSettingsStore } from "@/lib/store";
 import type { Service, CalendarEvent, OperationSchedule, AvailabilitySlot } from "@/lib/types";
 import { timestampToMillis } from "@/lib/helpers/time";
 import moment from "moment-timezone";
@@ -44,6 +44,7 @@ export function useBookingState(businessId: string) {
     const { t } = useLanguage();
     const currentBusiness = useBusinessesStore.currentBusiness();
     const user = useAuthStore.user();
+    const userTimeZone = useSettingsStore.userTimeZone();
 
     const [fallbackLoaded, setFallbackLoaded] = useState(false);
     const [fallbackServices, setFallbackServices] = useState<Service[]>([]);
@@ -145,7 +146,7 @@ export function useBookingState(businessId: string) {
     const eventBlocksForDate = useMemo(() => {
         const events = ((currentBusiness?.calendar as any) ?? fallbackCalendar) as CalendarEvent[];
         if (!selectedDate) return [] as { start: number; end: number }[];
-        const m = moment.utc(selectedDate, "YYYY-MM-DD");
+        const m = moment.utc(selectedDate, "DD/MM/YY");
         return events
             .filter((e) => {
                 const status = e.status;
@@ -199,7 +200,7 @@ export function useBookingState(businessId: string) {
         const slotsByDate = new Map<string, AvailabilitySlot[]>();
         for (const slot of serviceAvailability) {
             const slotStartMs = timestampToMillis(slot.start);
-            const slotDate = moment.utc(slotStartMs).format("YYYY-MM-DD");
+            const slotDate = moment.utc(slotStartMs).format("DD/MM/YY");
             if (!slotsByDate.has(slotDate)) {
                 slotsByDate.set(slotDate, []);
             }
@@ -208,7 +209,7 @@ export function useBookingState(businessId: string) {
         
         for (let i = 0; i < 7; i++) {
             const d = base.clone().add(i, "day");
-            const dateStr = d.format("YYYY-MM-DD");
+            const dateStr = d.format("DD/MM/YY");
             const slotsForDate = slotsByDate.get(dateStr) ?? [];
             const hasAvailableSlots = slotsForDate.length > 0;
             
@@ -230,8 +231,8 @@ export function useBookingState(businessId: string) {
             return [] as TimeOption[];
         }
         
-        const d = moment.utc(selectedDate, "YYYY-MM-DD");
-        const dateStr = d.format("YYYY-MM-DD");
+        const d = moment.utc(selectedDate, "DD/MM/YY");
+        const dateStr = d.format("DD/MM/YY");
         const stepMin = 30;
         const durationMin = selectedServiceData.durationMin;
         const paddingBefore = selectedServiceData.paddingBefore || 0;
@@ -241,7 +242,7 @@ export function useBookingState(businessId: string) {
         // Get all availability slots for the selected date
         const slotsForDate = serviceAvailability.filter((slot) => {
             const slotStartMs = timestampToMillis(slot.start);
-            const slotDate = moment.utc(slotStartMs).format("YYYY-MM-DD");
+            const slotDate = moment.utc(slotStartMs).format("DD/MM/YY");
             return slotDate === dateStr;
         });
         
@@ -328,14 +329,16 @@ export function useBookingState(businessId: string) {
             return;
         }
 
-        const startMoment = moment.utc(`${selectedDate} ${selectedTime}`, "YYYY-MM-DD HH:mm");
+        // Parse the selected date and time in the user's timezone, then convert to UTC
+        const startMoment = moment.tz(`${selectedDate} ${selectedTime}`, "DD/MM/YY HH:mm", userTimeZone);
         if (!startMoment.isValid()) {
             setBookingError(t("bookingErrorGeneric"));
             return;
         }
 
-        const startMs = startMoment.valueOf();
-        const endMs = startMoment.clone().add(selectedServiceData.durationMin, "minute").valueOf();
+        // Convert to UTC milliseconds for storage
+        const startMs = startMoment.utc().valueOf();
+        const endMs = startMoment.clone().add(selectedServiceData.durationMin, "minute").utc().valueOf();
         const trimmedNotes = customerInfo.notes?.trim();
 
         setIsBooking(true);

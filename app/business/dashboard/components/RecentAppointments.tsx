@@ -68,7 +68,7 @@ export const RecentAppointmentsSection = () => {
                                     key={appointment.id}
                                     className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                                 >
-                                    <div className="flex items-center space-x-4">
+                                    <div className="flex items-center gap-1.5">
                                         <Avatar className="h-10 w-10">
                                             <AvatarImage src={appointment.user?.photoURL} alt={appointment.user?.firstName} />
                                             <AvatarFallback>{appointment.user?.firstName?.charAt(0) || "A"}</AvatarFallback>
@@ -83,7 +83,7 @@ export const RecentAppointmentsSection = () => {
                                             <p className="text-sm text-muted-foreground">{appointment.service?.name || t("appointment")}</p>
                                             <div className="flex items-center space-x-2 text-xs text-muted-foreground">
                                                 <Calendar className="h-3 w-3" />
-                                                <span>{timestampToString(appointment.start, { format: "YYYY-MM-DD" })}</span>
+                                                <span>{timestampToString(appointment.start, { format: "DD/MM/YY" })}</span>
                                                 <Clock className="h-3 w-3" />
                                                 <span>{timestampToString(appointment.start, { format: "HH:mm" })}</span>
                                             </div>
@@ -91,7 +91,7 @@ export const RecentAppointmentsSection = () => {
                                         </div>
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        <Badge variant="outline" className="flex items-center space-x-1">
+                                        <Badge variant="outline" className="flex items-center gap-1.5">
                                             {getStatusIcon(appointment.status)}
                                             <span>{getStatusText(appointment.status)}</span>
                                         </Badge>

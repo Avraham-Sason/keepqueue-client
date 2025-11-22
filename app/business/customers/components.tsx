@@ -81,7 +81,7 @@ export function CustomerCard({ customer, index, businessId, isBlocked, appointme
                             <div className="flex items-center gap-2 text-sm">
                                 <Clock className="h-4 w-4 text-muted-foreground" />
                                 <span className="text-muted-foreground">{t("lastAppointment")}:</span>
-                                <span className="font-medium">{timestampToString(customer.lastEventAt, { format: "YYYY-MM-DD" })}</span>
+                                <span className="font-medium">{timestampToString(customer.lastEventAt, { format: "DD/MM/YY" })}</span>
                             </div>
                         )}
                     </div>
@@ -174,7 +174,7 @@ export function CustomerAppointmentsDialog({ isOpen, onClose, customer, appointm
                                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                                 <Clock className="h-4 w-4" />
                                                 <span>
-                                                    {timestampToString(appointment.start, { format: "YYYY-MM-DD HH:mm" })} -{" "}
+                                                    {timestampToString(appointment.start, { format: "DD/MM/YY HH:mm" })} -{" "}
                                                     {timestampToString(appointment.end, { format: "HH:mm" })}
                                                 </span>
                                             </div>

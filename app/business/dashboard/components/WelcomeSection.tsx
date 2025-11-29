@@ -20,7 +20,7 @@ export const WelcomeSection = () => {
                 </div>
                 <div className="flex items-center space-x-4">
                     <Avatar className="h-12 w-12">
-                        <AvatarImage src={businessOwner.photoURL || "/placeholder.svg"} alt={businessOwner.firstName} />
+                        <AvatarImage src={currentBusiness?.logoUrl || "/placeholder.svg"} alt={businessOwner.firstName} />
                         <AvatarFallback>{businessOwner.firstName.charAt(0)}</AvatarFallback>
                     </Avatar>
                 </div>

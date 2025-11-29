@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Home, Users, Settings, BarChart3, Clock, Star, MessageSquare, CreditCard, LogOut } from "lucide-react";
+import { Calendar, Home, Users, Settings, BarChart3, Clock, Star, MessageSquare, CreditCard, LogOut, Edit } from "lucide-react";
 import {
     Sidebar,
     SidebarContent,
@@ -34,6 +34,11 @@ const menuItems = [
         title: "dashboard",
         url: "/business/dashboard",
         icon: Home,
+    },
+    {
+        title: "editDetails",
+        url: "/business/editDetails",
+        icon: Edit,
     },
     {
         title: "calendar",
@@ -93,7 +98,7 @@ export function BusinessSidebar() {
     return (
         <Sidebar side={isRtl ? "right" : "left"} variant="sidebar">
             <SidebarHeader className="p-4 flex flex-row justify-between items-start">
-                <div className="flex items-center">
+                <div className="flex items-center gap-2">
                     <div className="h-8 w-8 rounded-lg flex items-center justify-center">
                         <Image src="/logo.png" alt="logo" width={32} height={32} />
                     </div>

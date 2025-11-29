@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 export const BusinessDetailsSections = () => {
     const { t } = useLanguage();
     return (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="col-span-3">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="col-span-4 lg:col-span-3">
             <Card className="hover:shadow-lg transition-all duration-300">
                 <CardHeader>
                     <CardTitle>{t("businessDetails")}</CardTitle>

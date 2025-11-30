@@ -62,6 +62,7 @@ export interface Business extends DocBase {
     ownerId: ID;
     phone?: string;
     address?: string;
+    description?: string;
     geo?: { lat: number; lng: number };
     categories?: string[];
     ratingAvg?: number;

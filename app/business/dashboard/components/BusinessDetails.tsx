@@ -3,9 +3,10 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/hooks";
 import { useAuthStore, useBusinessesStore } from "@/lib/store";
 import { Clock, Mail, Phone } from "lucide-react";
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatWorkingHoursFromSchedule } from "@/lib/helpers/schedule";
 
 export const BusinessDetailsSections = () => {
     const { t } = useLanguage();
@@ -41,6 +42,10 @@ const BusinessDetailsCards = () => {
     const currentBusiness = useBusinessesStore.currentBusiness();
     const businessOwner = useAuthStore.user()!;
     const { t } = useLanguage();
+    const workingHoursValue = useMemo(() => {
+        const summary = formatWorkingHoursFromSchedule(currentBusiness?.operationSchedule ?? [], (key: string) => t(key as any));
+        return summary ? summary.split("\n").join(" • ") : "-";
+    }, [currentBusiness?.operationSchedule, t]);
     return (
         <div className="space-y-3">
             {(currentBusiness?.phone || businessOwner.phone) && (
@@ -53,7 +58,7 @@ const BusinessDetailsCards = () => {
 
             <BusinessDetailsCard icon={<Mail className="h-5 w-5 text-primary" />} title={t("email")} value={businessOwner.email} />
 
-            <BusinessDetailsCard icon={<Clock className="h-5 w-5 text-primary" />} title={t("workingHours")} value="-" />
+            <BusinessDetailsCard icon={<Clock className="h-5 w-5 text-primary" />} title={t("workingHours")} value={workingHoursValue} />
         </div>
     );
 };

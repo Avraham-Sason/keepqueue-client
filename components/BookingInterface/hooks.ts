@@ -8,6 +8,7 @@ import moment from "moment-timezone";
 import { getDocumentById, queryDocuments } from "@/lib/firebase/firestore";
 import { useLanguage } from "@/hooks";
 import { apiCall, ApiError } from "@/lib/helpers/api";
+import { formatWorkingHoursFromSchedule } from "@/lib/helpers/schedule";
 import { Timestamp } from "firebase/firestore";
 
 export interface DateOption {
@@ -85,6 +86,11 @@ export function useBookingState(businessId: string) {
         run();
     }, [currentBusiness, fallbackLoaded, businessId]);
 
+    const workingHoursDisplay = useMemo(() => {
+        const schedule = currentBusiness?.operationSchedule ?? fallbackSchedule;
+        return formatWorkingHoursFromSchedule(schedule, (key: string) => t(key as any));
+    }, [currentBusiness?.operationSchedule, fallbackSchedule, t]);
+
     const business: BusinessDisplay = useMemo(() => {
         const b = currentBusiness;
         return {
@@ -96,9 +102,9 @@ export function useBookingState(businessId: string) {
             email: "",
             image: b?.logoUrl ?? fallbackMeta?.logoUrl,
             description: "",
-            workingHours: "",
+            workingHours: workingHoursDisplay,
         };
-    }, [currentBusiness, fallbackMeta]);
+    }, [currentBusiness, fallbackMeta, workingHoursDisplay]);
 
     const services: Service[] = useMemo(() => currentBusiness?.services ?? fallbackServices, [currentBusiness?.services, fallbackServices]);
 

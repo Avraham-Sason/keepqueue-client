@@ -35,8 +35,8 @@ export const FEATURES: FeatureStatic[] = [
     },
     {
         icon: MessageSquare,
-        titleKey: "featureWhatsAppRemindersTitle",
-        descriptionKey: "featureWhatsAppRemindersDescription",
+        titleKey: "featureSmsRemindersTitle",
+        descriptionKey: "featureSmsRemindersDescription",
         color: "bg-green-500/10 text-green-600",
     },
     {
@@ -197,13 +197,14 @@ export function HeroSection() {
     return (
         <section className="py-20 px-4 relative overflow-hidden">
             <div className="absolute inset-0 queue-pattern opacity-30" />
-            <div className="container max-w-6xl mx-auto text-center relative">
-                <div className="animate-in fade-in slide-in-from-bottom-3 duration-500">
+            <div className="container max-w-6xl mx-auto text-center relative ">
+                <div className="animate-in fade-in slide-in-from-bottom-3 duration-500 ">
                     <h1 className="text-4xl flex flex-col md:text-6xl font-bold tracking-tight mb-6">
                         <DecryptedText text={t("heroMain")} />
                         <DecryptedText text={t("heroSub")} className="text-primary" />
                     </h1>
-                    <TextType typingSpeed={15} text={t("heroParagraph")} className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto" />
+                    <p className="text-xl text-muted-foreground  max-w-3xl mx-auto mb-4">{t("heroParagraph")}</p>
+                    {/* <TextType typingSpeed={40} text={t("heroParagraph")} className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto" /> */}
                     <SigninForms />
                     <StatsGrid />
                 </div>

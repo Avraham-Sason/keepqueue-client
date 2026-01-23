@@ -153,9 +153,13 @@ function BusinessHeader({ business }: { business: BusinessDisplay }) {
                             </div>
                         </div>
                         {business.image && (
-                            <div className="flex-1">
+                            <div className="w-full md:w-auto md:flex-shrink-0 md:min-w-[280px] md:max-w-[350px]">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={business.image} alt={business.name} className="w-full h-40 md:h-full object-cover rounded-lg" />
+                                <img 
+                                    src={business.image} 
+                                    alt={business.name} 
+                                    className="w-full h-40 md:h-[250px] object-cover rounded-lg" 
+                                />
                             </div>
                         )}
                     </div>

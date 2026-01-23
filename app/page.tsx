@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { getServerTranslation } from "@translations/server";
 import LandingPage from "./landing-page";
 
-export const dynamic = 'force-static';
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getServerTranslation();

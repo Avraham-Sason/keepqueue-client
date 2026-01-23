@@ -28,7 +28,7 @@ interface SignInFormProps {
 export function SignInForm({ type, disableRedirect = false, onSuccess }: SignInFormProps) {
     const { t, isRtl } = useLanguage();
     const [email, setEmail] = useState(type === "customer" ? "noa@customer.com" : "avi@biz.com");
-    const [password, setPassword] = useState("123456");
+    const [password, setPassword] = useState("Av!09890#");
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");

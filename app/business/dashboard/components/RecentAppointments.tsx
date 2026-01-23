@@ -7,11 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { timestampToMillis, timestampToString } from "@/lib/helpers";
 import { useBusinessesStore } from "@/lib/store";
+import { useSettingsStore } from "@/lib/store/settingsStore";
 import { CalendarEventWithRelations } from "@/lib/types";
 
 export const RecentAppointmentsSection = () => {
     const { t } = useLanguage();
     const currentBusiness = useBusinessesStore.currentBusiness();
+    const userTimeZone = useSettingsStore.userTimeZone();
     const businessAppointments: CalendarEventWithRelations[] = currentBusiness?.calendar || [];
     const upcomingAppointments = businessAppointments
         .filter((apt) => apt.status === "CONFIRMED" || apt.status === "BOOKED")
@@ -83,9 +85,9 @@ export const RecentAppointmentsSection = () => {
                                             <p className="text-sm text-muted-foreground">{appointment.service?.name || t("appointment")}</p>
                                             <div className="flex items-center space-x-2 text-xs text-muted-foreground">
                                                 <Calendar className="h-3 w-3" />
-                                                <span>{timestampToString(appointment.start, { format: "DD/MM/YY" })}</span>
+                                                <span>{timestampToString(appointment.start, { format: "DD/MM/YY", tz: userTimeZone })}</span>
                                                 <Clock className="h-3 w-3" />
-                                                <span>{timestampToString(appointment.start, { format: "HH:mm" })}</span>
+                                                <span>{timestampToString(appointment.start, { format: "HH:mm", tz: userTimeZone })}</span>
                                             </div>
                                             {appointment.notes && <p className="text-xs text-muted-foreground italic">"{appointment.notes}"</p>}
                                         </div>

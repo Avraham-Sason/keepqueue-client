@@ -145,14 +145,14 @@ export function useBookingState(businessId: string) {
     const serviceOperationSchedule = useMemo(() => selectedServiceData?.operationSchedule ?? [], [selectedServiceData]);
 
     const isSameDay = (ms: number, m: moment.Moment) => {
-        const d = moment.utc(ms);
+        const d = moment.tz(ms, userTimeZone);
         return d.year() === m.year() && d.month() === m.month() && d.date() === m.date();
     };
 
     const eventBlocksForDate = useMemo(() => {
         const events = ((currentBusiness?.calendar as any) ?? fallbackCalendar) as CalendarEvent[];
         if (!selectedDate) return [] as { start: number; end: number }[];
-        const m = moment.utc(selectedDate, "DD/MM/YY");
+        const m = moment.tz(selectedDate, "DD/MM/YY", userTimeZone);
         return events
             .filter((e) => {
                 const status = e.status;
@@ -162,7 +162,7 @@ export function useBookingState(businessId: string) {
                 return isSameDay(startMs, m) || isSameDay(endMs, m);
             })
             .map((e) => ({ start: timestampToMillis(e.start), end: timestampToMillis(e.end) }));
-    }, [currentBusiness?.calendar, selectedDate]);
+    }, [currentBusiness?.calendar, fallbackCalendar, selectedDate, userTimeZone]);
 
     const hasFreeSlot = (startMs: number, endMs: number) => {
         return !eventBlocksForDate.some((b) => Math.max(b.start, startMs) < Math.min(b.end, endMs));
@@ -200,13 +200,13 @@ export function useBookingState(businessId: string) {
         }
         
         const days: DateOption[] = [];
-        const base = moment.utc().startOf("day");
+        const base = moment().tz(userTimeZone).startOf("day");
         
         // Group availability slots by date
         const slotsByDate = new Map<string, AvailabilitySlot[]>();
         for (const slot of serviceAvailability) {
             const slotStartMs = timestampToMillis(slot.start);
-            const slotDate = moment.utc(slotStartMs).format("DD/MM/YY");
+            const slotDate = moment.tz(slotStartMs, userTimeZone).format("DD/MM/YY");
             if (!slotsByDate.has(slotDate)) {
                 slotsByDate.set(slotDate, []);
             }
@@ -225,7 +225,7 @@ export function useBookingState(businessId: string) {
             days.push({ date: dateStr, day: dayLabel, available: hasAvailableSlots });
         }
         return days;
-    }, [selectedService, serviceAvailability, isLoadingAvailability, t]);
+    }, [selectedService, serviceAvailability, isLoadingAvailability, t, userTimeZone]);
 
     const availableTimes: TimeOption[] = useMemo(() => {
         // Show empty array while loading or if no date/service selected
@@ -237,7 +237,7 @@ export function useBookingState(businessId: string) {
             return [] as TimeOption[];
         }
         
-        const d = moment.utc(selectedDate, "DD/MM/YY");
+        const d = moment.tz(selectedDate, "DD/MM/YY", userTimeZone);
         const dateStr = d.format("DD/MM/YY");
         const stepMin = 30;
         const durationMin = selectedServiceData.durationMin;
@@ -248,7 +248,7 @@ export function useBookingState(businessId: string) {
         // Get all availability slots for the selected date
         const slotsForDate = serviceAvailability.filter((slot) => {
             const slotStartMs = timestampToMillis(slot.start);
-            const slotDate = moment.utc(slotStartMs).format("DD/MM/YY");
+            const slotDate = moment.tz(slotStartMs, userTimeZone).format("DD/MM/YY");
             return slotDate === dateStr;
         });
         
@@ -272,13 +272,14 @@ export function useBookingState(businessId: string) {
                 return startMs >= slotStartMs && endMs <= slotEndMs;
             });
             
-            if (fitsInSlot) {
+            // Also guard against already-booked calendar events (covers stale availability cache).
+            if (fitsInSlot && hasFreeSlot(startMs, endMs)) {
                 times.push({ time: m.format("HH:mm"), available: true });
             }
         }
         
         return times;
-    }, [selectedDate, selectedServiceData, serviceAvailability, isLoadingAvailability]);
+    }, [selectedDate, selectedServiceData, serviceAvailability, isLoadingAvailability, eventBlocksForDate, userTimeZone]);
 
     const totalPrice = selectedServiceData?.price || 0;
 

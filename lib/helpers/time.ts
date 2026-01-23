@@ -63,7 +63,9 @@ export function timestampToString(firebaseTimestamp: Timestamp | Date | string, 
                 .tz(tz as string)
                 .format(format);
         default:
-            return moment.utc(date).format(format);
+            // Default should be the viewer's local time (not UTC).
+            // If callers need a specific timezone, they should pass `tz`.
+            return moment(date).format(format);
     }
 }
 

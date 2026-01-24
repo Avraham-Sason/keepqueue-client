@@ -10,17 +10,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: "daily",
             priority: 1,
         },
-        {
-            url: `${baseUrl}/auth/signin/customer`,
-            lastModified: new Date(),
-            changeFrequency: "monthly",
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/auth/signin/business`,
-            lastModified: new Date(),
-            changeFrequency: "monthly",
-            priority: 0.8,
-        },
     ];
 }

@@ -14,12 +14,18 @@ const inter = Inter({ subsets: ["latin"] });
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getServerTranslation();
+    const title = `KeepQueue | מערכת זימון תורים חכמה לעסקים`;
+    const description = "KeepQueue - הפלטפורמה המובילה לניהול וזימון תורים אונליין. פתרון חכם, מהיר וידידותי לעסקים וללקוחות.";
+    
     return {
-        metadataBase: new URL("https://keepqueue-v0.vercel.app"),
-        title: `${t("brandName")} - ${t("heroMain")} ${t("heroSub")}`,
-        description: t("heroParagraph"),
+        metadataBase: new URL("https://keepqueue.com"),
+        title,
+        description,
+        keywords: ["זימון תורים", "מערכת לזימון תורים", "ניהול תורים", "KeepQueue"],
         generator: "v0.dev",
         openGraph: {
+            title,
+            description,
             siteName: t("brandName"),
             locale: "he_IL",
             type: "website",

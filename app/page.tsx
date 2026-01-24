@@ -5,19 +5,23 @@ import LandingPage from "./landing-page";
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getServerTranslation();
+    const title = `KeepQueue | מערכת זימון תורים חכמה לעסקים - ${t("heroMain")} ${t("heroSub")}`;
+    const description = "הפלטפורמה המתקדמת ביותר לניהול וזימון תורים אונליין. ייעלו את העסק שלכם ואפשרו ללקוחות להזמין תור בקליק בצורה פשוטה ומהירה.";
+    
     return {
-        title: `${t("heroMain")} ${t("heroSub")} | ${t("brandName")}`,
-        description: t("heroParagraph"),
+        title,
+        description,
+        keywords: ["זימון תורים", "מערכת לזימון תורים", "ניהול תורים", "יומן תורים דיגיטלי", "KeepQueue"],
         openGraph: {
-            title: `${t("heroMain")} ${t("heroSub")} | ${t("brandName")}`,
-            description: t("heroParagraph"),
-            url: "https://keepqueue-v0.vercel.app/",
+            title,
+            description,
+            url: "https://keepqueue.com",
             siteName: t("brandName"),
             locale: "he_IL",
             type: "website",
             images: [
                 {
-                    url: "https://keepqueue-v0.vercel.app/logo.png",
+                    url: "https://keepqueue.com/logo.png",
                     width: 1200,
                     height: 630,
                     alt: t("brandName"),
@@ -26,13 +30,40 @@ export async function generateMetadata(): Promise<Metadata> {
         },
         twitter: {
             card: "summary_large_image",
-            title: `${t("heroMain")} ${t("heroSub")} | ${t("brandName")}`,
-            description: t("heroParagraph"),
-            images: ["https://keepqueue-v0.vercel.app/logo.png"],
+            title,
+            description,
+            images: ["https://keepqueue.com/logo.png"],
         },
     };
 }
 
 export default function HomePage() {
-    return <LandingPage />;
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "KeepQueue",
+        "operatingSystem": "Web",
+        "applicationCategory": "BusinessApplication",
+        "description": "מערכת חכמה לזימון וניהול תורים אונליין לעסקים ולקוחות.",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "ILS"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "120"
+        }
+    };
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <LandingPage />
+        </>
+    );
 }

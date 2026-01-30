@@ -62,6 +62,10 @@ export function useBookingState(businessId: string) {
     const [bookingError, setBookingError] = useState<string | null>(null);
     const [serviceAvailability, setServiceAvailability] = useState<AvailabilitySlot[]>([]);
     const [isLoadingAvailability, setIsLoadingAvailability] = useState<boolean>(false);
+    const [isCancellingAppointment, setIsCancellingAppointment] = useState<boolean>(false);
+    const [cancellingAppointmentId, setCancellingAppointmentId] = useState<string | null>(null);
+    const [cancelError, setCancelError] = useState<string | null>(null);
+    const [cancelledAppointmentIds, setCancelledAppointmentIds] = useState<string[]>([]);
 
     useEffect(() => {
         const run = async () => {
@@ -281,6 +285,19 @@ export function useBookingState(businessId: string) {
         return times;
     }, [selectedDate, selectedServiceData, serviceAvailability, isLoadingAvailability, eventBlocksForDate, userTimeZone]);
 
+    const customerAppointments = useMemo<Array<CalendarEvent & { id: string }>>(() => {
+        if (!user?.id) return [];
+        const events = ((currentBusiness?.calendar as CalendarEvent[] | undefined) ?? fallbackCalendar) as CalendarEvent[];
+        const nowMs = Date.now();
+        return events
+            .filter((event) => event.businessId === businessId && event.userId === user.id && event.type === "APPOINTMENT")
+            .filter((event) => event.status === "BOOKED" || event.status === "CONFIRMED")
+            .filter((event) => timestampToMillis(event.end) >= nowMs)
+            .filter((event): event is CalendarEvent & { id: string } => Boolean(event.id))
+            .filter((event) => !cancelledAppointmentIds.includes(event.id))
+            .sort((a, b) => timestampToMillis(a.start) - timestampToMillis(b.start));
+    }, [businessId, cancelledAppointmentIds, currentBusiness?.calendar, fallbackCalendar, user?.id]);
+
     const totalPrice = selectedServiceData?.price || 0;
 
     const handleNext = () => {
@@ -426,6 +443,31 @@ export function useBookingState(businessId: string) {
         }
     };
 
+    const handleCancelAppointment = async (calendarEventId: string): Promise<void> => {
+        if (!calendarEventId || isCancellingAppointment) return;
+
+        setIsCancellingAppointment(true);
+        setCancellingAppointmentId(calendarEventId);
+        setCancelError(null);
+
+        try {
+            await apiCall("POST", "actions", "businesses/appointments/cancel", { calendarEventId });
+            setCancelledAppointmentIds((prev) => (prev.includes(calendarEventId) ? prev : [...prev, calendarEventId]));
+
+            if (!currentBusiness) {
+                setFallbackCalendar((prev) =>
+                    prev.map((event) => (event.id === calendarEventId ? { ...event, status: "CANCELLED" } : event))
+                );
+            }
+        } catch (error) {
+            console.error("Error cancelling appointment:", error);
+            setCancelError(t("bookingErrorGeneric"));
+        } finally {
+            setIsCancellingAppointment(false);
+            setCancellingAppointmentId(null);
+        }
+    };
+
     return {
         // data
         business,
@@ -448,10 +490,15 @@ export function useBookingState(businessId: string) {
         handleBooking,
         isBooking,
         bookingError,
+        cancelError,
         // customer
         customerInfo,
         setCustomerInfo,
+        customerAppointments,
         // loading state
         isLoadingAvailability,
+        isCancellingAppointment,
+        cancellingAppointmentId,
+        handleCancelAppointment,
     } as const;
 }

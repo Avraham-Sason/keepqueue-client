@@ -9,21 +9,50 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Clock, MapPin, Star, Phone, User, CheckCircle, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
+import { Calendar, Clock, MapPin, Star, Phone, User, CheckCircle, ArrowRight, ArrowLeft, Loader2, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useLanguage } from "@/hooks";
 import moment from "moment-timezone";
 import { useBookingState, type BusinessDisplay } from "./hooks";
-import type { Service } from "@/lib/types";
+import type { CalendarEvent, Service } from "@/lib/types";
 import Image from "next/image";
 import { CustomerHeader } from "@/app/customer/dashboard/customer-header";
-import { useAuthStore } from "@/lib/store";
+import { useAuthStore, useSettingsStore } from "@/lib/store";
 import { SignInForm } from "@/components/signin-form";
+import { timestampToMillis, timestampToString } from "@/lib/helpers";
 
 interface BookingInterfaceProps {
     businessId: string;
 }
+
+interface GoogleCalendarPayload {
+    title: string;
+    details?: string;
+    location?: string;
+    startMs: number;
+    endMs: number;
+}
+
+const buildGoogleCalendarUrl = ({ title, details, location, startMs, endMs }: GoogleCalendarPayload) => {
+    const startUtc = moment.utc(startMs).format("YYYYMMDDTHHmmss[Z]");
+    const endUtc = moment.utc(endMs).format("YYYYMMDDTHHmmss[Z]");
+    const params = new URLSearchParams({
+        action: "TEMPLATE",
+        text: title,
+        dates: `${startUtc}/${endUtc}`,
+    });
+
+    if (details) {
+        params.set("details", details);
+    }
+
+    if (location) {
+        params.set("location", location);
+    }
+
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+};
 
 export function BookingInterface({ businessId }: BookingInterfaceProps) {
     const {
@@ -45,9 +74,14 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
         handleBooking,
         isBooking,
         bookingError,
+        cancelError,
         customerInfo,
         setCustomerInfo,
+        customerAppointments,
         isLoadingAvailability,
+        isCancellingAppointment,
+        cancellingAppointmentId,
+        handleCancelAppointment,
     } = useBookingState(businessId);
 
     return (
@@ -56,6 +90,18 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                 <CustomerHeader />
 
                 <BusinessHeader business={business} />
+
+                {customerAppointments.length > 0 && (
+                    <ExistingAppointments
+                        appointments={customerAppointments}
+                        services={services}
+                        business={business}
+                        cancelError={cancelError}
+                        isCancellingAppointment={isCancellingAppointment}
+                        cancellingAppointmentId={cancellingAppointmentId}
+                        onCancel={handleCancelAppointment}
+                    />
+                )}
 
                 <ProgressSteps step={step} />
 
@@ -101,6 +147,7 @@ export function BookingInterface({ businessId }: BookingInterfaceProps) {
                         businessAddress={business.address}
                         businessPhone={business.phone}
                         selectedServiceName={selectedServiceData?.name}
+                        selectedServiceDurationMin={selectedServiceData?.durationMin}
                         availableDates={availableDates}
                         selectedDate={selectedDate}
                         selectedTime={selectedTime}
@@ -197,6 +244,123 @@ function ProgressSteps({ step }: { step: number }) {
                 </div>
             ))}
         </div>
+    );
+}
+
+interface ExistingAppointmentsProps {
+    appointments: Array<CalendarEvent & { id: string }>;
+    services: Service[];
+    business: BusinessDisplay;
+    cancelError: string | null;
+    isCancellingAppointment: boolean;
+    cancellingAppointmentId: string | null;
+    onCancel: (calendarEventId: string) => void;
+}
+
+function ExistingAppointments({
+    appointments,
+    services,
+    business,
+    cancelError,
+    isCancellingAppointment,
+    cancellingAppointmentId,
+    onCancel,
+}: ExistingAppointmentsProps) {
+    const { t } = useLanguage();
+    const userTimeZone = useSettingsStore.userTimeZone();
+    const serviceNameById = useMemo(() => {
+        const map = new Map<string, string>();
+        for (const service of services) {
+            if (service.id) {
+                map.set(service.id, service.name);
+            }
+        }
+        return map;
+    }, [services]);
+
+    if (appointments.length === 0) {
+        return null;
+    }
+
+    return (
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+            <Card>
+                <CardHeader>
+                    <CardTitle>{t("appointments")}</CardTitle>
+                    <CardDescription>{t("yourUpcomingAppointments")}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                    {appointments.map((appointment) => {
+                        const serviceName =
+                            (appointment.serviceId ? serviceNameById.get(appointment.serviceId) : "") ||
+                            appointment.title ||
+                            t("appointment");
+                        const dateLabel = timestampToString(appointment.start, { format: "DD/MM/YY", tz: userTimeZone });
+                        const timeLabel = timestampToString(appointment.start, { format: "HH:mm", tz: userTimeZone });
+                        const isCancellingCurrent = isCancellingAppointment && cancellingAppointmentId === appointment.id;
+                        const startMs = timestampToMillis(appointment.start);
+                        const endMs = timestampToMillis(appointment.end);
+                        const details = [
+                            `${t("businessLabel")}: ${business.name}`,
+                            `${t("serviceLabel")}: ${serviceName}`,
+                            business.phone ? `${t("phone")}: ${business.phone}` : "",
+                            appointment.notes ? appointment.notes : "",
+                        ]
+                            .filter(Boolean)
+                            .join("\n");
+                        const googleCalendarUrl = buildGoogleCalendarUrl({
+                            title: `${business.name} - ${serviceName}`,
+                            details,
+                            location: business.address,
+                            startMs,
+                            endMs,
+                        });
+
+                        return (
+                            <div key={appointment.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border rounded-lg p-3">
+                                <div className="space-y-1">
+                                    <p className="font-medium">{serviceName}</p>
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <Calendar className="h-4 w-4" />
+                                        <span>{dateLabel}</span>
+                                        <Clock className="h-4 w-4" />
+                                        <span>{timeLabel}</span>
+                                    </div>
+                                    {appointment.notes && <p className="text-xs text-muted-foreground italic">"{appointment.notes}"</p>}
+                                </div>
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                                    <Button asChild variant="secondary" size="sm">
+                                        <a href={googleCalendarUrl} target="_blank" rel="noreferrer">
+                                            <Calendar className="h-4 w-4 mr-2" />
+                                            {t("addToGoogleCalendar")}
+                                        </a>
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="text-destructive border-destructive/50 hover:bg-destructive/10"
+                                        disabled={isCancellingCurrent}
+                                        onClick={() => onCancel(appointment.id)}
+                                    >
+                                        {isCancellingCurrent ? (
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        ) : (
+                                            <XCircle className="h-4 w-4 mr-2" />
+                                        )}
+                                        {t("cancel")}
+                                    </Button>
+                                </div>
+                            </div>
+                        );
+                    })}
+                    {cancelError && (
+                        <div role="alert" aria-live="polite" className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+                            {cancelError}
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+        </motion.div>
     );
 }
 
@@ -603,6 +767,7 @@ interface ConfirmationStepProps {
     businessAddress: string;
     businessPhone: string;
     selectedServiceName?: string;
+    selectedServiceDurationMin?: number;
     availableDates: DateOption[];
     selectedDate: string;
     selectedTime: string;
@@ -614,11 +779,47 @@ function ConfirmationStep({
     businessAddress,
     businessPhone,
     selectedServiceName,
+    selectedServiceDurationMin,
     availableDates,
     selectedDate,
     selectedTime,
 }: ConfirmationStepProps) {
     const { t } = useLanguage();
+    const userTimeZone = useSettingsStore.userTimeZone();
+    const appointmentStart = moment.tz(`${selectedDate} ${selectedTime}`, "DD/MM/YY HH:mm", userTimeZone);
+    const isValidAppointment = appointmentStart.isValid() && Boolean(selectedServiceDurationMin);
+    const googleCalendarUrl = useMemo(() => {
+        if (!isValidAppointment || !selectedServiceDurationMin) return "";
+        const startMoment = moment.tz(`${selectedDate} ${selectedTime}`, "DD/MM/YY HH:mm", userTimeZone);
+        if (!startMoment.isValid()) return "";
+        const startMs = startMoment.utc().valueOf();
+        const endMs = startMoment.clone().add(selectedServiceDurationMin, "minute").utc().valueOf();
+        const details = [
+            `${t("businessLabel")}: ${businessName}`,
+            selectedServiceName ? `${t("serviceLabel")}: ${selectedServiceName}` : "",
+            businessPhone ? `${t("phone")}: ${businessPhone}` : "",
+        ]
+            .filter(Boolean)
+            .join("\n");
+        return buildGoogleCalendarUrl({
+            title: `${businessName} - ${selectedServiceName ?? t("appointment")}`,
+            details,
+            location: businessAddress,
+            startMs,
+            endMs,
+        });
+    }, [
+        businessAddress,
+        businessName,
+        businessPhone,
+        isValidAppointment,
+        selectedDate,
+        selectedServiceDurationMin,
+        selectedServiceName,
+        selectedTime,
+        t,
+        userTimeZone,
+    ]);
     return (
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
             <Card className="text-center">
@@ -653,6 +854,17 @@ function ConfirmationStep({
                             <p>
                                 <strong>{t("phone")}:</strong> {businessPhone}
                             </p>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            {googleCalendarUrl && (
+                                <Button asChild variant="secondary">
+                                    <a href={googleCalendarUrl} target="_blank" rel="noreferrer">
+                                        <Calendar className="h-4 w-4 mr-2" />
+                                        {t("addToGoogleCalendar")}
+                                    </a>
+                                </Button>
+                            )}
                         </div>
 
                         {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">

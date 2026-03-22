@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Home, Users, Settings, BarChart3, Clock, Star, MessageSquare, CreditCard, LogOut, Edit } from "lucide-react";
+import { Calendar, Home, Users, Settings, BarChart3, Clock, Star, LogOut, Edit } from "lucide-react";
 import {
     Sidebar,
     SidebarContent,
@@ -70,16 +70,6 @@ const menuItems = [
         url: "/business/reviews",
         icon: Star,
     },
-    // {
-    //     title: "WhatsApp",
-    //     url: "/business/whatsapp",
-    //     icon: MessageSquare,
-    // },
-    // {
-    //     title: "billing",
-    //     url: "/business/billing",
-    //     icon: CreditCard,
-    // },
 ];
 
 export function BusinessSidebar() {

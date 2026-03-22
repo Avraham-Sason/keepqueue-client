@@ -22,7 +22,7 @@ Conventions
 - Business public page: branding, services list, ratings summary, reviews preview ✅
 - Service selection UI (durations, price) ✅
 - Date/Time picker that calls API GET /businesses/:business_id/availability
-- Customer details form (name, phone/WhatsApp, notes, consent) ✅
+- Customer details form (name, phone, email, notes, consent) ✅
 - Review & confirm screen; create appointment via API POST /businesses/:business_id/appointments
 - Success page with details and SMS confirmation note
 - Customer portal: view upcoming/past appointments; reschedule/cancel (PATCH/POST cancel) ✅ (view only)
